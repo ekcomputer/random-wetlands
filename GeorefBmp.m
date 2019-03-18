@@ -1,90 +1,104 @@
-% for georeferencing PolsAR output BMP files
+% for georeferencing PolSAR PRO output BMP files
 % modified form importGRD.m
+% modified march 2019 for ui open
+% TODO: add gdal_edit to edit NoData value to be [0 1 0]
 
-n=1;
-nextSection=false;
-%     dir_in='D:\UAVSAR\redber_30704_17092_000_170907_L090_CX_01\Pout\T3\';
-% dir_in='D:\UAVSAR\padelW_18034_17076_006_170808_PL09043020_CX_01\C3\';
-dir_in='D:\UAVSAR\PADELT_36000_17062_003_170613_L090_CX_01\C3\';
-while  ~nextSection
+clear; close all
 
-%     dir_out='D:\UAVSAR\redber_30704_17092_000_170907_L090_CX_01\Georeferenced\';
-    dir_out=[dir_in, 'Georeferenced\'];
-    files=cellstr(ls([dir_in, '*.bmp']));
-    lfiles=length(files); 
-    disp('files found:')
-    disp(files)
-    file_in=[dir_in, files{n}];
-    fprintf('Processing file:\n\t%s\n', file_in)
-    proceed=input('Proceed? y/n: ', 's');
-    if proceed=='n'
-        n=double(input('Enter new file number: '));
-    elseif proceed=='y'
-        nextSection=true;
-    else disp('??')
-    end
-end
+%% input directories
+disp('Choose bitmap image directory:')
+dir_in=[uigetdir('F:\UAVSAR\','Choose root directory:'),'\'];
+[name_in, pth_in]=uigetfile([dir_in, '*.bmp'],'Choose bitmap image:');
+dir_out=[pth_in, 'Georeferenced\'];
+ann_file_pth=[dir_in, 'annotation_file.txt'];
+
+%% input params
+% (set to zero if not subset)
+% lat_offset would be larger value in POLSAR Pro subset dialogue box
+s.lat_offset=20001;% offset in pixel rows + 1 if subset was used 
+s.long_offset=0; % offset in pixel cols if subset was used
+
+%% load files
+
 disp('Importing file...')
-
+im=imread([pth_in,name_in]);
+fid=fopen(ann_file_pth);
+s.in.raw=textscan(fid, '%s', 'Delimiter', '\n'); s.in.raw=s.in.raw{:};
+fclose(fid);
+disp('File imported.')
 %% mkdir
 
 if~exist(dir_out)
     mkdir(dir_out);
 end
+
+%% parse georef info
+s.in.info=imfinfo([pth_in,name_in]);
+    % lat spacing
+s.in.lat_spacing_row_txt=strfind(s.in.raw, 'grd_mag.row_mult');
+s.in.lat_spacing_row_num=find(~cellfun(@isempty, s.in.lat_spacing_row_txt));
+s.in.lat_spacing_row_scan=textscan(s.in.raw{s.in.lat_spacing_row_num}, '%s')
+s.lat_spacing=str2double(s.in.lat_spacing_row_scan{1}{4});
+    %long spacing
+s.in.long_spacing_row_txt=strfind(s.in.raw, 'grd_mag.col_mult');
+s.in.long_spacing_row_num=find(~cellfun(@isempty, s.in.long_spacing_row_txt));
+s.in.long_spacing_row_scan=textscan(s.in.raw{s.in.long_spacing_row_num}, '%s')
+s.long_spacing=str2double(s.in.long_spacing_row_scan{1}{4});
+
+    % lat
+s.in.lat_row_txt=strfind(s.in.raw, 'grd_mag.row_addr');
+s.in.lat_row_num=find(~cellfun(@isempty, s.in.lat_row_txt));
+s.in.lat_row_scan=textscan(s.in.raw{s.in.lat_row_num}, '%s')
+s.lat=str2double(s.in.lat_row_scan{1}{4});
+
+    % long
+s.in.long_row_txt=strfind(s.in.raw, 'grd_mag.col_addr');
+s.in.long_row_num=find(~cellfun(@isempty, s.in.long_row_txt));
+s.in.long_row_scan=textscan(s.in.raw{s.in.long_row_num}, '%s')
+s.long=str2double(s.in.long_row_scan{1}{4});
+
+
+%% apply offset if subset was used
+
+s.lat=s.lat+s.lat_offset*s.lat_spacing; %% assumes rows start from north
+s.long=s.long+s.long_offset*s.long_spacing; %% assumes rows start from north
+
 %% multiband import
-% order of values: Redberr, padelW, PADELT
-
-% r.y=15908; %raster info: pixels
-% r.x=15834;
-% r.y=281927 ;
-% r.x=9900;
-% r.y=31265;
-% r.x=3570;
-r.y=31243 ;
-r.x=3580;
-
-% r.py=5.556e-05; %pixel size % GRD Latitude Pixel Spacing
-% r.px=.00011111;
-% r.py=5.556e-05  ;
-% r.px=0.00011111 ;
-r.py=5.556e-05 ;
-r.px=0.00011111 ;
-
-
-% r.lat=52.87550748; %NW corner coords %Center Latitude of Upper Left Pixel of GRD Image 
-% r.long=-107.63881248999999;
-% r.lat=59.32680132 ;
-% r.long= -111.56910652    ;
-r.lat=59.43464328      ;
-r.long=-111.60743947   ;
-
+r.y=s.in.info.Height; %raster info: pixels
+r.x=s.in.info.Width;
+r.py=s.lat_spacing; %pixel size % GRD Latitude Pixel Spacing
+r.px=s.long_spacing;
+r.lat=s.lat; %NW corner coords %Center Latitude of Upper Left Pixel of GRD Image 
+r.long=s.long;
 disp('adding spatial reference...')
-%% Define spatial ref
+
+%% Define and modify spatial ref
 R=georefcells();
-
-%% modify
-
 R.RasterSize=[r.y r.x];
-% R.XIntrinsicLimits=[.5 r.x+.5];
-% R.YIntrinsicLimits=[.5 r.y+.5];
-R.LatitudeLimits=[r.lat-r.py*r.y, r.lat];
-R.LongitudeLimits=[r.long  r.long+r.px*r.x];
-R.CellExtentInLatitude=r.py;
-R.CellExtentInLongitude=r.px;
+R.LatitudeLimits=sort([r.lat-r.py*r.y, r.lat]);
+R.LongitudeLimits=sort([r.long  r.long+r.px*r.x]);
+if s.lat_spacing <0
+    R.ColumnsStartFrom='north';
+else
+    R.ColumnsStartFrom='south';
+end
+R.CellExtentInLatitude=abs(r.py);
+R.CellExtentInLongitude=abs(r.px);
 R.ColumnsStartFrom= 'north';
 
-
 %% Write georeferenced file
-% location=[dir_out, '\', files{n}, '_G.tif'];
-% fprintf('writing file: %s\n', location)
-% geotiffwrite(location, ground, R);
-% figure; 
-% imagesc(ground); 
-% axis image; 
-% colormap copper
-% title(files{n}, 'FontSize', 10)
-% disp('Done!')
+name_base=textscan(dir_in, '%s', 'Delimiter', '\');
+location=[dir_out,name_base{1}{3},'_', name_in(1:end-4), '_G.tif'];
+fprintf('writing file: %s\n', location)
+geotiffwrite(location, im, R);
+figure; 
+imagesc(im); 
+axis image; 
+colormap copper
+title(name_in, 'FontSize', 10)
+disp('Done!')
+fprintf('File saved to %s\n', location)
 
 %% Write world file
-worldfilename = getworldfilename(file_in);
-worldfilewrite(R, worldfilename)
+% worldfilename = getworldfilename(file_in);
+% worldfilewrite(R, worldfilename)
