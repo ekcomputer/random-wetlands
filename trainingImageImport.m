@@ -38,22 +38,20 @@ end
 cmd=sprintf('gdalbuildvrt -separate %s %s', vrt_pth, f.gray_imgs_formatted)
 system(cmd)
 %% gdal warp 
-for class_number=1:5 %length(env.class_names) % class_number=11; % 
+stack_path_0=[env.tempDir, env.input(n).name, '_S', num2str(f.num_bands), '_0.tif'];
+stack_path=[env.tempDir, env.input(n).name, '_S', num2str(f.num_bands), '.tif'];
+cmd=sprintf('gdalwarp "%s" "%s" -srcnodata 0 -dstnodata 0 -multi -te %s -te_srs "EPSG:4269" -t_srs PROJCS["Canada_Albers_Equal_Area_Conic",GEOGCS["GCS_North_American_1983",DATUM["North_American_Datum_1983",SPHEROID["GRS_1980",6378137,298.257222101]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Albers_Conic_Equal_Area"],PARAMETER["False_Easting",0],PARAMETER["False_Northing",0],PARAMETER["longitude_of_center",-96],PARAMETER["Standard_Parallel_1",50],PARAMETER["Standard_Parallel_2",70],PARAMETER["latitude_of_center",40],UNIT["Meter",1],AUTHORITY["EPSG","102001"]]',...
+vrt_pth, stack_path_0, num2str(env.input(n).bb))
+system(cmd) % note this produces an uncompressed tif
+
+% gdal translate
+cmd=sprintf('gdal_translate "%s" "%s" -co COMPRESS=LZW',...
+stack_path_0, stack_path);
+system(cmd)
+delete(stack_path_0)
+%% load shp and create training class
+for class_number=1:11 %length(env.class_names) % class_number=11; % 
     training_pth=[env.output.train_dir, 'I00', num2str(n),'_Class', num2str(class_number), '.tif'];
-
-    stack_path_0=[env.tempDir, env.input(n).name, '_S', num2str(f.num_bands), '_0.tif'];
-    stack_path=[env.tempDir, env.input(n).name, '_S', num2str(f.num_bands), '.tif'];
-    cmd=sprintf('gdalwarp "%s" "%s" -srcnodata 0 -dstnodata 0 -multi -te %s -te_srs "EPSG:4269" -t_srs PROJCS["Canada_Albers_Equal_Area_Conic",GEOGCS["GCS_North_American_1983",DATUM["North_American_Datum_1983",SPHEROID["GRS_1980",6378137,298.257222101]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Albers_Conic_Equal_Area"],PARAMETER["False_Easting",0],PARAMETER["False_Northing",0],PARAMETER["longitude_of_center",-96],PARAMETER["Standard_Parallel_1",50],PARAMETER["Standard_Parallel_2",70],PARAMETER["latitude_of_center",40],UNIT["Meter",1],AUTHORITY["EPSG","102001"]]',...
-        vrt_pth, stack_path_0, num2str(env.input(n).bb))
-    system(cmd) % note this produces an uncompressed tif
-
-        % gdal translate
-    cmd=sprintf('gdal_translate "%s" "%s" -co COMPRESS=LZW',...
-        stack_path_0, stack_path);
-    system(cmd)
-    delete(stack_path_0)
-
-    %% load shp and create training class
     gt=geotiffinfo(stack_path);
     % wkt='PROJCS["Canada_Albers_Equal_Area_Conic",GEOGCS["GCS_North_American_1983",DATUM["North_American_Datum_1983",SPHEROID["GRS_1980",6378137,298.257222101]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Albers_Conic_Equal_Area"],PARAMETER["False_Easting",0],PARAMETER["False_Northing",0],PARAMETER["longitude_of_center",-96],PARAMETER["Standard_Parallel_1",50],PARAMETER["Standard_Parallel_2",70],PARAMETER["latitude_of_center",40],UNIT["Meter",1],AUTHORITY["EPSG","102001"]]';
     [~, f.layer_name, ~]=fileparts(env.input(n).cls_pth);
@@ -70,12 +68,13 @@ for class_number=1:5 %length(env.class_names) % class_number=11; %
     %     training_pth )
 
         % WHERE , no projection info
-    cmd=sprintf('gdal_rasterize -ts %f %f -te %f %f %f %f -burn 10 -co "COMPRESS=DEFLATE" -ot Byte -l %s -where "Class = ''%s''" %s %s',...
+    cmd=sprintf('gdal_rasterize -ts %f %f -te %f %f %f %f -burn 1 -co "COMPRESS=DEFLATE" -ot Byte -l %s -where "Class = ''%s''" %s %s',...
         gt.Width, gt.Height, gt.BoundingBox(1),gt.BoundingBox(3), gt.BoundingBox(2),...
         gt.BoundingBox(4), f.layer_name, env.class_names{class_number}, env.input(n).cls_pth,...
         training_pth )
 
     system(cmd)
+        % double check
+%     try foo=imread(training_pth); end
+%     fprintf('Max value of raster: %u\n', max(foo(:)))
 end
-foo=imread(training_pth);
-max(foo(:))
