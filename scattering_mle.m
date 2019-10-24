@@ -6,23 +6,32 @@
 clear; close all
 
 %% I/O
-dir_in='F:\UAVSAR\padelW_18034_17076_006_170808_PL09043020_CX_01\C3\';
+dir_in='F:\UAVSAR\padelE_36000_18047_000_180821_L090_CX_01\sub1k2k\freeman_2\C3\';
 rescale=0;
-movW=2;
+movW=8;
+seperateFiles=1;
 %% Other params
-file_in_s='Freeman_Odd';
-file_in_d='Freeman_Dbl';
-file_in_v='Freeman_Vol';
-mask='mask_valid_pixels';
-file_in={file_in_s, file_in_d, file_in_v};
-
-%% load data
-for i=1:3
-    datafile{i}=[dir_in, file_in{i}, '.bin'];
-    hdrfile{i}=[dir_in, file_in{i}, '.bin.hdr'];
-    [D(:,:,i),info{i}]=enviread(datafile{i},hdrfile{i});
+if seperateFiles
+    file_in_s='Freeman_Odd';
+    file_in_d='Freeman_Dbl';
+    file_in_v='Freeman_Vol';
+    file_in={file_in_s, file_in_d, file_in_v};
+else
+    file_in='entropy_scatt_mecha_freeman';
 end
-
+mask='mask_valid_pixels';
+%% load data
+if seperateFiles
+    for i=1:3
+        datafile{i}=[dir_in, file_in{i}, '.bin'];
+        hdrfile{i}=[dir_in, file_in{i}, '.bin.hdr'];
+        [D(:,:,i),info{i}]=enviread(datafile{i},hdrfile{i});
+    end
+else
+    datafile=[dir_in, file_in, '.bin'];
+    hdrfile=[dir_in, file_in, '.bin.hdr'];
+    [D,info]=enviread(datafile,hdrfile);
+end
 %% load mask
 msk_in=[dir_in, mask, '.bin'];
 hdrfile=[dir_in, mask, '.bin.hdr'];
@@ -34,8 +43,7 @@ D(~BW)=NaN;
 
 %% rescale
 if rescale
-    movW_sum=movW*2+1;
-    rescale_txt=sprintf('_%dx%d',movW_sum, movW_sum);
+    rescale_txt='_rsc';
     for i=1:3
         D(:,:,i)=imadjust(D(:,:,i));
     end
@@ -45,13 +53,13 @@ end
 
 %% Moving window / MLE
 if movW~=0
-    movW_text='_mv';
-    fun=@(D) max_fun(D);
-    sc=blockproc(D, [1,1], fun, 'BorderSize', [movW movW], 'TrimBorder', false, 'PadPartialBlocks', true, 'useparallel', 1);
+    movW_sum=movW*2+1;
+    D=movmean(D, movW_sum, 'omitnan');   
+    movW_text=sprintf('_%dx%d',movW_sum, movW_sum);
 else
     movW_text='';  
-    [~, sc]=max(D, [],3);
 end
+[~, sc]=max(D, [],3);
 % %% MLE
 % [~, sc]=max(D, [],3);
 
