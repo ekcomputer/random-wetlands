@@ -20,7 +20,7 @@ env.input(2).name=          'redber_30704_17092_000_170907_L090_CX_01';
 env.input(2).bb=            [-107.128 52.586]; 
 % training file output directory
 env.output.train_dir='F:\PAD2019\classification_training\PixelClassifier\Train\';
-
+env.output.test_dir='F:\PAD2019\classification_training\PixelClassifier\Test2\';
 % stacked images output
 
 % which input images
@@ -31,11 +31,11 @@ env.inputType='Freeman'; %'Freeman', 'C3', or 'gray'
 env.tempDir='F:\PAD2019\classification_training\PixelClassifierTemp\';
 
 % model I/O (todo: add smart suffix automatically to avoid overwrite)
-env.current_model='F:\PAD2019\classification_training\PixelClassifier\model2.mat';
+env.output.current_model='F:\PAD2019\classification_training\PixelClassifier\model1.mat';
 
 % classes
 
-env.class_names={'W1', 'W2', 'EU', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FW', 'FD'};
+env.class_names={'W1', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FD'}; % {'W1', 'W2', 'EU', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FW', 'FD'}
 
 
 
