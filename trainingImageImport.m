@@ -42,11 +42,11 @@ f.pths=[f.dirs, f.gray_imgs];
 f.gray_imgs_formatted=strjoin(cellstr(f.pths([1 3 2],:)), ' ');
 stack_path_0=[env.tempDir, env.input(n).name, '_S', num2str(f.num_bands), '_0.tif'];
 % stack_path=[env.output.train_dir, env.input(n).name, '_S', num2str(f.num_bands), '.tif'];
-stack_path=[env.output.train_dir, 'I00', num2str(n),'.tif'];
+stack_path=[env.output.train_dir, env.input(n).name, '_', num2str(n),'.tif'];
 meta_dir=[env.output.train_dir,'meta\'];
 mkdir(meta_dir);
-meta_path=[meta_dir, 'I00', num2str(n),'.txt'];
-meta_mat_path=[meta_dir, 'I00', num2str(n),'.mat'];
+meta_path=[meta_dir, env.input(n).name, '_', num2str(n),'.txt'];
+meta_mat_path=[meta_dir, env.input(n).name, '_', num2str(n),'.mat'];
 
 if ~ismember(size(f.pths, 1), [1 3 9])
    warning('check inputs') 
@@ -90,7 +90,7 @@ end
 fclose(fid);
 %% load shp and create training class rasters (1/class)
 for class_number=1:length(env.class_names) % class_number=11; % 
-    training_pth=[env.output.train_dir, 'I00', num2str(n),'_Class', num2str(class_number), '.tif'];
+    training_pth=[env.output.train_dir, env.input(n).name, '_', num2str(n),'_Class', num2str(class_number), '.tif'];
     gt=geotiffinfo(stack_path);
     % wkt='PROJCS["Canada_Albers_Equal_Area_Conic",GEOGCS["GCS_North_American_1983",DATUM["North_American_Datum_1983",SPHEROID["GRS_1980",6378137,298.257222101]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Albers_Conic_Equal_Area"],PARAMETER["False_Easting",0],PARAMETER["False_Northing",0],PARAMETER["longitude_of_center",-96],PARAMETER["Standard_Parallel_1",50],PARAMETER["Standard_Parallel_2",70],PARAMETER["latitude_of_center",40],UNIT["Meter",1],AUTHORITY["EPSG","102001"]]';
     [~, f.layer_name, ~]=fileparts(env.input(n).cls_pth);
