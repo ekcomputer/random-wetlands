@@ -9,7 +9,8 @@
 % set correct output path for training image stack/clip; how to do deal w
 % empty files for empty training classes; output txt file to list orig file
 % name and number-class lookup; change output of training image to be in
-% Train directory, automate bounding box selection?
+% Train directory, automate bounding box selection?; why are training and
+% veiwing images slightly offset?  resampling boundaries?
 
 % DONE: add bounding box input to create smaller training file tif
 %% I/O
@@ -63,19 +64,23 @@ end
 
 save(meta_mat_path, 'env');
 
+%% get bounding box of training shapefile
+R=shapeinfo(env.input(n).cls_pth);
+f.bb=R.BoundingBox([1 3 2 4]);
+f.bb_fmtd=num2str(f.bb);
 %% gdal warp to project and select bounding box of training image
-if exist(env.output.train_dir)==0
+if exist(stack_path)==0
         % stack (build VRT)
     cmd=sprintf('gdalbuildvrt -separate %s %s', vrt_pth, f.gray_imgs_formatted)
-    system(cmd)
+    system(cmd);
         % gdal warp
-    cmd=sprintf('gdalwarp "%s" "%s" -srcnodata 0 -dstnodata 0 -multi -te %s -te_srs "EPSG:4269" -t_srs PROJCS["Canada_Albers_Equal_Area_Conic",GEOGCS["GCS_North_American_1983",DATUM["North_American_Datum_1983",SPHEROID["GRS_1980",6378137,298.257222101]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Albers_Conic_Equal_Area"],PARAMETER["False_Easting",0],PARAMETER["False_Northing",0],PARAMETER["longitude_of_center",-96],PARAMETER["Standard_Parallel_1",50],PARAMETER["Standard_Parallel_2",70],PARAMETER["latitude_of_center",40],UNIT["Meter",1],AUTHORITY["EPSG","102001"]]',...
-    vrt_pth, stack_path_0, num2str(env.input(n).bb))
-    system(cmd) % note this produces an uncompressed tif
+        cmd=sprintf('gdalwarp "%s" "%s" -srcnodata 0 -dstnodata 0 -multi -te %s -t_srs PROJCS["Canada_Albers_Equal_Area_Conic",GEOGCS["GCS_North_American_1983",DATUM["North_American_Datum_1983",SPHEROID["GRS_1980",6378137,298.257222101]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Albers_Conic_Equal_Area"],PARAMETER["False_Easting",0],PARAMETER["False_Northing",0],PARAMETER["longitude_of_center",-96],PARAMETER["Standard_Parallel_1",50],PARAMETER["Standard_Parallel_2",70],PARAMETER["latitude_of_center",40],UNIT["Meter",1],AUTHORITY["EPSG","102001"]]',...
+    vrt_pth, stack_path_0, f.bb_fmtd)
+    system(cmd); % note this produces an uncompressed tif
         % gdal translate
     cmd=sprintf('gdal_translate "%s" "%s" -co COMPRESS=LZW',...
-    stack_path_0, stack_path);
-    system(cmd)
+    stack_path_0, stack_path)
+    system(cmd);
     delete(stack_path_0)
 else
     fprintf(fid, 'Training image already existed.\n')
@@ -106,11 +111,11 @@ for class_number=1:length(env.class_names) % class_number=11; %
         gt.Width, gt.Height, gt.BoundingBox(1),gt.BoundingBox(3), gt.BoundingBox(2),...
         gt.BoundingBox(4), f.layer_name, env.class_names{class_number}, env.input(n).cls_pth,...
         training_pth )
-    system(cmd)
+    system(cmd);
     i=dir(training_pth);
     if i.bytes< 100
         delete(training_pth)
-        fprintf('Deleting empty training file: %s\n', training_pth)
+        fprintf('\n\tDeleting empty training file: %s\n', training_pth)
     end
         % double check
 %     try foo=imread(training_pth); end

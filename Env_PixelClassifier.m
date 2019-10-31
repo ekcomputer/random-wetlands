@@ -7,17 +7,23 @@ env.bulk_plot_dir=          'D:\pic\UAVSAR_classification\'
 env.input(1).im_dir=        'F:\UAVSAR\padelE_36000_18047_000_180821_L090_CX_01\';
 env.input(1).cls_pth=       'F:\PAD2019\classification_training\training2018PAD.shp';
 env.input(1).name=          'padelE_36000_18047_000_180821_L090_CX_01';
-env.input(1).bb=            [-111.913 58.323 -110.894 58.99]; %xmin ymin xmax ymax
+env.input(1).bb=            [];%[-111.913 58.323 -110.894 58.99]; %xmin ymin xmax ymax
 
-env.input(2).im_dir=        'F:\UAVSAR\padelE_36000_19059_003_190904_L090_CX_01';
-env.input(2).cls_pth=       'F:\PAD2019\classification_training\training2018PAD.shp';
+env.input(2).im_dir=        'F:\UAVSAR\padelE_36000_19059_003_190904_L090_CX_01\';
+env.input(2).cls_pth=       'F:\PAD2019\classification_training\training2019PAD.shp';
 env.input(2).name=          'padelE_36000_19059_003_190904_L090_CX_01';
-env.input(2).bb=            [-111.913 58.323 -110.894 58.99]; 
+env.input(2).bb=            [];%[-111.913 58.323 -110.894 58.99]; 
 
-env.input(2).im_dir=        'F:\UAVSAR\redber_30704_17092_000_170907_L090_CX_01\Pout';
-env.input(2).cls_pth=       'F:\PAD2019\classification_training\training2018PAD.shp';
-env.input(2).name=          'redber_30704_17092_000_170907_L090_CX_01';
-env.input(2).bb=            [-107.128 52.586]; 
+env.input(3).im_dir=        'F:\UAVSAR\redber_30704_17092_000_170907_L090_CX_01\Pout\';
+env.input(3).cls_pth=       'F:\PAD2019\classification_training\training2018PAD.shp';
+env.input(3).name=          'redber_30704_17092_000_170907_L090_CX_01';
+env.input(3).bb=            [];%[-107.128 52.586]; 
+
+env.input(4).im_dir=        'F:\UAVSAR\padelE_36000_19059_003_190904_L090_CX_01\';
+env.input(4).cls_pth=       'F:\PAD2019\classification_training\training2019PAD.shp';
+env.input(4).name=          'padelE_36000_19059_003_190904_L090_CX_01';
+env.input(4).bb=            [];%[-107.128 52.586]; 
+
 % training file output directory
 env.output.train_dir='F:\PAD2019\classification_training\PixelClassifier\Train\';
 env.output.test_dir='F:\PAD2019\classification_training\PixelClassifier\Test2\';
@@ -37,7 +43,8 @@ env.output.current_model='F:\PAD2019\classification_training\PixelClassifier\mod
 
 env.class_names={'W1', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FD'}; % {'W1', 'W2', 'EU', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FW', 'FD'}
 
-
+% viewing image dir
+env.viewingImageDir='F:\UAVSAR\Georeferenced\';
 
 
 %% acknowledgements
