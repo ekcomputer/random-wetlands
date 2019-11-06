@@ -1,23 +1,12 @@
 % inputs: shapefile with class names; path to training scene images
 % outputs: training data as binary rasters snapped to training images;
 % training image merged as a 3 or 6-band raster
-
-% TODO: ensure ENVI header b.b. is updated if using UAVSAR clip; modify to
-% work on n-band images, reproject, nudge to get alignment bw UAVSAR and
-% training data, look at rasterizing alg and make sure it's not adding
-% extra space to the training area; erosion of training data in arc/gdal,
-% set correct output path for training image stack/clip; how to do deal w
-% empty files for empty training classes; output txt file to list orig file
-% name and number-class lookup; change output of training image to be in
-% Train directory, automate bounding box selection?; why are training and
-% veiwing images slightly offset?  resampling boundaries?
-
-% DONE: add bounding box input to create smaller training file tif
+% 
 %% I/O
 clear; close all
 Env_PixelClassifier % load environment vars
 vrt_pth=[env.tempDir, 'nband_image.vrt'];
-n=1; % file number from input
+n=2; % file number from input
 %% load / gdal VRT stack / path formatting
 
 if strcmp(env.inputType, 'Freeman')
@@ -40,7 +29,7 @@ end
 f.dirs=repmat(env.input(n).im_dir_nband, size(f.gray_imgs, 1),1);
 f.pths=[f.dirs, f.gray_imgs];
 f.gray_imgs_formatted=strjoin(cellstr(f.pths([1 3 2],:)), ' ');
-stack_path_0=[env.tempDir, env.input(n).name, '_S', num2str(f.num_bands), '_0.tif'];
+% stack_path_0=[env.tempDir, env.input(n).name, '_S', num2str(f.num_bands), '_0.tif'];
 % stack_path=[env.output.train_dir, env.input(n).name, '_S', num2str(f.num_bands), '.tif'];
 stack_path=[env.output.train_dir, env.input(n).name, '_', num2str(n),'.tif'];
 meta_dir=[env.output.train_dir,'meta\'];
@@ -74,14 +63,14 @@ if exist(stack_path)==0
     cmd=sprintf('gdalbuildvrt -separate %s %s', vrt_pth, f.gray_imgs_formatted)
     system(cmd);
         % gdal warp
-        cmd=sprintf('gdalwarp "%s" "%s" -srcnodata 0 -dstnodata 0 -multi -te %s -t_srs PROJCS["Canada_Albers_Equal_Area_Conic",GEOGCS["GCS_North_American_1983",DATUM["North_American_Datum_1983",SPHEROID["GRS_1980",6378137,298.257222101]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Albers_Conic_Equal_Area"],PARAMETER["False_Easting",0],PARAMETER["False_Northing",0],PARAMETER["longitude_of_center",-96],PARAMETER["Standard_Parallel_1",50],PARAMETER["Standard_Parallel_2",70],PARAMETER["latitude_of_center",40],UNIT["Meter",1],AUTHORITY["EPSG","102001"]]',...
-    vrt_pth, stack_path_0, f.bb_fmtd)
+        cmd=sprintf('gdalwarp "%s" "%s" -srcnodata 0 -dstnodata 0 -multi -wo NUM_THREADS=2 -co COMPRESS=DEFLATE -te %s -t_srs PROJCS["Canada_Albers_Equal_Area_Conic",GEOGCS["GCS_North_American_1983",DATUM["North_American_Datum_1983",SPHEROID["GRS_1980",6378137,298.257222101]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Albers_Conic_Equal_Area"],PARAMETER["False_Easting",0],PARAMETER["False_Northing",0],PARAMETER["longitude_of_center",-96],PARAMETER["Standard_Parallel_1",50],PARAMETER["Standard_Parallel_2",70],PARAMETER["latitude_of_center",40],UNIT["Meter",1],AUTHORITY["EPSG","102001"]]',...
+    vrt_pth, stack_path, f.bb_fmtd)
     system(cmd); % note this produces an uncompressed tif
         % gdal translate
-    cmd=sprintf('gdal_translate "%s" "%s" -co COMPRESS=LZW',...
-    stack_path_0, stack_path)
-    system(cmd);
-    delete(stack_path_0)
+%     cmd=sprintf('gdal_translate "%s" "%s" -co COMPRESS=LZW',...
+%     stack_path_0, stack_path)
+%     system(cmd);
+%     delete(stack_path_0)
 else
     fprintf(fid, 'Training image already existed.\n')
     fprintf('Training image already existed.  Not reprocessing.\n')

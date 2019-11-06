@@ -1,0 +1,34 @@
+TODO: 
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~General~~~~~~~~~~~~~~~~~~~~~~~~~
+ensure ENVI header b.b. is updated if using UAVSAR clip; 
+modify to work on n-band images, nudge to get alignment bw UAVSAR and
+training data, 
+look at rasterizing alg and make sure it's not adding extra space to the training area; 
+erosion of training data in arc/gdal,
+set correct output path for training image stack/clip; 
+how to do deal w empty files for empty training classes; 
+output txt file to list orig file
+name and number-class lookup; 
+change output of training image to be in
+Train directory, automate bounding box selection?; 
+why are training and veiwing images slightly offset?  resampling boundaries? 
+(use NoData mask for training data: https://gdal.org/development/rfc/rfc15_nodatabitmask.html#rfc-15, but will need to copy mask_valid_pixels to XXX.msk); (convert to int16 precision to save memory); 
+test training using 3 bands!; 
+add speckle filter?; 
+making confusion matrix; 
+save arcmap viewing color files...; 
+add cost functions...; 
+noData mask for training;
+turn off parallel except if on a cluster?
+add moving std feature
+
+DONE: 
+
+add bounding box input to create smaller training file tif, reproject,
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~PixelClassifier~~~~~~~~~~~~~~~~~~~~~~~~~
+TODO: change plotting for n-band images; 
+test w multiple imgs in training dir (maybe set to load indiv training image sets into mem one at a time); 
+circumvent output method of writing to sep files, then combining- just combine on the first try (in pixelclassifier.m); (save output training diagram/image to folder)
+
