@@ -5,9 +5,9 @@ global env
 %% Image I/O and viewing params
 % training file output directory
 env.output.train_dir='F:\PAD2019\classification_training\PixelClassifier\Train\';
-env.output.test_dir='F:\PAD2019\classification_training\PixelClassifier\Test9\';
-% model I/O (todo: add smart suffix automatically to avoid overwrite)
-env.output.current_model=[env.output.test_dir, 'model.mat'];
+% env.output.train_dir='F:\PAD2019\classification_training\PixelClassifier\Train_origClass\Train';
+env.output.test_dir='F:\PAD2019\classification_training\PixelClassifier\Test12\';
+
 
 % env.output.current_model='F:\PAD2019\classification_training\PixelClassifier\model5.mat';
 % where the model is
@@ -16,7 +16,7 @@ env.output.current_model=[env.output.test_dir, 'model.mat'];
 % plotting
 env.bulk_plot_dir=          'D:\pic\UAVSAR_classification\';
 
-% training image and classes input and bounding boxes
+%% training image and classes input and bounding boxes
 env.input(1).im_dir=        'F:\UAVSAR\padelE_36000_18047_000_180821_L090_CX_01\';
 env.input(1).cls_pth=       'F:\PAD2019\classification_training\training2018PAD.shp';
 env.input(1).name=          'padelE_36000_18047_000_180821_L090_CX_01';
@@ -42,8 +42,17 @@ env.input(5).cls_pth=       ''; %FILL
 env.input(5).name=          'yflats_21609_17069_011_170621_L090_CX_01';
 env.input(5).bb=            [];
 
+env.input(5).im_dir=        'F:\UAVSAR\yflats_21609_17069_011_170621_L090_CX_01\';
+env.input(5).cls_pth=       ''; %FILL
+env.input(5).name=          'yflats_21609_17069_011_170621_L090_CX_01';
+env.input(5).bb=            [];
+
+%% model I/O (todo: add smart suffix automatically to avoid overwrite)
+env.output.current_model=[env.output.test_dir, 'model.mat'];
+
 %% classification training params
-env.pixelClassifier.sigmas=[3]; %[1 2 3];
+env.pixelClassifier.use_raw_image=1;
+env.pixelClassifier.sigmas=[2]; %[1 2 3];
 % basic image features are simply derivatives (up to second order) in different scales;
 % this parameter specifies such scales; details in imageFeatures.m
 % for moving gaussian filter
@@ -59,21 +68,22 @@ env.pixelClassifier.radii = [];%[15 20 25]; %OPTIONAL
 % set to [] to ignore circularity features
 env.pixelClassifier.cfSigma = []; %2;
 % sigma for circularity features
-env.pixelClassifier.logSigmas = [1];%[1 2]; %OPTIONAL
+env.pixelClassifier.logSigmas = [2];%[1 2]; %OPTIONAL
 % sigmas for LoG features (see imageFeatures.m)
 % set to [] to ignore LoG features
-env.pixelClassifier.sfSigmas = [2];%[1 2]; %OPTIONAL
+env.pixelClassifier.sfSigmas = [];%[1 2]; %OPTIONAL
 % steerable filter features sigmas (see imageFeatures.m)
 % set to [] to ignore steerable filter features
 % ridge (or edge) detection
-env.pixelClassifier.nTrees = 10; %20;
+env.pixelClassifier.nTrees = 15; %20;
 % number of decision trees in the random forest ensemble
 env.pixelClassifier.minLeafSize = 40; %60;
 % minimum number of observations per tree leaf
 env.pixelClassifier.pctMaxNPixelsPerLabel = 1;
 % percentage of max number of pixels per label (w.r.t. num of pixels in image);
 % this puts a cap on the number of training samples and can improve training speed
-
+env.pixelClassifier.textureWindows=[3, 7];
+% size of moving window to compute moving std dev
 %% classification params
 
 env.pixelClassifier.run.outputMasks = true;

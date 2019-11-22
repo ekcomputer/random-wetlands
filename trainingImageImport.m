@@ -6,7 +6,7 @@
 clear; close all
 Env_PixelClassifier % load environment vars
 vrt_pth=[env.tempDir, 'nband_image.vrt'];
-n=2; % file number from input
+n=1; % file number from input
 %% load / gdal VRT stack / path formatting
 
 if strcmp(env.inputType, 'Freeman')
@@ -78,6 +78,9 @@ end
 
 fclose(fid);
 %% load shp and create training class rasters (1/class)
+
+    % for creatin gempty files:
+info=geotiffinfo(stack_path);
 for class_number=1:length(env.class_names) % class_number=11; % 
     training_pth=[env.output.train_dir, env.input(n).name, '_', num2str(n),'_Class', num2str(class_number), '.tif'];
     gt=geotiffinfo(stack_path);
@@ -103,8 +106,9 @@ for class_number=1:length(env.class_names) % class_number=11; %
     system(cmd);
     i=dir(training_pth);
     if i.bytes< 100
-        delete(training_pth)
-        fprintf('\n\tDeleting empty training file: %s\n', training_pth)
+        imwrite(zeros([info.Height, info.Width], 'uint8'),training_pth); % sloppy fix; no geospatial info
+%         delete(training_pth)
+        fprintf('\n\tCreating empty training image: %s\n\n', training_pth)
     end
         % double check
 %     try foo=imread(training_pth); end
