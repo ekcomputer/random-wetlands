@@ -4,35 +4,47 @@ TODO:
 ensure ENVI header b.b. is updated if using UAVSAR clip; 
 nudge to get alignment bw UAVSAR and training data, 
 look at rasterizing alg and make sure it's not adding extra space to the training area; 
-erosion of training data in arc/gdal,
+*erosion of training data in arc/gdal,
 set correct output path for training image stack/clip; 
 output txt file to list orig file
 name and number-class lookup; 
 change output of training image to be in Train directory, 
-automate bounding box selection?; 
 why are training and veiwing images slightly offset?  resampling boundaries? 
 (use NoData mask for training data: https://gdal.org/development/rfc/rfc15_nodatabitmask.html#rfc-15, but will need to copy mask_valid_pixels to XXX.msk); (convert to int16 precision to save memory); 
-making confusion matrix; 
 save arcmap viewing color files...; 
 add cost functions...; 
 noData mask for training;
 turn off parallel except if on a cluster?
-run with only raw Freeman image ratios
+*run with only raw Freeman image ratios or inter-class variance
 speckle filtering?
+*Need better water and FD classes
+*Run training for lots of param options and figure out which ones most imp- then use those
+*Better training data! Then re-run trainingImiageImport.m
 
-DONE: 
-
-add bounding box input to create smaller training file tif, reproject,
-run with only raw Freeman images
-add moving std feature
-test training using 3 bands!; 
-modify to work on n-band images, 
-how to do deal w empty files for empty training classes; 
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~PixelClassifier~~~~~~~~~~~~~~~~~~~~~~~~~
 TODO: change plotting for n-band images; 
 test w multiple imgs in training dir (maybe set to load indiv training image sets into mem one at a time); 
 circumvent output method of writing to sep files, then combining- just combine on the first try (in pixelclassifier.m); (save output training diagram/image to folder)
-re-plot histograms to better align by band
 mirror window in movingstd instead of shrink...
+k-fold cross val for number of leaves?
+Memory optimization/block proc, if necessary
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~DONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+add bounding box input to create smaller training file tif, reproject,
+run with only raw Freeman images
+add moving std feature
+test training using 3 bands!; 
+modify to work on n-band images, 
+how to do deal w empty files for empty training classes; 
+automate bounding box selection
+*What percentage of  training px are being used? A: <1
+*making confusion matrix; 
+re-plot histograms to better align by band
+
+
+~~~~~~~~~~Modify for re-distribution of PixelClassifier Code~~~~~~~~~~~~~~
+rfTrain.m
+pixelClassifierTrain.m - validition and concat of n=3 bandns to make F

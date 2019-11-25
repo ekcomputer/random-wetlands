@@ -6,9 +6,8 @@ global env
 % training file output directory
 env.output.train_dir='F:\PAD2019\classification_training\PixelClassifier\Train\';
 % env.output.train_dir='F:\PAD2019\classification_training\PixelClassifier\Train_origClass\Train';
-env.output.test_dir='F:\PAD2019\classification_training\PixelClassifier\Test12\';
-
-
+env.output.test_dir='F:\PAD2019\classification_training\PixelClassifier\Test13\';
+% env.output.val_dir='F:\PAD2019\classification_training\PixelClassifier\Validation\';
 % env.output.current_model='F:\PAD2019\classification_training\PixelClassifier\model5.mat';
 % where the model is
 % where images are
@@ -23,7 +22,8 @@ env.input(1).name=          'padelE_36000_18047_000_180821_L090_CX_01';
 env.input(1).bb=            [];%[-111.913 58.323 -110.894 58.99]; %xmin ymin xmax ymax
 
 env.input(2).im_dir=        'F:\UAVSAR\padelE_36000_19059_003_190904_L090_CX_01\';
-env.input(2).cls_pth=       'F:\PAD2019\classification_training\training2019PAD.shp';
+% env.input(2).cls_pth=       'F:\PAD2019\classification_training\training2019PAD.shp';
+env.input(2).cls_pth=       'F:\PAD2019\classification_training\training2019PAD_CHECKPOINTNOV26.shp';
 env.input(2).name=          'padelE_36000_19059_003_190904_L090_CX_01';
 env.input(2).bb=            [];%[-111.913 58.323 -110.894 58.99]; 
 
@@ -79,7 +79,7 @@ env.pixelClassifier.nTrees = 15; %20;
 % number of decision trees in the random forest ensemble
 env.pixelClassifier.minLeafSize = 40; %60;
 % minimum number of observations per tree leaf
-env.pixelClassifier.pctMaxNPixelsPerLabel = 1;
+env.pixelClassifier.pctMaxNPixelsPerLabel = 1; % unimportant- I'm way below limit
 % percentage of max number of pixels per label (w.r.t. num of pixels in image);
 % this puts a cap on the number of training samples and can improve training speed
 env.pixelClassifier.textureWindows=[3, 7];
@@ -111,13 +111,16 @@ env.tempDir='F:\PAD2019\classification_training\PixelClassifierTemp\';
 
 
 %% classes
-
-env.class_names={'W1', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FD'}; % {'W1', 'W2', 'EU', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FW', 'FD'}
+    % set order of classes (defines numerical index, which will be written
+    % to meta file)
+env.class_names={'W1', 'W2', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FD'}; % {'W1', 'W2', 'EU', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FW', 'FD'}
 
 %% viewing image dir
 env.viewingImageDir='F:\UAVSAR\Georeferenced\'; % optional
 
-
+%% validition set partitioning
+env.valPartitionRatio=6; % inverse of ratio between no of training and total (= training + val) pixels
+env.seed=22; % random number gen seed!
 %% acknowledgements
 % matlab file exchange ENVI read/write
 %matlab file exchange/github PixelClassifier
