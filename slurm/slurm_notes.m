@@ -1,0 +1,1 @@
+srun -n 1 ~/scripts/random-wetlands/slurm/helloWorld.m
