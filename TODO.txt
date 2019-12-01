@@ -20,7 +20,7 @@ speckle filtering?
 *Need better water and FD classes
 *Run training for lots of param options and figure out which ones most imp- then use those
 *Better training data! Then re-run trainingImiageImport.m
-
+*Add Lee filter (wiener2.m)
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~PixelClassifier~~~~~~~~~~~~~~~~~~~~~~~~~

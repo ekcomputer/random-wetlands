@@ -113,7 +113,7 @@ env.tempDir='F:\PAD2019\classification_training\PixelClassifierTemp\';
 %% classes
     % set order of classes (defines numerical index, which will be written
     % to meta file)
-env.class_names={'W1', 'W2', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FD'}; % {'W1', 'W2', 'EU', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FW', 'FD'}
+env.class_names={'W1', 'W2', 'HW', 'GW', 'GD', 'SW', 'SD', 'FD', 'TD', 'TW'}; % {'W1', 'W2', 'EU', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FW', 'FD'}, no BG
 
 %% viewing image dir
 env.viewingImageDir='F:\UAVSAR\Georeferenced\'; % optional
