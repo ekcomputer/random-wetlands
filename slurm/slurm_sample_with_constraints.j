@@ -1,8 +1,8 @@
 #!/bin/bash
-#SBATCH --job-name=helloWorld
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-task=6
-#SBATCH --mem-per-cpu=4000
+#SBATCH --job-name=helloWParallel
+#SBATCH --ntasks=6
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=4G
 #SBATCH --export=ALL
 #SBATCH --time-min=1:45
 #SBATCH --mail-user=ekyzivat
