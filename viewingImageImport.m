@@ -8,7 +8,7 @@ Env_PixelClassifier % load environment vars
 vrt_pth=[env.tempDir, 'nband_image.vrt'];
 % n=1; % file number from input
 %% load / gdal VRT stack / path formatting
-for n=1:length(env.input)
+for n=1:2 %length(env.input)
     txt=sprintf('Warning: input type chosen as: %s', env.inputType);
     if strcmp(env.inputType, 'Freeman')
         f.num_bands=3;
@@ -35,9 +35,16 @@ for n=1:length(env.input)
     %
 
     %% format names
-    f.dirs=repmat(env.input(n).im_dir_nband, size(f.gray_imgs, 1),1);
-    f.pths=[f.dirs, f.gray_imgs];
-    f.gray_imgs_formatted=strjoin(cellstr(f.pths([1 3 2],:)), ' ');
+    
+    if isunix % hot fix
+        f.gray_imgs_1=textscan(f.gray_imgs, '%s', 'Delimiter', '\n');
+        f.gray_imgs_2=char(f.gray_imgs_1{:});
+        f.gray_imgs_formatted=strjoin(cellstr(f.gray_imgs_2), ' ');
+    else
+        f.dirs=repmat(env.input(n).im_dir_nband, size(f.gray_imgs, 1),1);
+        f.pths=[f.dirs, f.gray_imgs];
+        f.gray_imgs_formatted=strjoin(cellstr(f.pths([1 3 2],:)), ' ');
+    end
 %     stack_path_0=[env.tempDir, env.input(n).name, '_S', num2str(f.num_bands), '_0.tif'];
     % stack_path=[env.output.train_dir, env.input(n).name, '_S', num2str(f.num_bands), '.tif'];
         % use natural name w new extension
@@ -47,7 +54,7 @@ for n=1:length(env.input)
     % meta_path=[meta_dir, 'I00', num2str(n),'.txt'];
     % meta_mat_path=[meta_dir, 'I00', num2str(n),'.mat'];
 
-    if ~ismember(size(f.pths, 1), [1 3 9])
+    if ~ismember(size(f.gray_imgs_formatted, 1), [1 3 9])
        warning('check inputs') 
        return
     end

@@ -57,7 +57,7 @@ if ~isunix
 
 else
     env.output.train_dir='/att/nobackup/ekyzivat/PixelClassifier/Train/';
-    env.output.test_dir='/att/nobackup/ekyzivat/PixelClassifier/Test/';
+    env.output.test_dir='/att/nobackup/ekyzivat/PixelClassifier/Test1/';
     env.bulk_plot_dir='/dev/null/';
 
         % viewing image dir
