@@ -15,6 +15,12 @@ env.output.test_dir='F:\PAD2019\classification_training\PixelClassifier\Test13\'
 % plotting
 env.bulk_plot_dir=          'D:\pic\UAVSAR_classification\';
 
+%% viewing image dir
+env.viewingImageDir='F:\UAVSAR\Georeferenced\'; % optional
+
+%% temp
+env.tempDir='F:\PAD2019\classification_training\PixelClassifierTemp\';
+
 %% training image and classes input and bounding boxes
 env.input(1).im_dir=        'F:\UAVSAR\padelE_36000_18047_000_180821_L090_CX_01\';
 env.input(1).cls_pth=       'F:\PAD2019\classification_training\training2018PAD.shp';
@@ -106,8 +112,7 @@ env.pixelClassifier.run.nSubsets = 100;
 
 env.inputType='Freeman'; %'Freeman', 'C3', 'Freeman-T3' or 'gray'
 
-% temp
-env.tempDir='F:\PAD2019\classification_training\PixelClassifierTemp\';
+
 
 
 %% classes
@@ -115,8 +120,7 @@ env.tempDir='F:\PAD2019\classification_training\PixelClassifierTemp\';
     % to meta file)
 env.class_names={'W1', 'W2', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FD'}; % {'W1', 'W2', 'EU', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FW', 'FD'}
 
-%% viewing image dir
-env.viewingImageDir='F:\UAVSAR\Georeferenced\'; % optional
+
 
 %% validition set partitioning
 env.valPartitionRatio=6; % inverse of ratio between no of training and total (= training + val) pixels
