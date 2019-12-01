@@ -3,59 +3,81 @@ clear env
 global env
 
 %% Image I/O and viewing params
-% training file output directory
-env.output.train_dir='F:\PAD2019\classification_training\PixelClassifier\Train\';
-% env.output.train_dir='F:\PAD2019\classification_training\PixelClassifier\Train_origClass\Train';
-env.output.test_dir='F:\PAD2019\classification_training\PixelClassifier\Test13\';
-% env.output.val_dir='F:\PAD2019\classification_training\PixelClassifier\Validation\';
-% env.output.current_model='F:\PAD2019\classification_training\PixelClassifier\model5.mat';
-% where the model is
-% where images are
 
-% plotting
-env.bulk_plot_dir=          'D:\pic\UAVSAR_classification\';
+if ~isunix
+            % training file output directory
+    env.output.train_dir='F:\PAD2019\classification_training\PixelClassifier\Train\';
+    % env.output.train_dir='F:\PAD2019\classification_training\PixelClassifier\Train_origClass\Train';
+    env.output.test_dir='F:\PAD2019\classification_training\PixelClassifier\Test13\';
+    % env.output.val_dir='F:\PAD2019\classification_training\PixelClassifier\Validation\';
+    % env.output.current_model='F:\PAD2019\classification_training\PixelClassifier\model5.mat';
+    % where the model is
+    % where images are
 
-%% viewing image dir
-env.viewingImageDir='F:\UAVSAR\Georeferenced\'; % optional
+        % plotting
+    env.bulk_plot_dir=          'D:\pic\UAVSAR_classification\';
 
-%% temp
-env.tempDir='F:\PAD2019\classification_training\PixelClassifierTemp\';
+        % viewing image dir
+    env.viewingImageDir='F:\UAVSAR\Georeferenced\'; % optional
 
-%% training image and classes input and bounding boxes
-env.input(1).im_dir=        'F:\UAVSAR\padelE_36000_18047_000_180821_L090_CX_01\';
-env.input(1).cls_pth=       'F:\PAD2019\classification_training\training2018PAD.shp';
-env.input(1).name=          'padelE_36000_18047_000_180821_L090_CX_01';
-env.input(1).bb=            [];%[-111.913 58.323 -110.894 58.99]; %xmin ymin xmax ymax
+        % temp
+    env.tempDir='F:\PAD2019\classification_training\PixelClassifierTemp\';
 
-env.input(2).im_dir=        'F:\UAVSAR\padelE_36000_19059_003_190904_L090_CX_01\';
-% env.input(2).cls_pth=       'F:\PAD2019\classification_training\training2019PAD.shp';
-env.input(2).cls_pth=       'F:\PAD2019\classification_training\training2019PAD_CHECKPOINTNOV26.shp';
-env.input(2).name=          'padelE_36000_19059_003_190904_L090_CX_01';
-env.input(2).bb=            [];%[-111.913 58.323 -110.894 58.99]; 
+        % training image and classes input and bounding boxes
+    env.input(1).im_dir=        'F:\UAVSAR\padelE_36000_18047_000_180821_L090_CX_01\';
+    env.input(1).cls_pth=       'F:\PAD2019\classification_training\training2018PAD.shp';
+    env.input(1).name=          'padelE_36000_18047_000_180821_L090_CX_01';
+    env.input(1).bb=            [];%[-111.913 58.323 -110.894 58.99]; %xmin ymin xmax ymax
 
-env.input(3).im_dir=        'F:\UAVSAR\redber_30704_17092_000_170907_L090_CX_01\Pout\';
-env.input(3).cls_pth=       'F:\PAD2019\classification_training\training2018PAD.shp';
-env.input(3).name=          'redber_30704_17092_000_170907_L090_CX_01';
-env.input(3).bb=            [];%[-107.128 52.586]; 
+    env.input(2).im_dir=        'F:\UAVSAR\padelE_36000_19059_003_190904_L090_CX_01\';
+    % env.input(2).cls_pth=       'F:\PAD2019\classification_training\training2019PAD.shp';
+    env.input(2).cls_pth=       'F:\PAD2019\classification_training\training2019PAD_CHECKPOINTNOV26.shp';
+    env.input(2).name=          'padelE_36000_19059_003_190904_L090_CX_01';
+    env.input(2).bb=            [];%[-111.913 58.323 -110.894 58.99]; 
 
-env.input(4).im_dir=        'F:\UAVSAR\padelE_36000_19059_003_190904_L090_CX_01\';
-env.input(4).cls_pth=       'F:\PAD2019\classification_training\training2019PAD.shp';
-env.input(4).name=          'padelE_36000_19059_003_190904_L090_CX_01';
-env.input(4).bb=            [];%[-107.128 52.586]; 
+    env.input(3).im_dir=        'F:\UAVSAR\redber_30704_17092_000_170907_L090_CX_01\Pout\';
+    env.input(3).cls_pth=       'F:\PAD2019\classification_training\training2018PAD.shp';
+    env.input(3).name=          'redber_30704_17092_000_170907_L090_CX_01';
+    env.input(3).bb=            [];%[-107.128 52.586]; 
 
-env.input(5).im_dir=        'F:\UAVSAR\yflats_21609_17069_011_170621_L090_CX_01\';
-env.input(5).cls_pth=       ''; %FILL
-env.input(5).name=          'yflats_21609_17069_011_170621_L090_CX_01';
-env.input(5).bb=            [];
+    env.input(4).im_dir=        'F:\UAVSAR\padelE_36000_19059_003_190904_L090_CX_01\';
+    env.input(4).cls_pth=       'F:\PAD2019\classification_training\training2019PAD.shp';
+    env.input(4).name=          'padelE_36000_19059_003_190904_L090_CX_01';
+    env.input(4).bb=            [];%[-107.128 52.586]; 
 
-env.input(5).im_dir=        'F:\UAVSAR\yflats_21609_17069_011_170621_L090_CX_01\';
-env.input(5).cls_pth=       ''; %FILL
-env.input(5).name=          'yflats_21609_17069_011_170621_L090_CX_01';
-env.input(5).bb=            [];
+    env.input(5).im_dir=        'F:\UAVSAR\yflats_21609_17069_011_170621_L090_CX_01\';
+    env.input(5).cls_pth=       ''; %FILL
+    env.input(5).name=          'yflats_21609_17069_011_170621_L090_CX_01';
+    env.input(5).bb=            [];
 
-%% model I/O (todo: add smart suffix automatically to avoid overwrite)
+    env.input(5).im_dir=        'F:\UAVSAR\yflats_21609_17069_011_170621_L090_CX_01\';
+    env.input(5).cls_pth=       ''; %FILL
+    env.input(5).name=          'yflats_21609_17069_011_170621_L090_CX_01';
+    env.input(5).bb=            [];
+
+else
+    env.output.train_dir='/att/nobackup/ekyzivat/PixelClassifier/Train/';
+    env.output.test_dir='/att/nobackup/ekyzivat/PixelClassifier/Test/';
+    env.bulk_plot_dir='/dev/null/';
+
+        % viewing image dir
+    env.viewingImageDir='/att/nobackup/ekyzivat/UAVSAR/Georeferenced/'; % optional
+
+        % temp
+    env.tempDir='/att/nobackup/ekyzivat/PixelClassifierTemp/';
+    
+        % training image and classes input and bounding boxes
+    env.input(1).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/padelE_36000_18047_000_180821_L090_CX_01/';
+    env.input(1).cls_pth=       '';%'F:\PAD2019\classification_training\training2018PAD.shp';
+    env.input(1).name=          'padelE_36000_18047_000_180821_L090_CX_01';
+
+    env.input(2).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/padelE_36000_19059_003_190904_L090_CX_01/';
+    env.input(2).cls_pth=       '';%'F:\PAD2019\classification_training\training2018PAD.shp';
+    env.input(2).name=          'padelE_36000_19059_003_190904_L090_CX_01';
+end
+
+    % model I/O (todo: add smart suffix automatically to avoid overwrite)
 env.output.current_model=[env.output.test_dir, 'model.mat'];
-
 %% classification training params
 env.pixelClassifier.use_raw_image=1;
 env.pixelClassifier.sigmas=[2]; %[1 2 3];

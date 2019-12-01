@@ -11,11 +11,11 @@ for n=[1 2]; % file number from input
 
     if strcmp(env.inputType, 'Freeman')
         f.num_bands=3;
-        env.input(n).im_dir_nband=[env.input(n).im_dir, 'freeman\C3\'];
+        env.input(n).im_dir_nband=[env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, ''];
         f.gray_imgs=ls([env.input(n).im_dir_nband, 'Freeman_*.bin']);
     elseif strcmp(env.inputType, 'C3')
         f.num_bands=9;
-        env.input(n).im_dir_nband=[env.input(n).im_dir, 'C3\'];
+        env.input(n).im_dir_nband=[env.input(n).im_dir, 'C3', filesep, ''];
         f.gray_imgs=ls([env.input(n).im_dir_nband, 'C*.bin']); % for wildcard use ?
     elseif strcmp(env.inputType, 'gray')
         f.num_bands=1;
@@ -32,7 +32,7 @@ for n=[1 2]; % file number from input
     % stack_path_0=[env.tempDir, env.input(n).name, '_S', num2str(f.num_bands), '_0.tif'];
     % stack_path=[env.output.train_dir, env.input(n).name, '_S', num2str(f.num_bands), '.tif'];
     stack_path=[env.output.train_dir, env.input(n).name, '_', num2str(n),'.tif'];
-    meta_dir=[env.output.train_dir,'meta\'];
+    meta_dir=[env.output.train_dir,'meta', filesep, ''];
     mkdir(meta_dir);
     meta_path=[meta_dir, env.input(n).name, '_', num2str(n),'.txt'];
     meta_mat_path=[meta_dir, env.input(n).name, '_', num2str(n),'.mat'];
