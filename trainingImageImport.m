@@ -6,9 +6,16 @@
 clear; close all
 Env_PixelClassifier % load environment vars
 vrt_pth=[env.tempDir, 'nband_image.vrt'];
-for n=[1 2]; % file number from input
+for n=env.trainFileNums; % file number from input
     %% load / gdal VRT stack / path formatting
 
+        % display I/O params for visual check
+        disp('Check to make sure I/O paths are corret:')
+        env.input(n).cls_pth
+        env.output.train_dir
+        env.output.test_dir
+        env.trainFileNums
+        env.inputType
     if strcmp(env.inputType, 'Freeman')
         f.num_bands=3;
         env.input(n).im_dir_nband=[env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, ''];
@@ -80,16 +87,14 @@ for n=[1 2]; % file number from input
     %% load shp and create training class rasters (1/class)
 
         % for creatin gempty files:
-    info=geotiffinfo(stack_path);
+    gt=geotiffinfo(stack_path);
     for class_number=1:length(env.class_names) % class_number=11; % 
             % training path zero is in temp dir for rasters b/f training/val
             % split and erosion, if any
 %         training_pth=[env.tempDir, env.input(n).name, '_', num2str(n),'_TmpClass', num2str(class_number), '.tif'];
         training_pth=[env.output.train_dir, env.input(n).name, '_', num2str(n),'_Class', num2str(class_number), '.tif'];
 %         val_pth=[env.output.val_dir, env.input(n).name, '_', num2str(n),'_ValClass', num2str(class_number), '.tif'];
-        
-        gt=geotiffinfo(stack_path);
-        % wkt='PROJCS["Canada_Albers_Equal_Area_Conic",GEOGCS["GCS_North_American_1983",DATUM["North_American_Datum_1983",SPHEROID["GRS_1980",6378137,298.257222101]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Albers_Conic_Equal_Area"],PARAMETER["False_Easting",0],PARAMETER["False_Northing",0],PARAMETER["longitude_of_center",-96],PARAMETER["Standard_Parallel_1",50],PARAMETER["Standard_Parallel_2",70],PARAMETER["latitude_of_center",40],UNIT["Meter",1],AUTHORITY["EPSG","102001"]]';
+                % wkt='PROJCS["Canada_Albers_Equal_Area_Conic",GEOGCS["GCS_North_American_1983",DATUM["North_American_Datum_1983",SPHEROID["GRS_1980",6378137,298.257222101]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Albers_Conic_Equal_Area"],PARAMETER["False_Easting",0],PARAMETER["False_Northing",0],PARAMETER["longitude_of_center",-96],PARAMETER["Standard_Parallel_1",50],PARAMETER["Standard_Parallel_2",70],PARAMETER["latitude_of_center",40],UNIT["Meter",1],AUTHORITY["EPSG","102001"]]';
         [~, f.layer_name, ~]=fileparts(env.input(n).cls_pth);
 
         cmd=sprintf('gdal_rasterize -ts %f %f -te %f %f %f %f -burn 1 -co "COMPRESS=DEFLATE" -ot Byte -l %s -where "Class = ''%s''" %s %s',...
@@ -99,7 +104,7 @@ for n=[1 2]; % file number from input
         system(cmd);
         i=dir(training_pth);
         if i.bytes< 100
-            imwrite(zeros([info.Height, info.Width], 'uint8'),training_pth); % sloppy fix; no geospatial info
+            imwrite(zeros([gt.Height, gt.Width], 'uint8'),training_pth); % sloppy fix; no geospatial info
     %         delete(training_pth)
             fprintf('\n\tCreating empty training image: %s\n\n', training_pth)
         end
