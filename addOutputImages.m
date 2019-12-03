@@ -7,14 +7,30 @@ global env
 %% test params
 % filename='*Class*.png'
 %% input file type
-base_names=ls([env.output.test_dir, filename, '*.png']);
+if ~isunix
+    base_names=ls([env.output.test_dir, filename, '*.png']);
+else
+    f.base_names_0=ls([env.output.test_dir, filename, '*.png']);    %hot fix
+    f.base_names_1=textscan(f.base_names_0, '%s', 'Delimiter', '\n');
+    base_names=char(f.base_names_1{:});
+%     base_names=strjoin(cellstr(f.base_names_2), ' ');
+end
 
 %%
 georef_in=(ls([env.output.test_dir, filename, '.tif']));
-output_pth=[env.output.test_dir, georef_in(1,1:end-4), '_cls.tif'];
-gt=geotiffinfo([env.output.test_dir, georef_in]);
+if ~isunix
+    output_pth=[env.output.test_dir, georef_in(1,1:end-4), '_cls.tif'];
+    gt=geotiffinfo([env.output.test_dir, georef_in]);
+else
+    output_pth=[georef_in(1,1:end-5), '_cls.tif'];
+    gt=geotiffinfo(georef_in(1,1:end-1));   % hot fix
+end
 for n=1:size(base_names,1)
-    I=imread([env.output.test_dir, base_names(n,:)]);
+    if ~isunix     %hot fix
+        I=imread([env.output.test_dir, base_names(n,:)]);
+    else
+        I=imread(base_names(n,:));
+    end
     if n==1
         out=zeros(size(I), 'uint8');
     end

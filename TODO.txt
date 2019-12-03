@@ -21,7 +21,7 @@ speckle filtering?
 *Run training for lots of param options and figure out which ones most imp- then use those
 *Better training data! Then re-run trainingImiageImport.m
 *Add Lee filter (wiener2.m)
-
+After AGU: add NoData class
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~PixelClassifier~~~~~~~~~~~~~~~~~~~~~~~~~
 TODO: change plotting for n-band images; 
@@ -30,6 +30,7 @@ circumvent output method of writing to sep files, then combining- just combine o
 mirror window in movingstd instead of shrink...
 k-fold cross val for number of leaves?
 Memory optimization/block proc, if necessary
+Make addOutputImages.m more general by removing function calls to env
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LINUX~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 prep trainingImageImport.m to be like viewingImageImport.m

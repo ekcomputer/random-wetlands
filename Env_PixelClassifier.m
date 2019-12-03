@@ -27,7 +27,10 @@ else
         env.viewingImageDir='F:\UAVSAR\Georeferenced\'; % optional
 
             % temp
+            
         env.tempDir='F:\PAD2019\classification_training\PixelClassifierTemp\';
+            % addpath
+        addpath /att/gpfsfs/home/ekyzivat/scripts/random-wetlands/dnafinder-Cohen-a2b974e
 
             % training image and classes input and bounding boxes
         env.input(1).im_dir=        'F:\UAVSAR\padelE_36000_18047_000_180821_L090_CX_01\';
@@ -132,7 +135,8 @@ else
     % see imClassify.m for details;
     % it's recommended to set nSubsets > the number of cores in the parallel pool;
     % this can make classification substantially faster than when a
-    % single thread is used (nSubsets = 1).
+    % single thread is used (nSubsets = 1).  Divides image into nSubsets
+    % parts to classify, so numel(F)/nSubsets should fit into memory
 
 
     % stacked images output
