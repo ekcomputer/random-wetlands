@@ -67,7 +67,7 @@ else
         addpath /att/gpfsfs/home/ekyzivat/scripts/random-wetlands/dnafinder-Cohen-a2b974e
 
         env.output.train_dir='/att/nobackup/ekyzivat/PixelClassifier/Train/';
-        env.output.test_dir='/att/nobackup/ekyzivat/PixelClassifier/Test1/';
+        env.output.test_dir='/att/nobackup/ekyzivat/PixelClassifier/Test17/';
         env.bulk_plot_dir='/dev/null/';
 
             % viewing image dir

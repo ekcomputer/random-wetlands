@@ -33,8 +33,10 @@ k-fold cross val for number of leaves?
 Memory optimization/block proc, if necessary
 Make addOutputImages.m more general by removing function calls to env
 Update fileexchange script for the following with gif fix: D:\Dropbox\Matlab\DownloadedCode\CaptureFigVid\CaptureFigVid\CaptureFigVid_EK.m
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LINUX~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 prep trainingImageImport.m to be like viewingImageImport.m
+add ability to sbatch each test file in parallel!  Need command line input for which files to run on
 
 ~~~~~~~~~~~~~~~~~~~~~~~~DONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 add bounding box input to create smaller training file tif, reproject,
