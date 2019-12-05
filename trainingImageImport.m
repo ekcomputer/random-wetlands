@@ -35,7 +35,7 @@ for n=env.trainFileNums; % file number from input
     %% format names
     f.dirs=repmat(env.input(n).im_dir_nband, size(f.gray_imgs, 1),1);
     f.pths=[f.dirs, f.gray_imgs];
-    f.gray_imgs_formatted=strjoin(cellstr(f.pths([1 3 2],:)), ' ');
+    f.gray_imgs_formatted=strjoin(cellstr(f.pths([1 3 2],:)), ' '); % in order of: double, vol, single
     % stack_path_0=[env.tempDir, env.input(n).name, '_S', num2str(f.num_bands), '_0.tif'];
     % stack_path=[env.output.train_dir, env.input(n).name, '_S', num2str(f.num_bands), '.tif'];
     stack_path=[env.output.train_dir, env.input(n).name, '_', num2str(n),'.tif'];
@@ -50,8 +50,8 @@ for n=env.trainFileNums; % file number from input
     end
     %%  save log files
     fid=fopen(meta_path, 'w+');
-    fprintf(fid, 'Name:\t\t%s\n', env.input(n).name)
-    fprintf(fid, 'L-band directory:\t\t%s\n', env.input(n).im_dir)
+    fprintf(fid, 'Name:\t\t%s\n', env.input(n).name);
+    fprintf(fid, 'L-band directory:\t\t%s\n', env.input(n).im_dir);
     % fprintf(fid, 'Classes (%d):\t\t%s\n', strjoin(cellstr(env.class_names), ' '))
     fprintf(fid, 'Classes:\n');
     for m=1:length(env.class_names)

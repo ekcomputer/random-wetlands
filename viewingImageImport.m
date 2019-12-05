@@ -8,7 +8,7 @@ Env_PixelClassifier % load environment vars
 vrt_pth=[env.tempDir, 'nband_image.vrt'];
 % n=1; % file number from input
 %% load / gdal VRT stack / path formatting
-for n=1:2 %length(env.input)
+for n=env.viewFileNums %length(env.input)
     txt=sprintf('Warning: input type chosen as: %s', env.inputType);
     if strcmp(env.inputType, 'Freeman')
         f.num_bands=3;

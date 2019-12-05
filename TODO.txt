@@ -15,13 +15,14 @@ save arcmap viewing color files...;
 add cost functions...; 
 noData mask for training;
 turn off parallel except if on a cluster?
-*run with only raw Freeman image ratios or inter-class variance
 speckle filtering?
+*run with only raw Freeman image ratios or inter-class variance
 *Need better water and FD classes
 *Run training for lots of param options and figure out which ones most imp- then use those
 *Better training data! Then re-run trainingImiageImport.m
 *Add Lee filter (wiener2.m)
-After AGU: add NoData class
+*Remove some of the filters from sigma: i.e. Hess
+After AGU: add NoData class, *log-transform data?, use translation features?
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~PixelClassifier~~~~~~~~~~~~~~~~~~~~~~~~~
 TODO: change plotting for n-band images; 
@@ -31,7 +32,7 @@ mirror window in movingstd instead of shrink...
 k-fold cross val for number of leaves?
 Memory optimization/block proc, if necessary
 Make addOutputImages.m more general by removing function calls to env
-
+Update fileexchange script for the following with gif fix: D:\Dropbox\Matlab\DownloadedCode\CaptureFigVid\CaptureFigVid\CaptureFigVid_EK.m
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LINUX~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 prep trainingImageImport.m to be like viewingImageImport.m
 
