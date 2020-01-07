@@ -12,9 +12,9 @@ else
 
     if ~isunix
                 % training file output directory
-        env.output.train_dir='F:\PAD2019\classification_training\PixelClassifier\Train17\';
+        env.output.train_dir='F:\PAD2019\classification_training\PixelClassifier\Train18\';
         % env.output.train_dir='F:\PAD2019\classification_training\PixelClassifier\Train_origClass\Train';
-        env.output.test_dir='F:\PAD2019\classification_training\PixelClassifier\Test17\';
+        env.output.test_dir='F:\PAD2019\classification_training\PixelClassifier\Test18\';
         % env.output.val_dir='F:\PAD2019\classification_training\PixelClassifier\Validation\';
         % env.output.current_model='F:\PAD2019\classification_training\PixelClassifier\model5.mat';
         % where the model is
@@ -62,7 +62,7 @@ else
         env.input(5).name=          'yflats_21609_17069_011_170621_L090_CX_01';
         env.input(5).bb=            [];
 
-    else
+    else % on ASC cloud / unix
             % addpath
         addpath /att/gpfsfs/home/ekyzivat/scripts/random-wetlands/dnafinder-Cohen-a2b974e
 
@@ -88,7 +88,7 @@ else
 
         % model I/O (todo: add smart suffix automatically to avoid overwrite)
     env.output.current_model=[env.output.test_dir, 'model.mat'];
-    env.trainFileNums=[1 2]; % [1 2]
+    env.trainFileNums=[1]; % [1 2]
     env.viewFileNums=[4];
     %% classification training params
     env.pixelClassifier.use_raw_image=1;
@@ -145,7 +145,7 @@ else
 
     % which input images
 
-    env.inputType='Freeman'; %'Freeman', 'C3', 'Freeman-T3' or 'gray'
+    env.inputType='Freeman-inc'; %'Freeman', 'C3', 'Freeman-T3' or 'gray', 'Freeman-inc'
 
 
 

@@ -19,10 +19,13 @@ speckle filtering?
 *run with only raw Freeman image ratios or inter-class variance
 *Need better water and FD classes
 *Run training for lots of param options and figure out which ones most imp- then use those
-*Better training data! Then re-run trainingImiageImport.m
+*Better training data! Then re-run trainingImageImport.m
+*Try with C3 matrix or other decomp to see if yellow overlay is improved.
 *Add Lee filter (wiener2.m)
 *Remove some of the filters from sigma: i.e. Hess
+*Range correction and inter-year differences.(ENVI histogram?)
 After AGU: add NoData class, *log-transform data?, use translation features?
+Run in regression mode to determine optimal class divisions?
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~PixelClassifier~~~~~~~~~~~~~~~~~~~~~~~~~
 TODO: change plotting for n-band images; 
@@ -32,7 +35,7 @@ mirror window in movingstd instead of shrink...
 k-fold cross val for number of leaves?
 Memory optimization/block proc, if necessary
 Make addOutputImages.m more general by removing function calls to env
-Update fileexchange script for the following with gif fix: D:\Dropbox\Matlab\DownloadedCode\CaptureFigVid\CaptureFigVid\CaptureFigVid_EK.m
+Community service: Update fileexchange script for the following with gif fix: D:\Dropbox\Matlab\DownloadedCode\CaptureFigVid\CaptureFigVid\CaptureFigVid_EK.m
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LINUX~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 prep trainingImageImport.m to be like viewingImageImport.m
