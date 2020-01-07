@@ -146,7 +146,11 @@ else
     % which input images
 
     env.inputType='Freeman-inc'; %'Freeman', 'C3', 'Freeman-T3' or 'gray', 'Freeman-inc'
-
+    env.rangeCorrection=1;
+    
+    % constands
+    env.constants.imCenter=43;
+    env.constants.n=0.5; %1.64; % range correction exponent
 
 
 

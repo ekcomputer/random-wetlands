@@ -24,7 +24,7 @@ speckle filtering?
 *Add Lee filter (wiener2.m)
 *Remove some of the filters from sigma: i.e. Hess
 *Range correction and inter-year differences.(ENVI histogram?)
-After AGU: add NoData class, *log-transform data?, use translation features?
+After AGU: add NoData class, use translation features just for x- to combat overlay effect?
 Run in regression mode to determine optimal class divisions?
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~PixelClassifier~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -40,6 +40,7 @@ Community service: Update fileexchange script for the following with gif fix: D:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LINUX~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 prep trainingImageImport.m to be like viewingImageImport.m
 add ability to sbatch each test file in parallel!  Need command line input for which files to run on
+make range correction additions linux-compatible
 
 ~~~~~~~~~~~~~~~~~~~~~~~~DONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 add bounding box input to create smaller training file tif, reproject,
