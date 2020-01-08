@@ -37,6 +37,11 @@ for n=1:size(base_names,1)
     out=n*uint8(I)+out;
 end
 
+%% apply mask
+
+test_im=imread([env.output.test_dir, georef_in]);
+mask=isnan(test_im(:,:,end)); % negative data mask
+out(mask)=env.constants.noDataValue_ouput;
 %% write
 geotiffwrite(output_pth, out, gt.SpatialRef, 'GeoKeyDirectoryTag',gt.GeoTIFFTags.GeoKeyDirectoryTag);
 % gdal_calc.py -A input1.tif -B input2.tif --outfile=result.tif --calc="A+B"

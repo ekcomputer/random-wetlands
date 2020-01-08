@@ -24,12 +24,14 @@ for n=env.trainFileNums; % file number from input
         env.input(n).im_dir_nband=[env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, ''];
         f.gray_imgs=ls([env.input(n).im_dir_nband, 'Freeman_*.bin']);
     elseif strcmp(env.inputType, 'Freeman-inc')
+        env.input(n).im_dir_nband=[env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, ''];
         f.inc=ls([env.input(n).im_dir,'raw\', '*inc']);
         if isempty(f.inc) || size(f.inc, 1) > 1
             error('No inc file found.')
         end
-        copyfile([env.input(n).im_dir,'raw\', f.inc,'.hdr'], [env.input(n).im_dir_nband, env.input(1).name, '.hdr']);
-        env.input(n).im_dir_nband=[env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, ''];
+%         copyfile([env.input(n).im_dir_nband,'C3\','.hdr'], [env.input(n).im_dir_nband, env.input(1).name, '.hdr']);
+%         copyfile([env.input(n).im_dir_nband,'Freeman_Vol.bin.hdr'], [env.input(n).im_dir_nband, env.input(1).name, '.hdr']);
+        copyfile([env.input(n).im_dir_nband,'Freeman_Vol.bin.hdr'], [env.input(n).im_dir, 'raw\', env.input(n).name, '.inc.hdr']);
         f.gray_imgs=ls([env.input(n).im_dir_nband, 'Freeman_*.bin']);
         f.gray_imgs_tmp=cellstr(f.gray_imgs); f.gray_imgs_tmp{4}=f.inc;
         f.gray_imgs=char(f.gray_imgs_tmp);
@@ -108,11 +110,12 @@ for n=env.trainFileNums; % file number from input
     if env.rangeCorrection
         [stack, R]=geotiffread(stack_path);
         gti=geotiffinfo(stack_path);
-        stack(repmat(stack(:,:,4)==-10000, [1, 1, 4]))=NaN;
+        stack(repmat(stack(:,:,4)==env.constants.noDataValue, [1, 1, 4]))=NaN;
         if strcmp(env.inputType, 'Freeman-inc')
             stack(:,:,1:end-1)=stack(:,:,1:end-1).*(cosd(env.constants.imCenter)./cos(stack(:,:,end))).^env.constants.n;
-            stack(repmat(stack(:,:,1)==-10000, [1, 1, 3]))=-10000;    %mask out nodata
+            stack(repmat(stack(:,:,1)==env.constants.noDataValue, [1, 1, 3]))=env.constants.noDataValue;    %mask out nodata
             geotiffwrite(stack_path,stack, R, 'GeoKeyDirectoryTag',gti.GeoTIFFTags.GeoKeyDirectoryTag)
+            % add mask NaN geotiffwrite here
             cmd=sprintf('gdalwarp "%s" "%s" -overwrite -srcnodata -10000 -dstnodata -10000 -multi -wo NUM_THREADS=2 -co COMPRESS=DEFLATE',...
                 stack_path, [stack_path, '_temp.tif'])
             system(cmd);

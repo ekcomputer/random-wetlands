@@ -20,12 +20,14 @@ speckle filtering?
 *Need better water and FD classes
 *Run training for lots of param options and figure out which ones most imp- then use those
 *Better training data! Then re-run trainingImageImport.m
-*Try with C3 matrix or other decomp to see if yellow overlay is improved.
+*Try with C3 matrix or other decomp to see if yellow overlay is improved or better class distinction.
 *Add Lee filter (wiener2.m)
 *Remove some of the filters from sigma: i.e. Hess
 *Range correction and inter-year differences.(ENVI histogram?)
 After AGU: add NoData class, use translation features just for x- to combat overlay effect?
 Run in regression mode to determine optimal class divisions?
+Test effect of not using incidence angle as a feature to remove potential range-of-training-area bias
+Update colors to be color-blind friendly
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~PixelClassifier~~~~~~~~~~~~~~~~~~~~~~~~~
 TODO: change plotting for n-band images; 
@@ -36,11 +38,18 @@ k-fold cross val for number of leaves?
 Memory optimization/block proc, if necessary
 Make addOutputImages.m more general by removing function calls to env
 Community service: Update fileexchange script for the following with gif fix: D:\Dropbox\Matlab\DownloadedCode\CaptureFigVid\CaptureFigVid\CaptureFigVid_EK.m
+Delete class mask images in addOutputImages.m as cleanup
+make mem efficient by possibly modifying way imClassify.m saves subsets{i} all the same
+Re-write to only compute 4 sigmas, not >=8
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LINUX~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 prep trainingImageImport.m to be like viewingImageImport.m
 add ability to sbatch each test file in parallel!  Need command line input for which files to run on
 make range correction additions linux-compatible
+
+~~~~~~~~~~~~~~~~~~~~~~~~NOTE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+nodata value is not dynamically defined in the gdal calls
+pixelClassifierTrain doesn't have if statements for non Freeman-inc input class options
 
 ~~~~~~~~~~~~~~~~~~~~~~~~DONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 add bounding box input to create smaller training file tif, reproject,

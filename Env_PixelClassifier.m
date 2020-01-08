@@ -88,11 +88,11 @@ else
 
         % model I/O (todo: add smart suffix automatically to avoid overwrite)
     env.output.current_model=[env.output.test_dir, 'model.mat'];
-    env.trainFileNums=[1]; % [1 2]
+    env.trainFileNums=[1 2]; % [1 2]
     env.viewFileNums=[4];
     %% classification training params
     env.pixelClassifier.use_raw_image=1;
-    env.pixelClassifier.sigmas=[1]; %[1 2 3];
+    env.pixelClassifier.sigmas=[]; %[1 2 3];
     % basic image features are simply derivatives (up to second order) in different scales;
     % this parameter specifies such scales; details in imageFeatures.m
     % for moving gaussian filter
@@ -108,14 +108,14 @@ else
     % set to [] to ignore circularity features
     env.pixelClassifier.cfSigma = []; %2;
     % sigma for circularity features
-    env.pixelClassifier.logSigmas = [1];%[1 2]; %OPTIONAL
+    env.pixelClassifier.logSigmas = [];%[1 2]; %OPTIONAL
     % sigmas for LoG features (see imageFeatures.m)
     % set to [] to ignore LoG features
-    env.pixelClassifier.sfSigmas = [1];%[1 2]; %OPTIONAL
+    env.pixelClassifier.sfSigmas = [];%[1 2]; %OPTIONAL
     % steerable filter features sigmas (see imageFeatures.m)
     % set to [] to ignore steerable filter features
     % ridge (or edge) detection
-    env.pixelClassifier.nTrees = 35; %20;
+    env.pixelClassifier.nTrees = 30; %20;
     % number of decision trees in the random forest ensemble
     env.pixelClassifier.minLeafSize = 40; %60;
     % minimum number of observations per tree leaf
@@ -130,7 +130,7 @@ else
     % if to output binary masks corresponding to pixel classes
     env.pixelClassifier.run.outputProbMaps = false;
     % if to output probability maps from which output masks are derived
-    env.pixelClassifier.run.nSubsets = 100;
+    env.pixelClassifier.run.nSubsets = 12;
     % the set of pixels to be classified is split in this many subsets;
     % if nSubsets > 1, the subsets are classified using 'parfor' with
     % the currently-opened parallel pool (or a new default one if none is open);
@@ -151,6 +151,8 @@ else
     % constands
     env.constants.imCenter=43;
     env.constants.n=0.5; %1.64; % range correction exponent
+    env.constants.noDataValue=-10000;
+    env.constants.noDataValue_ouput=0;
 
 
 
@@ -161,7 +163,7 @@ else
     env.class_names_full={'Water', 'Graminoid Wet','Graminoid Dry', 'Shrub Wet', 'Shrub Dry', 'Forest Dry'};
 
     %% colors
-    env.plot.colors_hex={'BED2FF','A80000','E69800','38A800', 'A87000', '732600'};
+    env.plot.colors_hex={'BED2FF', '58D918','FFC861','31780D','BF9649','8ACC34'};% NEED to fix color-blindness {'BED2FF','A80000','E69800','38A800', 'A87000', '732600'};
     if ~isunix
        for i=1:length(env.plot.colors_hex)
            env.plot.colors{i}=hex2rgb(env.plot.colors_hex{i});
