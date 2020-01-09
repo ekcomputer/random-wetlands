@@ -28,6 +28,7 @@ After AGU: add NoData class, use translation features just for x- to combat over
 Run in regression mode to determine optimal class divisions?
 Test effect of not using incidence angle as a feature to remove potential range-of-training-area bias
 Update colors to be color-blind friendly
+Near-and far range masking or simply save output file w range band
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~PixelClassifier~~~~~~~~~~~~~~~~~~~~~~~~~
 TODO: change plotting for n-band images; 
@@ -41,6 +42,9 @@ Community service: Update fileexchange script for the following with gif fix: D:
 Delete class mask images in addOutputImages.m as cleanup
 make mem efficient by possibly modifying way imClassify.m saves subsets{i} all the same
 Re-write to only compute 4 sigmas, not >=8
+Possible LOO cross val on n-value for range correction, and try non-cosine as well
+* Change to not load all files in dir. into memory!
+try adding in NaNs, but removing NaNs just before steerable detector to save compute time...
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LINUX~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 prep trainingImageImport.m to be like viewingImageImport.m

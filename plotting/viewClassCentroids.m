@@ -31,7 +31,12 @@ ylabel('Volume scatter')
 zlabel('Single bounce')
 % h.LineWidth=10
 % h.MarkerFaceColor='filled'
-legend(env.class_names_full)
+try
+    legend(env.class_names_full)
+catch
+    legend(env.class_names)
+    disp('Using class name abrevs')
+end
 
 %% save animated video - uncomment
 % nFrames=250;

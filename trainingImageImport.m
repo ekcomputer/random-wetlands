@@ -11,14 +11,16 @@ for n=env.trainFileNums; % file number from input
 
         % display I/O params for visual check
         disp('Check to make sure I/O paths are corret:')
-        env.input(n).cls_pth
+        env.input(env.trainFileNums).cls_pth
         env.output.train_dir
         env.output.test_dir
          fprintf('File numbers: %d\n', env.trainFileNums)
         env.inputType
         fprintf('Rangecorrection: %d\n', env.rangeCorrection);
         disp('Press any key to continue')
-        pause()
+        if n==1
+            pause()
+        end
     if strcmp(env.inputType, 'Freeman')
 %         f.num_bands=3;
         env.input(n).im_dir_nband=[env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, ''];

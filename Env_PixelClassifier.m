@@ -12,16 +12,16 @@ else
 
     if ~isunix
                 % training file output directory
-        env.output.train_dir='F:\PAD2019\classification_training\PixelClassifier\Train18\';
+        env.output.train_dir='F:\PAD2019\classification_training\PixelClassifier\Train19\';
         % env.output.train_dir='F:\PAD2019\classification_training\PixelClassifier\Train_origClass\Train';
-        env.output.test_dir='F:\PAD2019\classification_training\PixelClassifier\Test18\';
+        env.output.test_dir='F:\PAD2019\classification_training\PixelClassifier\Test19\';
         % env.output.val_dir='F:\PAD2019\classification_training\PixelClassifier\Validation\';
         % env.output.current_model='F:\PAD2019\classification_training\PixelClassifier\model5.mat';
         % where the model is
         % where images are
 
             % plotting
-        env.bulk_plot_dir=          'D:\pic\UAVSAR_classification\';
+        env.bulk_plot_dir='D:\pic\UAVSAR_classification\';
 
             % viewing image dir
         env.viewingImageDir='F:\UAVSAR\Georeferenced\'; % optional
@@ -38,7 +38,7 @@ else
 
         env.input(2).im_dir=        'F:\UAVSAR\padelE_36000_19059_003_190904_L090_CX_01\';
         % env.input(2).cls_pth=       'F:\PAD2019\classification_training\training2019PAD.shp';
-        env.input(2).cls_pth=       'F:\PAD2019\classification_training\training2019PAD_CHECKPOINTDec5.shp';
+        env.input(2).cls_pth=       'F:\PAD2019\classification_training\training2019PAD.shp';
         env.input(2).name=          'padelE_36000_19059_003_190904_L090_CX_01';
         env.input(2).bb=            [];%[-111.913 58.323 -110.894 58.99]; 
 
@@ -88,7 +88,7 @@ else
 
         % model I/O (todo: add smart suffix automatically to avoid overwrite)
     env.output.current_model=[env.output.test_dir, 'model.mat'];
-    env.trainFileNums=[1 2]; % [1 2]
+    env.trainFileNums=[2]; % [1 2]
     env.viewFileNums=[4];
     %% classification training params
     env.pixelClassifier.use_raw_image=1;
@@ -124,6 +124,10 @@ else
     % this puts a cap on the number of training samples and can improve training speed
     env.pixelClassifier.textureWindows=[3 9];
     % size of moving window to compute moving std dev
+    
+    env.pixelClassifier.speckleFilter=[1];
+    % whether to use diffuse filter (replace with lee refined, if
+    % desired...)
     %% classification params
 
     env.pixelClassifier.run.outputMasks = true;
@@ -159,7 +163,7 @@ else
     %% classes
         % set order of classes (defines numerical index, which will be written
         % to meta file)
-    env.class_names={'W1', 'GW', 'GD', 'SW', 'SD', 'FD'}; %, 'TD', 'TW'}; % {'W1', 'W2', 'EU', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FW', 'FD'}, no BG; {'W1', 'W2', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FD'}; % < prior to  Dec 2  
+    env.class_names={'W1', 'GW', 'GD', 'SW', 'SD', 'FD', 'W2', 'HW', 'TW', 'TD'}; %{'W1', 'GW', 'GD', 'SW', 'SD', 'FD'}; %, 'TD', 'TW'}; % {'W1', 'W2', 'EU', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FW', 'FD'}, no BG; {'W1', 'W2', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FD'}; % < prior to  Dec 2  
     env.class_names_full={'Water', 'Graminoid Wet','Graminoid Dry', 'Shrub Wet', 'Shrub Dry', 'Forest Dry'};
 
     %% colors
