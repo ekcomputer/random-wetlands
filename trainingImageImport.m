@@ -5,7 +5,7 @@
 
 %% User params
 clear; close all
-trainingClassRasters=0; % set to 1 to make training class rasters; 0 for viewing image only
+trainingClassRasters=env.trainingClassRasters; % set to 1 to make training class rasters; 0 for viewing image only
 %% I/O
 Env_PixelClassifier % load environment vars
 vrt_pth=[env.tempDir, 'nband_image.vrt'];
@@ -35,13 +35,13 @@ for n=env.trainFileNums; % file number from input
         f.gray_imgs=ls([env.input(n).im_dir_nband, 'Freeman_*.bin']);
     elseif strcmp(env.inputType, 'Freeman-inc')
         env.input(n).im_dir_nband=[env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, ''];
-        f.inc=ls([env.input(n).im_dir,'raw\', '*inc']);
+        f.inc=ls([env.input(n).im_dir,'raw', filesep, '*inc']);
         if isempty(f.inc) || size(f.inc, 1) > 1
             error('No inc file found.')
         end
 %         copyfile([env.input(n).im_dir_nband,'C3\','.hdr'], [env.input(n).im_dir_nband, env.input(1).name, '.hdr']);
 %         copyfile([env.input(n).im_dir_nband,'Freeman_Vol.bin.hdr'], [env.input(n).im_dir_nband, env.input(1).name, '.hdr']);
-        copyfile([env.input(n).im_dir_nband,'Freeman_Vol.bin.hdr'], [env.input(n).im_dir, 'raw\', env.input(n).name, '.inc.hdr']);
+        copyfile([env.input(n).im_dir,'C3', filesep, 'C11.bin.hdr'], [env.input(n).im_dir, 'raw', filesep, env.input(n).name, '.inc.hdr']);
         f.gray_imgs=ls([env.input(n).im_dir_nband, 'Freeman_*.bin']);
         f.gray_imgs_tmp=cellstr(f.gray_imgs); f.gray_imgs_tmp{4}=f.inc;
         f.gray_imgs=char(f.gray_imgs_tmp);
@@ -61,7 +61,7 @@ for n=env.trainFileNums; % file number from input
     %% format names
     if strcmp(env.inputType, 'Freeman-inc')
         f.dirs_tmp=cellstr(repmat(env.input(n).im_dir_nband, 3,1));
-        f.dirs_tmp{4}=[env.input(n).im_dir,'raw\'];
+        f.dirs_tmp{4}=[env.input(n).im_dir,'raw', filesep];
         f.dirs=char(f.dirs_tmp);
         f.pths=cellstr(strtrim([f.dirs, f.gray_imgs]));
             % rm whitespace
@@ -97,9 +97,18 @@ for n=env.trainFileNums; % file number from input
     save(meta_mat_path, 'env');
 
     %% get bounding box of training shapefile
-    R=shapeinfo(env.input(n).cls_pth);
-    f.bb=R.BoundingBox([1 3 2 4]);
-    f.bb_fmtd=num2str(f.bb);
+    if trainingClassRasters
+        R=shapeinfo(env.input(n).cls_pth);
+        f.bb=R.BoundingBox([1 3 2 4]);
+        f.bb_fmtd=num2str(f.bb);
+    else
+        if ~isempty(env.input(n).bb)
+            f.bb=env.input(n).bb;
+            f.bb_fmtd=num2str(f.bb);
+        else
+            error('No training rasters used, but no bounding box defined.')
+        end
+    end
     %% gdal warp to project and select bounding box of training image
     if exist(stack_path)==0
             % stack (build VRT)

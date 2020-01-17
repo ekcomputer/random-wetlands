@@ -8,6 +8,7 @@ if load_env
 else
     
     %% Image I/O and viewing params
+env.trainingClassRasters=0; % set to 1 to make training class rasters; 0 for viewing image only
 
 
     if ~isunix
@@ -68,15 +69,10 @@ else
         env.input(7).name=          'yflats_21609_17069_011_170621_L090_CX_01';
         env.input(7).bb=            [];
 
-        env.input(7).im_dir=        'F:\UAVSAR\yflats_21609_17069_011_170621_L090_CX_01\';
-        env.input(7).cls_pth=       ''; %FILL
-        env.input(7).name=          'yflats_21609_17069_011_170621_L090_CX_01';
-        env.input(7).bb=            [];
-
     else % on ASC cloud / unix
             % addpath
         addpath /att/gpfsfs/home/ekyzivat/scripts/random-wetlands/dnafinder-Cohen-a2b974e
-
+        env.trainFileNums=[8 9]; % [1 2]
         env.output.train_dir='/att/nobackup/ekyzivat/PixelClassifier/Train/';
         env.output.test_dir='/att/nobackup/ekyzivat/PixelClassifier/Test17/';
         env.bulk_plot_dir='/dev/null/';
@@ -95,6 +91,16 @@ else
         env.input(2).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/padelE_36000_19059_003_190904_L090_CX_01/';
         env.input(2).cls_pth=       '';%'F:\PAD2019\classification_training\training2018PAD.shp';
         env.input(2).name=          'padelE_36000_19059_003_190904_L090_CX_01';
+        
+        env.input(8).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/yflats_21508_17069_009_170621_L090_CX_01/';
+        env.input(8).cls_pth=       ''; %FILL
+        env.input(8).name=          'yflats_21508_17069_009_170621_L090_CX_01';
+        env.input(8).bb=            [-2033247.02283896 3729820.83180865 -2017337.22173237 3742108.79560523]; % in Canada Albers coords gdal: xmin ymin xmax ymax
+        
+        env.input(9).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/yflatW_21508_17098_006_170916_L090_CX_01/';
+        env.input(9).cls_pth=       ''; %FILL
+        env.input(9).name=          'yflatW_21508_17098_006_170916_L090_CX_01';
+        env.input(9).bb=            [-2033247.02283896 3729820.83180865 -2017337.22173237 3742108.79560523];
     end
 
         % model I/O (todo: add smart suffix automatically to avoid overwrite)
