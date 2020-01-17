@@ -3,8 +3,8 @@
 Env_PixelClassifier;
 
 %% reclassify
-ft_plot=ft_all;
-lb_plot=lb_all;
+ft_plot=ft_band;
+lb_plot=lb_band;
     % reclassify - uncomment
 % lb_plot(ismember(lb_all, [1 2 3]))=3;
 % ft_plot(ismember(lb_all, [1 2 3]))=3;
@@ -13,13 +13,27 @@ lb_plot=lb_all;
 
 %% plot
 a=0.5; % alpha value
-% figure; 
+skip_idx=length(featNames)-1;
+if strcmp(env.inputType, 'Freeman-inc')
+    max_idx=size(ft_plot,2)-1;
+else
+    max_idx=size(ft_plot,2);
+end
+figure; 
 clf; hold on
-for i=1:max(lb_plot) % iterate over classes
-    class{i}=-log10(-min(min(ft_plot))+ ft_plot(lb_plot==i, 1:2:6)); % only raw images, rescale and take linear
+
+%%
+classes=[1 3 7 8 9] %1:max(lb_plot); %1 2 9] ; % classes to plot % 
+for i=classes % iterate over classes %%
+    class{i}=-log10(-min(min(ft_plot))+ ft_plot(lb_plot==i, 1:skip_idx:max_idx)); % only raw images, rescale and take linear
+try
     h=scatter3(class{i}(:,1), class{i}(:,2), class{i}(:,3), 'o',...
         'SizeData', 110, 'MarkerFaceAlpha', a, 'MarkerEdgeAlpha', a,...
         'MarkerFaceColor', env.plot.colors{i}, 'MarkerEdgeColor', env.plot.colors{i});
+catch % if no colors defined
+        h=scatter3(class{i}(:,1), class{i}(:,2), class{i}(:,3), 'o',...
+        'SizeData', 110, 'MarkerFaceAlpha', a, 'MarkerEdgeAlpha', a);
+end
 %     h=plot3(class{i}(:,1), class{i}(:,2), class{i}(:,3), '.',...
 %         'MarkerSize', 30);
     set(gca, 'XScale', 'linear', 'YScale', 'linear','ZScale', 'linear');
@@ -31,10 +45,9 @@ ylabel('Volume scatter')
 zlabel('Single bounce')
 % h.LineWidth=10
 % h.MarkerFaceColor='filled'
-try
-    legend(env.class_names_full)
-catch
-    legend(env.class_names)
+if 1==0
+    legend(env.class_names_full(classes))
+else    legend(env.class_names(classes)) % if diff number classes
     disp('Using class name abrevs')
 end
 
@@ -42,5 +55,5 @@ end
 % nFrames=250;
 % viewZ=30*ones(nFrames,2);
 % viewZ(:,1)=linspace(0,360, nFrames);
-% vid_file='D:\vid\AGU2019GIFs\centroidPlot.gif';
+% vid_file='D:\vid\AGU2019GIFs\centroidPlot_revised1.gif';
 % CaptureFigVid_EK(viewZ, vid_file,20)

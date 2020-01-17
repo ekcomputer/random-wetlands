@@ -19,11 +19,11 @@ for k=1:lfn % parfor
     disp(featNames{k})
     subplot(4,4,k)
         % save time rendering
-    imagesc(imresize(imadjust(rescale(F(:,:,k))), rs)); axis(ratio*a)
-%     imagesc(F(:,:,k), [0 1])
+%     imagesc(imresize(imadjust(rescale(F(:,:,k))), rs)); axis(ratio*a)
+    imagesc(imadjust(F(:,:,k), stretchlim(F(:,:,k), 0.06)));axis(ratio*a)
     title(featNames1{k}, 'FontSize', 14)  %% <++++ HERE 1/9
 %     set(gca, 'XTickLabel', [], 'YTickLabel', [])
-%     drawnow
+     drawnow
 end
 
 set(gcf, 'Position',[-1554.5 -555.5 1129.5 1056.5])

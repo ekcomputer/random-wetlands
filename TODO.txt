@@ -21,6 +21,7 @@ speckle filtering?
 *Run training for lots of param options and figure out which ones most imp- then use those
 *Better training data! Then re-run trainingImageImport.m
 *Try with C3 matrix or other decomp to see if yellow overlay is improved or better class distinction.
+* Try decomp with no moving (boxcar) window filter
 *Add Lee filter (wiener2.m)
 *Remove some of the filters from sigma: i.e. Hess
 *Range correction and inter-year differences.(ENVI histogram?)
@@ -45,6 +46,7 @@ Re-write to only compute 4 sigmas, not >=8
 Possible LOO cross val on n-value for range correction, and try non-cosine as well
 * Change to not load all files in dir. into memory!
 try adding in NaNs, but removing NaNs just before steerable detector to save compute time...
+save uncertainties of each class by normalizing class probs by total prob
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LINUX~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 prep trainingImageImport.m to be like viewingImageImport.m
