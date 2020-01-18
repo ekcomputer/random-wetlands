@@ -5,9 +5,9 @@
 
 %% User params
 clear; close all
-trainingClassRasters=env.trainingClassRasters; % set to 1 to make training class rasters; 0 for viewing image only
 %% I/O
 Env_PixelClassifier % load environment vars
+trainingClassRasters=env.trainingClassRasters; % set to 1 to make training class rasters; 0 for viewing image only
 vrt_pth=[env.tempDir, 'nband_image.vrt'];
 for n=env.trainFileNums; % file number from input
     %% load / gdal VRT stack / path formatting
@@ -21,7 +21,7 @@ for n=env.trainFileNums; % file number from input
         env.inputType
         fprintf('Rangecorrection: %d\n', env.rangeCorrection);
         if trainingClassRasters==0;
-            disp('Making stacked image only- no training class rasters.')
+            disp('Making stacked image only- no training class rasters.  Output to test folder')
         else
             disp('Making stacked image and training class rasters.')
         end
@@ -41,10 +41,34 @@ for n=env.trainFileNums; % file number from input
         end
 %         copyfile([env.input(n).im_dir_nband,'C3\','.hdr'], [env.input(n).im_dir_nband, env.input(1).name, '.hdr']);
 %         copyfile([env.input(n).im_dir_nband,'Freeman_Vol.bin.hdr'], [env.input(n).im_dir_nband, env.input(1).name, '.hdr']);
-        copyfile([env.input(n).im_dir,'C3', filesep, 'C11.bin.hdr'], [env.input(n).im_dir, 'raw', filesep, env.input(n).name, '.inc.hdr']);
+        copyfile([env.input(n).im_dir,'C3', filesep, 'mask_valid_pixels.bin.hdr'], [env.input(n).im_dir, 'raw', filesep, env.input(n).name, '.inc.hdr']);
         f.gray_imgs=ls([env.input(n).im_dir_nband, 'Freeman_*.bin']);
-        f.gray_imgs_tmp=cellstr(f.gray_imgs); f.gray_imgs_tmp{4}=f.inc;
-        f.gray_imgs=char(f.gray_imgs_tmp);
+        if ~isunix
+            f.gray_imgs_tmp=cellstr(f.gray_imgs); f.gray_imgs_tmp{4}=f.inc;
+            f.gray_imgs=char(f.gray_imgs_tmp);
+        else % hot fix
+            f.gray_imgs_tmp=splitlines(strtrim(f.gray_imgs)); f.gray_imgs_tmp{4}=strtrim(f.inc);
+%             f.gray_imgs_formatted=[regexprep(f.gray_imgs,'[\n\r]+',' '), ' ', regexprep(f.inc,'[\n\r]+',' ')];
+%             copyfile([env.input(n).im_dir,'C3', filesep, 'mask_valid_pixels.bin.hdr'], [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Dbl.bin.hdr']);
+%             copyfile([env.input(n).im_dir,'C3', filesep, 'mask_valid_pixels.bin.hdr'], [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Odd.bin.hdr']);
+%             copyfile([env.input(n).im_dir,'C3', filesep, 'mask_valid_pixels.bin.hdr'], [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Vol.bin.hdr']);  
+            
+            hdr_file_orig=[env.input(n).im_dir,'C3', filesep, 'mask_valid_pixels.bin.hdr'];
+                % replace ENVI file type
+            hdr_files={[env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Dbl.bin.hdr'],...
+                    [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Odd.bin.hdr'],...
+                    [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Vol.bin.hdr']};
+            
+                %%
+            for hdr_file=1:3
+                cmd=sprintf("sed s/'data type = 2'/'data type = 4'/ < %s > %s",...
+                    hdr_file_orig, hdr_files{hdr_file});
+%                   cmd=sprintf("sed s/'data type = 2'/'data type = 4'/ < %s",...
+%                     hdr_files{hdr_file});
+                unix(cmd);
+            end
+            fprintf('Copying .hdr files to:  %s, etc.\n', [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Dbl.bin.hdr'])
+        end
 %         f.gray_imgs=[f.gray_imgs; f.inc];
     elseif strcmp(env.inputType, 'C3')
 %         f.num_bands=9;
@@ -60,13 +84,18 @@ for n=env.trainFileNums; % file number from input
 
     %% format names
     if strcmp(env.inputType, 'Freeman-inc')
-        f.dirs_tmp=cellstr(repmat(env.input(n).im_dir_nband, 3,1));
-        f.dirs_tmp{4}=[env.input(n).im_dir,'raw', filesep];
-        f.dirs=char(f.dirs_tmp);
-        f.pths=cellstr(strtrim([f.dirs, f.gray_imgs]));
-            % rm whitespace
-        f.pths{4}=replace(f.pths{4}, ' ', '');
-        f.gray_imgs_formatted=strjoin(f.pths([1 3 2 4],:), ' ');
+        if ~isunix
+            f.dirs_tmp=cellstr(repmat(env.input(n).im_dir_nband, 3,1));
+            f.dirs_tmp{4}=[env.input(n).im_dir,'raw', filesep];
+            f.dirs=char(f.dirs_tmp);
+            f.pths=cellstr(strtrim([f.dirs, f.gray_imgs]));
+                % rm whitespace
+            f.pths{4}=replace(f.pths{4}, ' ', '');
+            f.gray_imgs_formatted=strjoin(f.pths([1 3 2 4],:), ' ');
+        else % hot fix
+            f.pths='';
+            f.gray_imgs_formatted=strjoin(f.gray_imgs_tmp([1 3 2 4],:), ' ');
+        end
     else
         f.dirs=repmat(env.input(n).im_dir_nband, size(f.gray_imgs, 1),1);
         f.pths=[f.dirs, f.gray_imgs];
@@ -74,13 +103,17 @@ for n=env.trainFileNums; % file number from input
     end
     % stack_path_0=[env.tempDir, env.input(n).name, '_S', num2str(f.num_bands), '_0.tif'];
     % stack_path=[env.output.train_dir, env.input(n).name, '_S', num2str(f.num_bands), '.tif'];
-    stack_path=[env.output.train_dir, env.input(n).name, '_', env.inputType,'.tif'];
+    if trainingClassRasters
+        stack_path=[env.output.train_dir, env.input(n).name, '_', env.inputType,'.tif'];
+    else
+        stack_path=[env.output.test_dir, env.input(n).name, '_', env.inputType,'.tif'];
+    end
     meta_dir=[env.output.train_dir,'meta', filesep, ''];
     mkdir(meta_dir);
     meta_path=[meta_dir, env.input(n).name, '_', num2str(n),'.txt'];
     meta_mat_path=[meta_dir, env.input(n).name, '_', num2str(n),'.mat'];
 
-    if ~ismember(size(f.pths, 1), [1 3 4 9])
+    if ~ismember(size(f.pths, 1), [1 3 4 9]) && ~isunix
        warning('check inputs') 
        return
     end
@@ -96,7 +129,7 @@ for n=env.trainFileNums; % file number from input
 
     save(meta_mat_path, 'env');
 
-    %% get bounding box of training shapefile
+    %% get bounding box of training shapefile or input bounding box
     if trainingClassRasters
         R=shapeinfo(env.input(n).cls_pth);
         f.bb=R.BoundingBox([1 3 2 4]);
