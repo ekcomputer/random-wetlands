@@ -41,7 +41,7 @@ for n=env.trainFileNums; % file number from input
         end
 %         copyfile([env.input(n).im_dir_nband,'C3\','.hdr'], [env.input(n).im_dir_nband, env.input(1).name, '.hdr']);
 %         copyfile([env.input(n).im_dir_nband,'Freeman_Vol.bin.hdr'], [env.input(n).im_dir_nband, env.input(1).name, '.hdr']);
-        copyfile([env.input(n).im_dir,'C3', filesep, 'mask_valid_pixels.bin.hdr'], [env.input(n).im_dir, 'raw', filesep, env.input(n).name, '.inc.hdr']);
+%         copyfile([env.input(n).im_dir,'C3', filesep, 'mask_valid_pixels.bin.hdr'], [env.input(n).im_dir, 'raw', filesep, env.input(n).name, '.inc.hdr']);
         f.gray_imgs=ls([env.input(n).im_dir_nband, 'Freeman_*.bin']);
         if ~isunix
             f.gray_imgs_tmp=cellstr(f.gray_imgs); f.gray_imgs_tmp{4}=f.inc;
@@ -49,9 +49,9 @@ for n=env.trainFileNums; % file number from input
         else % hot fix
             f.gray_imgs_tmp=splitlines(strtrim(f.gray_imgs)); f.gray_imgs_tmp{4}=strtrim(f.inc);
 %             f.gray_imgs_formatted=[regexprep(f.gray_imgs,'[\n\r]+',' '), ' ', regexprep(f.inc,'[\n\r]+',' ')];
-%             copyfile([env.input(n).im_dir,'C3', filesep, 'mask_valid_pixels.bin.hdr'], [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Dbl.bin.hdr']);
-%             copyfile([env.input(n).im_dir,'C3', filesep, 'mask_valid_pixels.bin.hdr'], [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Odd.bin.hdr']);
-%             copyfile([env.input(n).im_dir,'C3', filesep, 'mask_valid_pixels.bin.hdr'], [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Vol.bin.hdr']);  
+            copyfile([env.input(n).im_dir,'C3', filesep, 'mask_valid_pixels.bin.hdr'], [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Dbl.bin.hdr']);
+            copyfile([env.input(n).im_dir,'C3', filesep, 'mask_valid_pixels.bin.hdr'], [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Odd.bin.hdr']);
+            copyfile([env.input(n).im_dir,'C3', filesep, 'mask_valid_pixels.bin.hdr'], [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Vol.bin.hdr']);  
             
             hdr_file_orig=[env.input(n).im_dir,'C3', filesep, 'mask_valid_pixels.bin.hdr'];
                 % replace ENVI file type
@@ -60,13 +60,13 @@ for n=env.trainFileNums; % file number from input
                     [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Vol.bin.hdr']};
             
                 %%
-            for hdr_file=1:3
-                cmd=sprintf("sed s/'data type = 2'/'data type = 4'/ < %s > %s",...
-                    hdr_file_orig, hdr_files{hdr_file});
-%                   cmd=sprintf("sed s/'data type = 2'/'data type = 4'/ < %s",...
-%                     hdr_files{hdr_file});
-                unix(cmd);
-            end
+%             for hdr_file=1:3
+%                 cmd=sprintf("sed s/'data type = 2'/'data type = 4'/ < %s > %s",...
+%                     hdr_file_orig, hdr_files{hdr_file});
+% %                   cmd=sprintf("sed s/'data type = 2'/'data type = 4'/ < %s",...
+% %                     hdr_files{hdr_file});
+%                 unix(cmd);
+%             end
             fprintf('Copying .hdr files to:  %s, etc.\n', [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Dbl.bin.hdr'])
         end
 %         f.gray_imgs=[f.gray_imgs; f.inc];
