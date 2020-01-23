@@ -47,12 +47,17 @@ Possible LOO cross val on n-value for range correction, and try non-cosine as we
 * Change to not load all files in dir. into memory!
 try adding in NaNs, but removing NaNs just before steerable detector to save compute time...
 save uncertainties of each class by normalizing class probs by total prob
+* Add histogram matching or use diff decomp so as to accurately compare between seasons/years if bad calibration... yFlats vals were low
+More radiometric cal: I would plot sigma, gamma and Freeman values based on inc angle and eval if I need to improve my method.
+    Then, I could come up with empirical correction, or use Chao's values.
+    I could also implement the Ulander 1996 illum. area correction
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LINUX~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 prep trainingImageImport.m to be like viewingImageImport.m
 add ability to sbatch each test file in parallel!  Need command line input for which files to run on
-make range correction additions linux-compatible
+X make range correction additions linux-compatible
 set data dir input files to parse out beginning paths and _grd so I can use same for both scripts
+X Fix stacking bug so I can run on second Shield Image! X
 
 ~~~~~~~~~~~~~~~~~~~~~~~~NOTE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 nodata value is not dynamically defined in the gdal calls

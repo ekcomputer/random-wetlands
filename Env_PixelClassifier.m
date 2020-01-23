@@ -97,7 +97,7 @@ env.trainingClassRasters=0; % set to 1 to make training class rasters; 0 for vie
         env.input(8).name=          'yflats_21508_17069_009_170621_L090_CX_01';
         env.input(8).bb=            [-2033247.02283896 3729820.83180865 -2017337.22173237 3742108.79560523]; % in Canada Albers coords gdal: xmin ymin xmax ymax
         
-        env.input(9).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/yflatW_21508_17098_006_170916_L090_CX_01/';
+        env.input(9).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/yflatW_21508_17098_006_170916_L090_CX_01_V3/';
         env.input(9).cls_pth=       ''; %FILL
         env.input(9).name=          'yflatW_21508_17098_006_170916_L090_CX_01';
         env.input(9).bb=            [-2033247.02283896 3729820.83180865 -2017337.22173237 3742108.79560523];

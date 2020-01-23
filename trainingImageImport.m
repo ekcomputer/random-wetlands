@@ -49,15 +49,16 @@ for n=env.trainFileNums; % file number from input
         else % hot fix
             f.gray_imgs_tmp=splitlines(strtrim(f.gray_imgs)); f.gray_imgs_tmp{4}=strtrim(f.inc);
 %             f.gray_imgs_formatted=[regexprep(f.gray_imgs,'[\n\r]+',' '), ' ', regexprep(f.inc,'[\n\r]+',' ')];
-            copyfile([env.input(n).im_dir,'C3', filesep, 'mask_valid_pixels.bin.hdr'], [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Dbl.bin.hdr']);
-            copyfile([env.input(n).im_dir,'C3', filesep, 'mask_valid_pixels.bin.hdr'], [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Odd.bin.hdr']);
-            copyfile([env.input(n).im_dir,'C3', filesep, 'mask_valid_pixels.bin.hdr'], [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Vol.bin.hdr']);  
+            f.header_file=[env.input(n).im_dir,'raw', filesep, env.input(env.trainFileNums).name, '.inc.hdr'];
+%             copyfile(f.header_file, [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Dbl.bin.hdr']);
+%             copyfile(f.header_file, [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Odd.bin.hdr']);
+%             copyfile(f.header_file, [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Vol.bin.hdr']);  
             
             hdr_file_orig=[env.input(n).im_dir,'C3', filesep, 'mask_valid_pixels.bin.hdr'];
                 % replace ENVI file type
-            hdr_files={[env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Dbl.bin.hdr'],...
-                    [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Odd.bin.hdr'],...
-                    [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Vol.bin.hdr']};
+%             hdr_files={[env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Dbl.bin.hdr'],...
+%                     [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Odd.bin.hdr'],...
+%                     [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Vol.bin.hdr']};
             
                 %%
 %             for hdr_file=1:3
@@ -67,7 +68,7 @@ for n=env.trainFileNums; % file number from input
 % %                     hdr_files{hdr_file});
 %                 unix(cmd);
 %             end
-            fprintf('Copying .hdr files to:  %s, etc.\n', [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Dbl.bin.hdr'])
+%             fprintf('Copying .hdr files to:  %s, etc.\n', [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Dbl.bin.hdr'])
         end
 %         f.gray_imgs=[f.gray_imgs; f.inc];
     elseif strcmp(env.inputType, 'C3')
