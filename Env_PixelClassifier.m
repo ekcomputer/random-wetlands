@@ -72,9 +72,9 @@ env.trainingClassRasters=0; % set to 1 to make training class rasters; 0 for vie
     else % on ASC cloud / unix
             % addpath
         addpath /att/gpfsfs/home/ekyzivat/scripts/random-wetlands/dnafinder-Cohen-a2b974e
-        env.trainFileNums=[8 9]; % [1 2]
-        env.output.train_dir='/att/nobackup/ekyzivat/PixelClassifier/Train/';
-        env.output.test_dir='/att/nobackup/ekyzivat/PixelClassifier/Test17/';
+        env.trainFileNums=[9]; % [1 2]
+        env.output.train_dir='/att/nobackup/ekyzivat/PixelClassifier/Train21/';
+        env.output.test_dir='/att/nobackup/ekyzivat/PixelClassifier/Test21/';
         env.bulk_plot_dir='/dev/null/';
 
             % viewing image dir

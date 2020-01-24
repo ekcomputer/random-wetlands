@@ -39,7 +39,11 @@ end
 
 %% apply mask
 
-test_im=imread([env.output.test_dir, georef_in]);
+if ~isunix
+    test_im=imread([env.output.test_dir, georef_in]);
+else
+    test_im=imread(strtrim(georef_in));
+end
 mask=isnan(test_im(:,:,end)); % negative data mask
 out(mask)=env.constants.noDataValue_ouput;
 %% write
