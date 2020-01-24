@@ -5,9 +5,9 @@
 
 %% User params
 clear; close all
-trainingClassRasters=env.trainingClassRasters; % set to 1 to make training class rasters; 0 for viewing image only
 %% I/O
 Env_PixelClassifier % load environment vars
+trainingClassRasters=env.trainingClassRasters; % set to 1 to make training class rasters; 0 for viewing image only
 vrt_pth=[env.tempDir, 'nband_image.vrt'];
 for n=env.trainFileNums; % file number from input
     %% load / gdal VRT stack / path formatting
