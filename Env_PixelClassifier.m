@@ -13,9 +13,9 @@ env.trainingClassRasters=1; % set to 1 to make training class rasters; 0 for vie
 
     if ~isunix
                 % training file output directory
-        env.output.train_dir='F:\PAD2019\classification_training\PixelClassifier\Train22\';
+        env.output.train_dir='F:\PAD2019\classification_training\PixelClassifier\Train23\';
         % env.output.train_dir='F:\PAD2019\classification_training\PixelClassifier\Train_origClass\Train';
-        env.output.test_dir='F:\PAD2019\classification_training\PixelClassifier\Test22\';
+        env.output.test_dir='F:\PAD2019\classification_training\PixelClassifier\Test23\';
         % env.output.val_dir='F:\PAD2019\classification_training\PixelClassifier\Validation\';
         % env.output.current_model='F:\PAD2019\classification_training\PixelClassifier\model5.mat';
         % where the model is
@@ -165,7 +165,7 @@ env.trainingClassRasters=1; % set to 1 to make training class rasters; 0 for vie
 
     % which input images
 
-    env.inputType='C3-inc'; %'Freeman', 'C3', 'Freeman-T3' or 'gray', 'Freeman-inc', 'C3-inc'
+    env.inputType='Norm-Fr-C11-inc'; %'Freeman', 'C3', 'Freeman-T3' or 'gray', 'Freeman-inc', 'C3-inc'
     env.rangeCorrection=1;
     
     % constands
@@ -188,6 +188,7 @@ env.trainingClassRasters=1; % set to 1 to make training class rasters; 0 for vie
     if ~isunix
        for i=1:length(env.plot.colors_hex)
            env.plot.colors{i}=hex2rgb(env.plot.colors_hex{i});
+           env.plot.colors_mat(i,:)=hex2rgb(env.plot.colors_hex{i});
            env.plot.colors_8bit{i}=255*hex2rgb(env.plot.colors_hex{i});
        end
     end

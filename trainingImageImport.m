@@ -107,6 +107,34 @@ for n=env.trainFileNums; % file number from input
             fprintf('Copying .hdr files to:  %s, etc.\n', [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Dbl.bin.hdr'])
         end
 %         f.gray_imgs=[f.gray_imgs; f.inc];
+elseif strcmp(env.inputType, 'Norm-Fr-C11-inc') % Fr-C11-C33-inc %% this branch uses linux or windows compatible dir instead of ls
+        f.num_bands=4;
+        env.input(n).im_dir_nband=[env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, ''];
+        env.input(n).im_dir_nband_c=[env.input(n).im_dir, 'C3', filesep, ''];
+        f.inc_dir=dir([env.input(n).im_dir,'raw', filesep, '*inc']); % if using, fix for unix
+        f.inc=f(1).inc_dir.name;
+        if isempty(f.inc_dir) || size(f.inc_dir, 1) > 1
+            error('No inc file found.')
+        end
+        if exist([env.input(n).im_dir, 'raw', filesep, env.input(n).name, '.inc.hdr']) ~= 2
+            copyfile([env.input(n).im_dir,'C3', filesep, 'mask_valid_pixels.bin.hdr'], [env.input(n).im_dir, 'raw', filesep, env.input(n).name, '.inc.hdr']);
+            fprintf('Creating inc.hdr file: %s\n', [env.input(n).im_dir, 'raw', filesep, env.input(n).name, '.inc.hdr'])
+        end
+        f.gray_imgs_freeman=dir([env.input(n).im_dir_nband, 'Freeman*.bin']);
+        f.gray_imgs_c3=dir([env.input(n).im_dir_nband_c, 'C*.bin']);
+            % use only C11 band
+        f.gray_imgs_c3=f.gray_imgs_c3(1);
+            % merge structures
+        f.gray_imgs_freeman_tbl=struct2table(f.gray_imgs_freeman); 
+        f.gray_imgs_c3_tbl=struct2table(f.gray_imgs_c3);
+        f.gray_imgs_inc_tbl=struct2table(f.inc_dir);
+        f.gray_imgs=table2struct([f.gray_imgs_freeman_tbl; f.gray_imgs_c3_tbl;...
+            f.gray_imgs_inc_tbl]);
+            % format
+            for k=1:length(f.gray_imgs)
+                f.pths{k}=[f.gray_imgs(k).folder, filesep, f.gray_imgs(k).name]; 
+            end
+        f.gray_imgs_formatted=strjoin({f.pths{[1 3 2 4 5]}}, ' '); % DYNAMIC
     elseif strcmp(env.inputType, 'C3')
 %         f.num_bands=9;
         env.input(n).im_dir_nband=[env.input(n).im_dir, 'C3', filesep, ''];
@@ -147,6 +175,8 @@ for n=env.trainFileNums; % file number from input
             f.pths='';
             f.gray_imgs_formatted=strjoin(f.gray_imgs_tmp([1 3 2 4],:), ' ');
         end
+    elseif strcmp(env.inputType, 'Norm-Fr-C11-C33-inc') % HERE
+            % DO NOTHING :)
     else
         f.dirs=repmat(env.input(n).im_dir_nband, size(f.gray_imgs, 1),1);
         f.pths=[f.dirs, f.gray_imgs];
@@ -223,6 +253,7 @@ for n=env.trainFileNums; % file number from input
                     stack_path, [stack_path, '_temp.tif'])
                 system(cmd);
                 movefile([stack_path, '_temp.tif'], stack_path);
+            elseif strcmp(env.inputType, 'Norm-Fr-C11-C33-inc') %% HERE
             else
                 error('check input class')
             end
