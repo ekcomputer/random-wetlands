@@ -8,20 +8,20 @@ if load_env
 else
     
     %% Image I/O and viewing params
-env.trainingClassRasters=0; % set to 1 to make training class rasters; 0 for viewing image only
+env.trainingClassRasters=1; % set to 1 to make training class rasters; 0 for viewing image only
 
 
     if ~isunix
                 % training file output directory
-        env.output.train_dir='F:\PAD2019\classification_training\PixelClassifier\Train21_temp\';
+        env.output.train_dir='F:\PAD2019\classification_training\PixelClassifier\Train23\';
         % env.output.train_dir='F:\PAD2019\classification_training\PixelClassifier\Train_origClass\Train';
-        env.output.test_dir='F:\PAD2019\classification_training\PixelClassifier\Test21_temp\';
+        env.output.test_dir='F:\PAD2019\classification_training\PixelClassifier\Test23\';
         % env.output.val_dir='F:\PAD2019\classification_training\PixelClassifier\Validation\';
         % env.output.current_model='F:\PAD2019\classification_training\PixelClassifier\model5.mat';
         % where the model is
         % where images are
             % Which files to import as training images
-        env.trainFileNums=[3]; % [1 2]
+        env.trainFileNums=[2]; % [1 2]
             % plotting
         env.bulk_plot_dir='D:\pic\UAVSAR_classification\';
 
@@ -34,13 +34,13 @@ env.trainingClassRasters=0; % set to 1 to make training class rasters; 0 for vie
 
             % training image and classes input and bounding boxes
         env.input(1).im_dir=        'F:\UAVSAR\padelE_36000_18047_000_180821_L090_CX_01\';
-        env.input(1).cls_pth=       'F:\PAD2019\classification_training\training2018PAD_Jan01_allClasses.shp';
+        env.input(1).cls_pth=       'F:\PAD2019\classification_training\training2018PAD_Jan28_allClasses.shp';
         env.input(1).name=          'padelE_36000_18047_000_180821_L090_CX_01';
         env.input(1).bb=            [];%[-111.913 58.323 -110.894 58.99]; %xmin ymin xmax ymax
 
         env.input(2).im_dir=        'F:\UAVSAR\padelE_36000_19059_003_190904_L090_CX_01\';
         % env.input(2).cls_pth=       'F:\PAD2019\classification_training\training2019PAD.shp';
-        env.input(2).cls_pth=       'F:\PAD2019\classification_training\training2019PAD_Jan01_allClasses.shp';% dummy for bounding box only
+        env.input(2).cls_pth=       'F:\PAD2019\classification_training\training2019PAD_Jan28_allClasses.shp';% dummy for bounding box only
         env.input(2).name=          'padelE_36000_19059_003_190904_L090_CX_01';
         env.input(2).bb=            [];%[-111.913 58.323 -110.894 58.99]; 
 
@@ -113,11 +113,11 @@ env.trainingClassRasters=0; % set to 1 to make training class rasters; 0 for vie
     % this parameter specifies such scales (radius of offset); details in imageFeatures.m
     % for moving gaussian filter
     % each creates 9 features
-    env.pixelClassifier.offsets=[3]; %[3 5]; %OPTIONAL,
+    env.pixelClassifier.offsets=[]; %[3 5]; %OPTIONAL,
     % in pixels; for offset features (see imageFeatures.m)
     % each creates 8 features
     % set to [] to ignore offset features
-    env.pixelClassifier.osSigma = [2]; %2;
+    env.pixelClassifier.osSigma = []; %2;
     % sigma for offset features (std dev of gaussian used for filter)
     env.pixelClassifier.radii = [];%[15 20 25]; %OPTIONAL
     % range of radii on which to compute circularity features (see imageFeatures.m)
@@ -138,7 +138,7 @@ env.trainingClassRasters=0; % set to 1 to make training class rasters; 0 for vie
     env.pixelClassifier.pctMaxNPixelsPerLabel = 5; % [1]; % unimportant- I'm way below limit
     % percentage of max number of pixels per label (w.r.t. num of pixels in image);
     % this puts a cap on the number of training samples and can improve training speed
-    env.pixelClassifier.textureWindows=[5];
+    env.pixelClassifier.textureWindows=[];
     % size of moving window to compute moving std dev
     
     env.pixelClassifier.speckleFilter=[1];
@@ -165,7 +165,9 @@ env.trainingClassRasters=0; % set to 1 to make training class rasters; 0 for vie
 
     % which input images
 
-    env.inputType='Freeman-inc'; %'Freeman', 'C3', 'Freeman-T3' or 'gray', 'Freeman-inc'
+    env.inputType='Norm-Fr-C11-inc'; %'Freeman', 'C3', 'Freeman-T3' or 'gray', 'Freeman-inc', 'C3-inc'
+%     env.inputType='Freeman-inc'; % DONT FORGET to change line 105 in
+%     pixelClassifierTrain.m and line 61 in PixelClassifier... to update input Type
     env.rangeCorrection=1;
     
     % constands
@@ -179,7 +181,7 @@ env.trainingClassRasters=0; % set to 1 to make training class rasters; 0 for vie
     %% classes
         % set order of classes (defines numerical index, which will be written
         % to meta file)
-    env.class_names={'W1', 'SW', 'HW', 'TW', 'GW', 'GD', 'SD', 'FD', 'FD2'}; %{'W1', 'GW', 'GD', 'SW', 'SD', 'FD'}; %, 'TD', 'TW'}; % {'W1', 'W2', 'EU', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FW', 'FD'}, no BG; {'W1', 'W2', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FD'}; % < prior to  Dec 2  
+    env.class_names={'W1', 'SW', 'HW', 'TW', 'GW', 'GD', 'SD', 'FD', 'FD2', 'TD', 'W2'}; %{'W1', 'GW', 'GD', 'SW', 'SD', 'FD'}; %, 'TD', 'TW'}; % {'W1', 'W2', 'EU', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FW', 'FD'}, no BG; {'W1', 'W2', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FD'}; % < prior to  Dec 2  
 %     env.class_names={'W1', 'GW', 'GD', 'SW', 'SD', 'FD'};
     env.class_names_full={'Water', 'Graminoid Wet','Graminoid Dry', 'Shrub Wet', 'Shrub Dry', 'Forest Dry'};
 
@@ -188,6 +190,7 @@ env.trainingClassRasters=0; % set to 1 to make training class rasters; 0 for vie
     if ~isunix
        for i=1:length(env.plot.colors_hex)
            env.plot.colors{i}=hex2rgb(env.plot.colors_hex{i});
+           env.plot.colors_mat(i,:)=hex2rgb(env.plot.colors_hex{i});
            env.plot.colors_8bit{i}=255*hex2rgb(env.plot.colors_hex{i});
        end
     end

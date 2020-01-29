@@ -29,96 +29,73 @@ for n=env.trainFileNums; % file number from input
         if n==env.trainFileNums(1)
             pause()
         end
-    if strcmp(env.inputType, 'Freeman')
-%         f.num_bands=3;
-        env.input(n).im_dir_nband=[env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, ''];
-        f.gray_imgs=ls([env.input(n).im_dir_nband, 'Freeman_*.bin']);
+
+        % common to all if branches
+    env.input(n).im_dir_nband=[env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, ''];
+    env.input(n).im_dir_nband_c=[env.input(n).im_dir, 'C3', filesep, ''];
+    f.inc_dir=dir([env.input(n).im_dir,'raw', filesep, '*inc']); % if using, fix for unix
+    f.gray_imgs_freeman=dir([env.input(n).im_dir_nband, 'Freeman*.bin']);
+    f.gray_imgs_c3=dir([env.input(n).im_dir_nband_c, 'C*.bin']);
+    if isempty(f.inc_dir) || size(f.inc_dir, 1) > 1 || isempty(f.gray_imgs_freeman)...
+            || isempty(f.gray_imgs_c3) 
+        error('No < inc, freeman, or C3 > file found.')
+    end
+    f.inc=f(1).inc_dir.name;
+    if exist([env.input(n).im_dir, 'raw', filesep, env.input(n).name, '.inc.hdr']) ~= 2
+        copyfile([env.input(n).im_dir,'C3', filesep, 'mask_valid_pixels.bin.hdr'], [env.input(n).im_dir, 'raw', filesep, env.input(n).name, '.inc.hdr']);
+        fprintf('Creating inc.hdr file: %s\n', [env.input(n).im_dir, 'raw', filesep, env.input(n).name, '.inc.hdr'])
+    end
+                % merge structures
+    f.gray_imgs_freeman_tbl=struct2table(f.gray_imgs_freeman); 
+    f.gray_imgs_c3_tbl=struct2table(f.gray_imgs_c3);
+    f.gray_imgs_inc_tbl=struct2table(f.inc_dir);
+    f.gray_imgs=table2struct([f.gray_imgs_freeman_tbl; f.gray_imgs_c3_tbl;...
+        f.gray_imgs_inc_tbl]);
+    
+        % format paths
+    for k=1:length(f.gray_imgs)
+        f.pths{k}=[f.gray_imgs(k).folder, filesep, f.gray_imgs(k).name]; 
+    end
+    f.max_num_bands=length(f.gray_imgs);
+        % ADD BRANCHES % pick out specific bands and orders
+    if strcmp(env.inputType, 'Freeman')      
+        f.band_order=[1 3 2];
     elseif strcmp(env.inputType, 'Freeman-inc')
-        env.input(n).im_dir_nband=[env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, ''];
-        f.inc=ls([env.input(n).im_dir,'raw', filesep, '*inc']);
-        if isempty(f.inc) || size(f.inc, 1) > 1
-            error('No inc file found.')
-        end
-%         copyfile([env.input(n).im_dir_nband,'C3\','.hdr'], [env.input(n).im_dir_nband, env.input(1).name, '.hdr']);
-%         copyfile([env.input(n).im_dir_nband,'Freeman_Vol.bin.hdr'], [env.input(n).im_dir_nband, env.input(1).name, '.hdr']);
-%         copyfile([env.input(n).im_dir,'C3', filesep, 'mask_valid_pixels.bin.hdr'], [env.input(n).im_dir, 'raw', filesep, env.input(n).name, '.inc.hdr']);
-        f.gray_imgs=ls([env.input(n).im_dir_nband, 'Freeman_*.bin']);
-        if ~isunix
-            f.gray_imgs_tmp=cellstr(f.gray_imgs); f.gray_imgs_tmp{4}=f.inc;
-            f.gray_imgs=char(f.gray_imgs_tmp);
-        else % hot fix
-            f.gray_imgs_tmp=splitlines(strtrim(f.gray_imgs)); f.gray_imgs_tmp{4}=strtrim(f.inc);
-%             f.gray_imgs_formatted=[regexprep(f.gray_imgs,'[\n\r]+',' '), ' ', regexprep(f.inc,'[\n\r]+',' ')];
-            f.header_file=[env.input(n).im_dir,'raw', filesep, env.input(env.trainFileNums).name, '.inc.hdr'];
-%             copyfile(f.header_file, [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Dbl.bin.hdr']);
-%             copyfile(f.header_file, [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Odd.bin.hdr']);
-%             copyfile(f.header_file, [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Vol.bin.hdr']);  
-            
-            hdr_file_orig=[env.input(n).im_dir,'C3', filesep, 'mask_valid_pixels.bin.hdr'];
-                % replace ENVI file type
-%             hdr_files={[env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Dbl.bin.hdr'],...
-%                     [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Odd.bin.hdr'],...
-%                     [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Vol.bin.hdr']};
-            
-                %%
-%             for hdr_file=1:3
-%                 cmd=sprintf("sed s/'data type = 2'/'data type = 4'/ < %s > %s",...
-%                     hdr_file_orig, hdr_files{hdr_file});
-% %                   cmd=sprintf("sed s/'data type = 2'/'data type = 4'/ < %s",...
-% %                     hdr_files{hdr_file});
-%                 unix(cmd);
-%             end
-%             fprintf('Copying .hdr files to:  %s, etc.\n', [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Dbl.bin.hdr'])
-        end
-%         f.gray_imgs=[f.gray_imgs; f.inc];
+        f.band_order=[1 3 2 f.max_num_bands];
+    elseif strcmp(env.inputType, 'C3-inc')
+        f.band_order=[4:12, f.max_num_bands];
+    elseif strcmp(env.inputType, 'Norm-Fr-C11-inc') % Fr-C11-C33-inc %% this branch uses linux or windows compatible dir instead of ls
+        f.band_order=[1 3 2 4 f.max_num_bands];
     elseif strcmp(env.inputType, 'C3')
-%         f.num_bands=9;
-        env.input(n).im_dir_nband=[env.input(n).im_dir, 'C3', filesep, ''];
-        f.gray_imgs=ls([env.input(n).im_dir_nband, 'C*.bin']); % for wildcard use ?
+        f.band_order=[4:12];
     elseif strcmp(env.inputType, 'gray')
-%         f.num_bands=1;
+        f.band_order=[4];
     else
         error('Unrecognized input type (EK).')
     end
-
+       % format for gdal VRT
+    f.gray_imgs_formatted=strjoin({f.pths{f.band_order}}, ' '); % DYNAMIC
     %
 
-    %% format names
-    if strcmp(env.inputType, 'Freeman-inc')
-        if ~isunix
-            f.dirs_tmp=cellstr(repmat(env.input(n).im_dir_nband, 3,1));
-            f.dirs_tmp{4}=[env.input(n).im_dir,'raw', filesep];
-            f.dirs=char(f.dirs_tmp);
-            f.pths=cellstr(strtrim([f.dirs, f.gray_imgs]));
-                % rm whitespace
-            f.pths{4}=replace(f.pths{4}, ' ', '');
-            f.gray_imgs_formatted=strjoin(f.pths([1 3 2 4],:), ' ');
-        else % hot fix
-            f.pths='';
-            f.gray_imgs_formatted=strjoin(f.gray_imgs_tmp([1 3 2 4],:), ' ');
-        end
-    else
-        f.dirs=repmat(env.input(n).im_dir_nband, size(f.gray_imgs, 1),1);
-        f.pths=[f.dirs, f.gray_imgs];
-        f.gray_imgs_formatted=strjoin(cellstr(f.pths([1 3 2],:)), ' '); % in order of: double, vol, single
+    %% defensive check
+    if ~ismember(length({f.pths{f.band_order}}), [1 3 4 5 10]) && ~isunix
+       warning('check inputs') 
+       return
     end
-    % stack_path_0=[env.tempDir, env.input(n).name, '_S', num2str(f.num_bands), '_0.tif'];
-    % stack_path=[env.output.train_dir, env.input(n).name, '_S', num2str(f.num_bands), '.tif'];
+    
+    %% options
     if trainingClassRasters
         stack_path=[env.output.train_dir, env.input(n).name, '_', env.inputType,'.tif'];
     else
         stack_path=[env.output.test_dir, env.input(n).name, '_', env.inputType,'.tif'];
     end
+
+    %%  save log files
     meta_dir=[env.output.train_dir,'meta', filesep, ''];
     mkdir(meta_dir);
     meta_path=[meta_dir, env.input(n).name, '_', num2str(n),'.txt'];
     meta_mat_path=[meta_dir, env.input(n).name, '_', num2str(n),'.mat'];
 
-    if ~ismember(size(f.pths, 1), [1 3 4 9]) && ~isunix
-       warning('check inputs') 
-       return
-    end
-    %%  save log files
     fid=fopen(meta_path, 'w+');
     fprintf(fid, 'Name:\t\t%s\n', env.input(n).name);
     fprintf(fid, 'L-band directory:\t\t%s\n', env.input(n).im_dir);
@@ -140,7 +117,8 @@ for n=env.trainFileNums; % file number from input
             f.bb=env.input(n).bb;
             f.bb_fmtd=num2str(f.bb);
         else
-            error('No training rasters used, but no bounding box defined.')
+            useFullExtent=1;
+            disp('No training rasters used, but no bounding box defined.  Using full extent.')
         end
     end
     %% gdal warp to project and select bounding box of training image
@@ -149,34 +127,55 @@ for n=env.trainFileNums; % file number from input
         cmd=sprintf('gdalbuildvrt -separate %s %s', vrt_pth, f.gray_imgs_formatted)
         system(cmd);
             % gdal warp
+        if ~useFullExtent
             cmd=sprintf('gdalwarp "%s" "%s" -srcnodata -10000 -dstnodata -10000 -multi -wo NUM_THREADS=2 -co COMPRESS=DEFLATE -te %s -t_srs PROJCS["Canada_Albers_Equal_Area_Conic",GEOGCS["GCS_North_American_1983",DATUM["North_American_Datum_1983",SPHEROID["GRS_1980",6378137,298.257222101]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Albers_Conic_Equal_Area"],PARAMETER["False_Easting",0],PARAMETER["False_Northing",0],PARAMETER["longitude_of_center",-96],PARAMETER["Standard_Parallel_1",50],PARAMETER["Standard_Parallel_2",70],PARAMETER["latitude_of_center",40],UNIT["Meter",1],AUTHORITY["EPSG","102001"]]',...
-        vrt_pth, stack_path, f.bb_fmtd)
+                vrt_pth, stack_path, f.bb_fmtd)
+        else
+            cmd=sprintf('gdalwarp "%s" "%s" -srcnodata -10000 -dstnodata -10000 -multi -wo NUM_THREADS=2 -co COMPRESS=DEFLATE -t_srs PROJCS["Canada_Albers_Equal_Area_Conic",GEOGCS["GCS_North_American_1983",DATUM["North_American_Datum_1983",SPHEROID["GRS_1980",6378137,298.257222101]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Albers_Conic_Equal_Area"],PARAMETER["False_Easting",0],PARAMETER["False_Northing",0],PARAMETER["longitude_of_center",-96],PARAMETER["Standard_Parallel_1",50],PARAMETER["Standard_Parallel_2",70],PARAMETER["latitude_of_center",40],UNIT["Meter",1],AUTHORITY["EPSG","102001"]]',...
+                vrt_pth, stack_path)
+        end
         system(cmd);
-            % gdal translate
-    %     cmd=sprintf('gdal_translate "%s" "%s" -co COMPRESS=LZW',...
-    %     stack_path_0, stack_path)
-    %     system(cmd);
-    %     delete(stack_path_0)
+                % gdal translate
+        %     cmd=sprintf('gdal_translate "%s" "%s" -co COMPRESS=LZW',...
+        %     stack_path_0, stack_path)
+        %     system(cmd);
+        %     delete(stack_path_0)
     
-    %% range correction
+        %% range correction and/or normalization
     
-        if env.rangeCorrection
+        if strcmp(env.inputType, 'Norm-Fr-C11-inc') || env.rangeCorrection %% load geotiff into mem
             [stack, R]=geotiffread(stack_path);
             gti=geotiffinfo(stack_path);
-            stack(repmat(stack(:,:,4)==env.constants.noDataValue, [1, 1, 4]))=NaN;
-            if strcmp(env.inputType, 'Freeman-inc')
-                stack(:,:,1:end-1)=stack(:,:,1:end-1).*(cosd(env.constants.imCenter)./cos(stack(:,:,end))).^env.constants.n;
-                stack(repmat(stack(:,:,1)==env.constants.noDataValue, [1, 1, 3]))=env.constants.noDataValue;    %mask out nodata
-                geotiffwrite(stack_path,stack, R, 'GeoKeyDirectoryTag',gti.GeoTIFFTags.GeoKeyDirectoryTag)
-                % add mask NaN geotiffwrite here
-                cmd=sprintf('gdalwarp "%s" "%s" -overwrite -srcnodata -10000 -dstnodata -10000 -multi -wo NUM_THREADS=2 -co COMPRESS=DEFLATE',...
-                    stack_path, [stack_path, '_temp.tif'])
-                system(cmd);
-                movefile([stack_path, '_temp.tif'], stack_path);
-            else
-                error('check input class')
+            nBands=length(f.band_order);
+            stack(repmat(stack(:,:,nBands)==env.constants.noDataValue, [1, 1, nBands]))=NaN;
+            if env.rangeCorrection
+                if strcmp(env.inputType, 'Freeman-inc') || strcmp(env.inputType, 'C3-inc')
+                    disp('Range correction...')
+                    stack(:,:,1:end-1)=stack(:,:,1:end-1).*(cosd(env.constants.imCenter)./cos(stack(:,:,end))).^env.constants.n;
+                    stack(repmat(stack(:,:,1)==env.constants.noDataValue, [1, 1, 3]))=env.constants.noDataValue;    %mask out nodata
+                elseif strcmp(env.inputType, 'Norm-Fr-C11-inc')
+                    disp('Range correction...')
+                    stack(:,:,4)=stack(:,:,4).*(cosd(env.constants.imCenter)./cos(stack(:,:,end))).^env.constants.n;
+                    stack(repmat(stack(:,:,1)==env.constants.noDataValue, [1, 1, 3]))=env.constants.noDataValue;    %mask out nodata
+               else
+                    error('check input class')
+                end
             end
+                
+                % normalization
+            if strcmp(env.inputType, 'Norm-Fr-C11-inc') 
+                disp('Freeman normalization...')
+                stack(:,:,1:3)=stack(:,:,1:3)./sum(stack(:,:,1:3), 3);
+            end
+       
+                % write using geotiffwrite and add mask using gdal
+            geotiffwrite([stack_path, '_temp.tif'],stack, R, 'GeoKeyDirectoryTag',gti.GeoTIFFTags.GeoKeyDirectoryTag)
+            cmd=sprintf('gdalwarp "%s" "%s" -overwrite -srcnodata -10000 -dstnodata -10000 -multi -wo NUM_THREADS=2 -co COMPRESS=DEFLATE',...
+                [stack_path, '_temp.tif'], stack_path)
+            system(cmd);
+            delete([stack_path, '_temp.tif']);
         end
+        
     else
         fprintf(fid, 'Training image already existed.\n')
         fprintf('Training image already existed.  Not reprocessing.\n')
