@@ -166,6 +166,8 @@ env.trainingClassRasters=1; % set to 1 to make training class rasters; 0 for vie
     % which input images
 
     env.inputType='Norm-Fr-C11-inc'; %'Freeman', 'C3', 'Freeman-T3' or 'gray', 'Freeman-inc', 'C3-inc'
+%     env.inputType='Freeman-inc'; % DONT FORGET to change line 105 in
+%     pixelClassifierTrain.m and line 61 in PixelClassifier... to update input Type
     env.rangeCorrection=1;
     
     % constands
