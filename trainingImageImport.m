@@ -41,7 +41,10 @@ for n=env.trainFileNums; % file number from input
         end
 %         copyfile([env.input(n).im_dir_nband,'C3\','.hdr'], [env.input(n).im_dir_nband, env.input(1).name, '.hdr']);
 %         copyfile([env.input(n).im_dir_nband,'Freeman_Vol.bin.hdr'], [env.input(n).im_dir_nband, env.input(1).name, '.hdr']);
-        copyfile([env.input(n).im_dir,'C3', filesep, 'mask_valid_pixels.bin.hdr'], [env.input(n).im_dir, 'raw', filesep, env.input(n).name, '.inc.hdr']);
+        if exist([env.input(n).im_dir, 'raw', filesep, env.input(n).name, '.inc.hdr']) ~= 2
+            copyfile([env.input(n).im_dir,'C3', filesep, 'mask_valid_pixels.bin.hdr'], [env.input(n).im_dir, 'raw', filesep, env.input(n).name, '.inc.hdr']);
+            fprintf('Creating inc.hdr file: %s\n', [env.input(n).im_dir, 'raw', filesep, env.input(n).name, '.inc.hdr'])
+        end
         f.gray_imgs=ls([env.input(n).im_dir_nband, 'Freeman_*.bin']);
         if ~isunix
             f.gray_imgs_tmp=cellstr(f.gray_imgs); f.gray_imgs_tmp{4}=f.inc;
@@ -53,6 +56,40 @@ for n=env.trainFileNums; % file number from input
 %             copyfile([env.input(n).im_dir,'C3', filesep, 'mask_valid_pixels.bin.hdr'], [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Odd.bin.hdr']);
 %             copyfile([env.input(n).im_dir,'C3', filesep, 'mask_valid_pixels.bin.hdr'], [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Vol.bin.hdr']);  
             
+            hdr_file_orig=[env.input(n).im_dir,'C3', filesep, 'mask_valid_pixels.bin.hdr'];
+                % replace ENVI file type
+            hdr_files={[env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Dbl.bin.hdr'],...
+                    [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Odd.bin.hdr'],...
+                    [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Vol.bin.hdr']};
+            
+                %%
+            for hdr_file=1:3
+                cmd=sprintf("sed s/'data type = 2'/'data type = 4'/ < %s > %s",...
+                    hdr_file_orig, hdr_files{hdr_file});
+%                   cmd=sprintf("sed s/'data type = 2'/'data type = 4'/ < %s",...
+%                     hdr_files{hdr_file});
+                unix(cmd);
+            end
+            fprintf('Copying .hdr files to:  %s, etc.\n', [env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Dbl.bin.hdr'])
+        end
+%         f.gray_imgs=[f.gray_imgs; f.inc];
+    elseif strcmp(env.inputType, 'C3-inc')
+        f.num_bands=9;
+        env.input(n).im_dir_nband=[env.input(n).im_dir, 'C3', filesep, ''];
+        f.inc=ls([env.input(n).im_dir,'raw', filesep, '*inc']); % if using, fix for unix
+        if isempty(f.inc) || size(f.inc, 1) > 1
+            error('No inc file found.')
+        end
+        if exist([env.input(n).im_dir, 'raw', filesep, env.input(n).name, '.inc.hdr']) ~= 2
+            copyfile([env.input(n).im_dir,'C3', filesep, 'mask_valid_pixels.bin.hdr'], [env.input(n).im_dir, 'raw', filesep, env.input(n).name, '.inc.hdr']);
+            fprintf('Creating inc.hdr file: %s\n', [env.input(n).im_dir, 'raw', filesep, env.input(n).name, '.inc.hdr'])
+        end
+        f.gray_imgs=ls([env.input(n).im_dir_nband, 'C*.bin']);
+        if ~isunix
+            f.gray_imgs_tmp=cellstr(f.gray_imgs); f.gray_imgs_tmp{f.num_bands+1}=f.inc;
+            f.gray_imgs=char(f.gray_imgs_tmp);
+        else % hot fix %% NEED TO CHANGE for unix
+            f.gray_imgs_tmp=splitlines(strtrim(f.gray_imgs)); f.gray_imgs_tmp{4}=strtrim(f.inc);          
             hdr_file_orig=[env.input(n).im_dir,'C3', filesep, 'mask_valid_pixels.bin.hdr'];
                 % replace ENVI file type
             hdr_files={[env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, 'Freeman_Dbl.bin.hdr'],...
@@ -96,6 +133,20 @@ for n=env.trainFileNums; % file number from input
             f.pths='';
             f.gray_imgs_formatted=strjoin(f.gray_imgs_tmp([1 3 2 4],:), ' ');
         end
+    elseif strcmp(env.inputType, 'C3-inc')
+        if ~isunix
+            f.dirs_tmp=cellstr(repmat(env.input(n).im_dir_nband, f.num_bands,1));
+            f.dirs_tmp{f.num_bands+1}=[env.input(n).im_dir,'raw', filesep];
+            f.dirs=char(f.dirs_tmp);
+%             f.dirs=replace(f.dirs, ' ','');
+            f.pths=replace(cellstr(([f.dirs, f.gray_imgs])), ' ', '');
+                % rm whitespace
+            f.pths{f.num_bands+1}=replace(f.pths{f.num_bands+1}, ' ', '');
+            f.gray_imgs_formatted=strjoin(f.pths(:,:), ' ');
+        else % hot fix %% NEED TO CHANGE for unix
+            f.pths='';
+            f.gray_imgs_formatted=strjoin(f.gray_imgs_tmp([1 3 2 4],:), ' ');
+        end
     else
         f.dirs=repmat(env.input(n).im_dir_nband, size(f.gray_imgs, 1),1);
         f.pths=[f.dirs, f.gray_imgs];
@@ -113,7 +164,7 @@ for n=env.trainFileNums; % file number from input
     meta_path=[meta_dir, env.input(n).name, '_', num2str(n),'.txt'];
     meta_mat_path=[meta_dir, env.input(n).name, '_', num2str(n),'.mat'];
 
-    if ~ismember(size(f.pths, 1), [1 3 4 9]) && ~isunix
+    if ~ismember(size(f.pths, 1), [1 3 4 9 10]) && ~isunix
        warning('check inputs') 
        return
     end
@@ -163,7 +214,7 @@ for n=env.trainFileNums; % file number from input
             [stack, R]=geotiffread(stack_path);
             gti=geotiffinfo(stack_path);
             stack(repmat(stack(:,:,4)==env.constants.noDataValue, [1, 1, 4]))=NaN;
-            if strcmp(env.inputType, 'Freeman-inc')
+            if strcmp(env.inputType, 'Freeman-inc') || strcmp(env.inputType, 'C3-inc')
                 stack(:,:,1:end-1)=stack(:,:,1:end-1).*(cosd(env.constants.imCenter)./cos(stack(:,:,end))).^env.constants.n;
                 stack(repmat(stack(:,:,1)==env.constants.noDataValue, [1, 1, 3]))=env.constants.noDataValue;    %mask out nodata
                 geotiffwrite(stack_path,stack, R, 'GeoKeyDirectoryTag',gti.GeoTIFFTags.GeoKeyDirectoryTag)

@@ -16,20 +16,17 @@ add cost functions...;
 noData mask for training;
 turn off parallel except if on a cluster?
 speckle filtering?
-*run with only raw Freeman image ratios or inter-class variance
 *Need better water and FD classes
 *Run training for lots of param options and figure out which ones most imp- then use those
 *Better training data! Then re-run trainingImageImport.m
 *Try with C3 matrix or other decomp to see if yellow overlay is improved or better class distinction.
 * Try decomp with no moving (boxcar) window filter
-*Add Lee filter (wiener2.m)
-*Remove some of the filters from sigma: i.e. Hess
 *Range correction and inter-year differences.(ENVI histogram?)
-After AGU: add NoData class, use translation features just for x- to combat overlay effect?
 Run in regression mode to determine optimal class divisions?
 Test effect of not using incidence angle as a feature to remove potential range-of-training-area bias
 Update colors to be color-blind friendly
 Near-and far range masking or simply save output file w range band
+Add tall shrub class!
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~PixelClassifier~~~~~~~~~~~~~~~~~~~~~~~~~
 TODO: change plotting for n-band images; 
@@ -38,7 +35,7 @@ circumvent output method of writing to sep files, then combining- just combine o
 mirror window in movingstd instead of shrink...
 k-fold cross val for number of leaves?
 Memory optimization/block proc, if necessary
-Make addOutputImages.m more general by removing function calls to env
+Make addOutputImages.m more general by removing function calls to env (and delte .png files)
 Community service: Update fileexchange script for the following with gif fix: D:\Dropbox\Matlab\DownloadedCode\CaptureFigVid\CaptureFigVid\CaptureFigVid_EK.m
 Delete class mask images in addOutputImages.m as cleanup
 make mem efficient by possibly modifying way imClassify.m saves subsets{i} all the same
@@ -47,6 +44,10 @@ Possible LOO cross val on n-value for range correction, and try non-cosine as we
 * Change to not load all files in dir. into memory!
 try adding in NaNs, but removing NaNs just before steerable detector to save compute time...
 save uncertainties of each class by normalizing class probs by total prob
+**For inter-scene differences:
+    Run with only raw Freeman image ratios or inter-class variance
+    Illum. area correction?
+
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LINUX~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 prep trainingImageImport.m to be like viewingImageImport.m
@@ -69,7 +70,10 @@ automate bounding box selection
 *What percentage of  training px are being used? A: <1
 *making confusion matrix; 
 re-plot histograms to better align by band
-
+XAdd Lee filter (wiener2.m)
+X Remove some of the filters from sigma: i.e. Hess
+After AGU: add NoData class, use translation features just for x- to combat overlay effect?
+*** Add in W2 class (removed by mistake...)!!!
 
 ~~~~~~~~~~Modify for re-distribution of PixelClassifier Code~~~~~~~~~~~~~~
 rfTrain.m
