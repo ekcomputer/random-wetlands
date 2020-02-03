@@ -10,5 +10,5 @@ latpx=$(cat $1 | grep -e "grd_pwr.row_mult" | awk '{print $4}') # get rid of min
 echo map info = {Geographic Lat/Lon, 1, 1, $long, $lat, ${longpx#-}, ${latpx#-}, WGS-84} >> $2 # removes leading minus sign from pixel measurements
 
 echo
-echo Added georef info to header file: $2
+echo Added georef info to header file: `basename $2`
 echo
