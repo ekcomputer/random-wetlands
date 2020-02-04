@@ -116,6 +116,7 @@ for n=env.trainFileNums; % file number from input
         if ~isempty(env.input(n).bb)
             f.bb=env.input(n).bb;
             f.bb_fmtd=num2str(f.bb);
+            useFullExtent=0;
         else
             useFullExtent=1;
             disp('No training rasters used, but no bounding box defined.  Using full extent.')
@@ -127,7 +128,7 @@ for n=env.trainFileNums; % file number from input
         cmd=sprintf('gdalbuildvrt -separate %s %s', vrt_pth, f.gray_imgs_formatted)
         system(cmd);
             % gdal warp
-        if ~useFullExtent
+        if ~useFullExtent % is srcnodata really -10000 or is it zero?
             cmd=sprintf('gdalwarp "%s" "%s" -srcnodata -10000 -dstnodata -10000 -multi -wo NUM_THREADS=2 -co COMPRESS=DEFLATE -te %s -t_srs PROJCS["Canada_Albers_Equal_Area_Conic",GEOGCS["GCS_North_American_1983",DATUM["North_American_Datum_1983",SPHEROID["GRS_1980",6378137,298.257222101]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Albers_Conic_Equal_Area"],PARAMETER["False_Easting",0],PARAMETER["False_Northing",0],PARAMETER["longitude_of_center",-96],PARAMETER["Standard_Parallel_1",50],PARAMETER["Standard_Parallel_2",70],PARAMETER["latitude_of_center",40],UNIT["Meter",1],AUTHORITY["EPSG","102001"]]',...
                 vrt_pth, stack_path, f.bb_fmtd)
         else
@@ -148,7 +149,7 @@ for n=env.trainFileNums; % file number from input
             gti=geotiffinfo(stack_path);
             nBands=length(f.band_order);
             stack(repmat(stack(:,:,nBands)==env.constants.noDataValue, [1, 1, nBands]))=NaN;
-            if env.rangeCorrection
+            if env.rangeCorrection % fix NoData value issues...
                 if strcmp(env.inputType, 'Freeman-inc') || strcmp(env.inputType, 'C3-inc')
                     disp('Range correction...')
                     stack(:,:,1:end-1)=stack(:,:,1:end-1).*(cosd(env.constants.imCenter)./cos(stack(:,:,end))).^env.constants.n;
@@ -169,7 +170,12 @@ for n=env.trainFileNums; % file number from input
             end
        
                 % write using geotiffwrite and add mask using gdal
-            geotiffwrite([stack_path, '_temp.tif'],stack, R, 'GeoKeyDirectoryTag',gti.GeoTIFFTags.GeoKeyDirectoryTag)
+                try
+                    geotiffwrite([stack_path, '_temp.tif'],stack, R, 'GeoKeyDirectoryTag',gti.GeoTIFFTags.GeoKeyDirectoryTag)
+                catch
+                    disp('Writing big geotiff')
+                    biggeotiffwrite([stack_path, '_temp.tif'],stack, R);
+                end
             cmd=sprintf('gdalwarp "%s" "%s" -overwrite -srcnodata -10000 -dstnodata -10000 -multi -wo NUM_THREADS=2 -co COMPRESS=DEFLATE',...
                 [stack_path, '_temp.tif'], stack_path)
             system(cmd);

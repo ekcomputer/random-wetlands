@@ -27,6 +27,10 @@ Test effect of not using incidence angle as a feature to remove potential range-
 Update colors to be color-blind friendly
 Near-and far range masking or simply save output file w range band
 Add tall shrub class!
+* Fix NoData output issues...
+* dynamically assign mean incidence angle, or use lookup table from metatdata.ann file
+Speed up trainingImageImport.m by adding parallel
+Fix GeoTiffWrite alternatives for large bigtiffs
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~PixelClassifier~~~~~~~~~~~~~~~~~~~~~~~~~
 TODO: change plotting for n-band images; 

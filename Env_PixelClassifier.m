@@ -8,7 +8,7 @@ if load_env
 else
     
     %% Image I/O and viewing params
-env.trainingClassRasters=1; % set to 1 to make training class rasters; 0 for viewing image only
+env.trainingClassRasters=0; % set to 1 to make training class rasters; 0 for viewing image only
 
 
     if ~isunix
@@ -72,9 +72,11 @@ env.trainingClassRasters=1; % set to 1 to make training class rasters; 0 for vie
     else % on ASC cloud / unix
             % addpath
         addpath /att/gpfsfs/home/ekyzivat/scripts/random-wetlands/dnafinder-Cohen-a2b974e
-        env.trainFileNums=[9]; % [1 2]
-        env.output.train_dir='/att/nobackup/ekyzivat/PixelClassifier/Train21/';
-        env.output.test_dir='/att/nobackup/ekyzivat/PixelClassifier/Test21/';
+        addpath /att/gpfsfs/home/ekyzivat/scripts/PixelClassifier-fork
+        addpath /att/gpfsfs/home/ekyzivat/scripts/random-wetlands
+        env.trainFileNums=[8]; % [1 2]
+        env.output.train_dir='/att/nobackup/ekyzivat/PixelClassifier/Train21_2/';
+        env.output.test_dir='/att/nobackup/ekyzivat/PixelClassifier/Test21_2/';
         env.bulk_plot_dir='/dev/null/';
 
             % viewing image dir
@@ -95,12 +97,46 @@ env.trainingClassRasters=1; % set to 1 to make training class rasters; 0 for vie
         env.input(8).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/yflats_21508_17069_009_170621_L090_CX_01/';
         env.input(8).cls_pth=       ''; %FILL
         env.input(8).name=          'yflats_21508_17069_009_170621_L090_CX_01';
-        env.input(8).bb=            [-2033247.02283896 3729820.83180865 -2017337.22173237 3742108.79560523]; % in Canada Albers coords gdal: xmin ymin xmax ymax
+        env.input(8).bb=            [-2062054 3722869 -1944050 3771023]; %[-2033247.02283896 3729820.83180865 -2017337.22173237 3742108.79560523]; % in Canada Albers coords gdal: xmin ymin xmax ymax
         
-        env.input(9).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/yflatW_21508_17098_006_170916_L090_CX_01_V3/';
+        env.input(9).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/yflatW_21508_17098_006_170916_L090_CX_01/';
         env.input(9).cls_pth=       ''; %FILL
         env.input(9).name=          'yflatW_21508_17098_006_170916_L090_CX_01';
-        env.input(9).bb=            [-2033247.02283896 3729820.83180865 -2017337.22173237 3742108.79560523];
+        env.input(9).bb=            [-2062054 3722869 -1944050 3771023]; %-2033247.02283896 3729820.83180865 -2017337.22173237 3742108.79560523];
+        
+        env.input(10).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/bakerc_16008_18047_005_180821_L090_CX_02/';
+        env.input(10).cls_pth=       ''; %FILL
+        env.input(10).name=          'bakerc_16008_18047_005_180821_L090_CX_02';
+        env.input(10).bb=            [-926392 2606036 -905775 2667020]; %-2033247.02283896 3729820.83180865 -2017337.22173237 3742108.79560523];
+
+        env.input(11).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/bakerc_16008_19059_012_190904_L090_CX_01/';
+        env.input(11).cls_pth=       ''; %FILL
+        env.input(11).name=          'bakerc_16008_19059_012_190904_L090_CX_01';
+        env.input(11).bb=            [-926392 2606036 -905775 2667020]; %-2033247.02283896 3729820.83180865 -2017337.22173237 3742108.79560523];
+
+        env.input(12).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/bakerc_16008_19059_012_190904_L090_CX_01/';
+        env.input(12).cls_pth=       ''; %FILL
+        env.input(12).name=          'bakerc_16008_19059_012_190904_L090_CX_01';
+        env.input(12).bb=            [-926392 2606036 -905775 2667020]; %-2033247.02283896 3729820.83180865 -2017337.22173237 3742108.79560523];
+        
+        env.input(13).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/bakerc_16008_19059_012_190904_L090_CX_01/';
+        env.input(13).cls_pth=       ''; %FILL
+        env.input(13).name=          'bakerc_16008_19059_012_190904_L090_CX_01';
+        env.input(13).bb=            [-926392 2606036 -905775 2667020]; %-2033247.02283896 3729820.83180865 -2017337.22173237 3742108.79560523];
+        
+        
+        
+        % 
+%         env.input(9).im_dir=        '';
+%         env.input(9).cls_pth=       ''; %FILL
+%         env.input(9).name=          'yflatW_21508_17098_006_170916_L090_CX_01';
+%         env.input(9).bb=            [[]; %-2033247.02283896 3729820.83180865 -2017337.22173237 3742108.79560523];
+% 
+%         env.input(9).im_dir=        '';
+%         env.input(9).cls_pth=       ''; %FILL
+%         env.input(9).name=          'yflatW_21508_17098_006_170916_L090_CX_01';
+%         env.input(9).bb=            [[]; %-2033247.02283896 3729820.83180865 -2017337.22173237 3742108.79560523];
+
     end
 
         % model I/O (todo: add smart suffix automatically to avoid overwrite)
@@ -113,11 +149,11 @@ env.trainingClassRasters=1; % set to 1 to make training class rasters; 0 for vie
     % this parameter specifies such scales (radius of offset); details in imageFeatures.m
     % for moving gaussian filter
     % each creates 9 features
-    env.pixelClassifier.offsets=[]; %[3 5]; %OPTIONAL,
+    env.pixelClassifier.offsets=[3]; %[3 5]; %OPTIONAL,
     % in pixels; for offset features (see imageFeatures.m)
     % each creates 8 features
     % set to [] to ignore offset features
-    env.pixelClassifier.osSigma = []; %2;
+    env.pixelClassifier.osSigma = [2]; %2;
     % sigma for offset features (std dev of gaussian used for filter)
     env.pixelClassifier.radii = [];%[15 20 25]; %OPTIONAL
     % range of radii on which to compute circularity features (see imageFeatures.m)
@@ -138,7 +174,7 @@ env.trainingClassRasters=1; % set to 1 to make training class rasters; 0 for vie
     env.pixelClassifier.pctMaxNPixelsPerLabel = 5; % [1]; % unimportant- I'm way below limit
     % percentage of max number of pixels per label (w.r.t. num of pixels in image);
     % this puts a cap on the number of training samples and can improve training speed
-    env.pixelClassifier.textureWindows=[];
+    env.pixelClassifier.textureWindows=[5];
     % size of moving window to compute moving std dev
     
     env.pixelClassifier.speckleFilter=[1];
@@ -165,13 +201,13 @@ env.trainingClassRasters=1; % set to 1 to make training class rasters; 0 for vie
 
     % which input images
 
-    env.inputType='Norm-Fr-C11-inc'; %'Freeman', 'C3', 'Freeman-T3' or 'gray', 'Freeman-inc', 'C3-inc'
+    env.inputType='Freeman-inc'; %'Freeman', 'C3', 'Freeman-T3' or 'gray', 'Freeman-inc', 'C3-inc'
 %     env.inputType='Freeman-inc'; % DONT FORGET to change line 105 in
 %     pixelClassifierTrain.m and line 61 in PixelClassifier... to update input Type
     env.rangeCorrection=1;
     
     % constands
-    env.constants.imCenter=43;
+    env.constants.imCenter=43; % 49.3 for YF-21508
     env.constants.n=0.5; %1.64; % range correction exponent
     env.constants.noDataValue=-10000;
     env.constants.noDataValue_ouput=0;

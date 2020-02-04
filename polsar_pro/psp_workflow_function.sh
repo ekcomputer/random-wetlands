@@ -10,7 +10,7 @@ window=3 # moving window size for decomp
 	#PATHS
 #export PATH=$PATH:~/polsarPro/Soft/bin/data_import/
 #export PATH=$PATH:~/polsarPro/Soft/bin/tools/
-#export PATH=$PATH:~/polsarPro/Soft/bin/data_process_sngl/
+#export PATH=$PATH:~/polsarPro/Soft/bin/data_process_\\files.brown.edu\Home\ekyzivat\Documents\Training\SAR\PolSARProv5sngl/
 #export PATH=$PATH:~/polsarPro/Soft/bin/bmp_process/
 
 file_dir_ASC=$1
@@ -18,13 +18,13 @@ file_dir_ASC=$1
 #
 
 file_dir_tmp=${file_dir_ASC#/att/gpfsfs/atrepo01/data/ORNL/ABoVE_Archive/datapool.asf.alaska.edu/PROJECTED/UA/}
-	#echo File dir 1: $file_dir1
-	ID=${file_dir_tmp%_grd}
-	file_dir=$NOBACKUP/UAVSAR/asf.alaska.edu/$ID # NOBACKUP
-	base=$file_dir/raw
-	printf "\nASF dir: \t\t $file_dir_ASC\n"
-	printf "file_dir: \t\t $file_dir\n"
-	printf "Base dir:\t\t $base\n\n"
+#echo File dir 1: $file_dir1
+ID=${file_dir_tmp%_grd}
+file_dir=$NOBACKUP/UAVSAR/asf.alaska.edu/$ID # NOBACKUP
+base=$file_dir/raw
+printf "\nASF dir: \t\t $file_dir_ASC\n"
+printf "file_dir: \t\t $file_dir\n"
+printf "Base dir:\t\t $base\n\n"
 
 #
 if [ -e $file_dir/freeman/C3/Freeman_Odd.bin ]
@@ -72,7 +72,7 @@ else
 	-id "$c3" -od "$fre" -iodf C3 -nwr $window -nwc $window -ofr 0 -ofc 0 -fnr $inr -fnc $inc  \
 	-errf "/home/ekyzivat/.polsarpro-bio_6.0.1/Tmp/MemoryAllocError.txt" -mask "$c3/mask_valid_pixels.bin" -mem $mem
 
-		# BUILD envi headers
+		# BUILD envi headers # note: imaginary .bin files will have wrong data type (float instead of complex)
 	printf "\tENVI Headers\n"
 	bin_files=`find $file_dir -name "*.bin" -o -name "*.inc" -o -name "*.mlc" -o -name "*.slope" -o -name "*.hgt"`
 	for file in $bin_files; do
