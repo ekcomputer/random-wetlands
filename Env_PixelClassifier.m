@@ -7,21 +7,24 @@ if load_env
     env=model.env;
 else
     
+    %% Params
+    env.trainingClassRasters=1; % set to 1 to make training class rasters; 0 for viewing image only
+    env.rangeCorrection=1;
+    % which input images
     %% Image I/O and viewing params
-env.trainingClassRasters=0; % set to 1 to make training class rasters; 0 for viewing image only
-
+    env.inputType='Freeman-inc'; %'Freeman', 'C3', 'Freeman-T3' or 'gray', 'Freeman-inc', 'C3-inc'
 
     if ~isunix
                 % training file output directory
-        env.output.train_dir='F:\PAD2019\classification_training\PixelClassifier\Train23\';
+        env.output.train_dir='F:\PAD2019\classification_training\PixelClassifier\Train24\';
         % env.output.train_dir='F:\PAD2019\classification_training\PixelClassifier\Train_origClass\Train';
-        env.output.test_dir='F:\PAD2019\classification_training\PixelClassifier\Test23\';
+        env.output.test_dir='F:\PAD2019\classification_training\PixelClassifier\Test24\';
         % env.output.val_dir='F:\PAD2019\classification_training\PixelClassifier\Validation\';
         % env.output.current_model='F:\PAD2019\classification_training\PixelClassifier\model5.mat';
         % where the model is
         % where images are
             % Which files to import as training images
-        env.trainFileNums=[2]; % [1 2]
+        env.trainFileNums=[1 2]; % [1 2]
             % plotting
         env.bulk_plot_dir='D:\pic\UAVSAR_classification\';
 
@@ -199,12 +202,8 @@ env.trainingClassRasters=0; % set to 1 to make training class rasters; 0 for vie
 
     % stacked images output
 
-    % which input images
-
-    env.inputType='Freeman-inc'; %'Freeman', 'C3', 'Freeman-T3' or 'gray', 'Freeman-inc', 'C3-inc'
 %     env.inputType='Freeman-inc'; % DONT FORGET to change line 105 in
 %     pixelClassifierTrain.m and line 61 in PixelClassifier... to update input Type
-    env.rangeCorrection=1;
     
     % constands
     env.constants.imCenter=43; % 49.3 for YF-21508
