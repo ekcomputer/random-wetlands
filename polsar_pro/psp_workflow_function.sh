@@ -22,6 +22,7 @@ file_dir_tmp=${file_dir_ASC#/att/gpfsfs/atrepo01/data/ORNL/ABoVE_Archive/datapoo
 ID=${file_dir_tmp%_grd}
 file_dir=$NOBACKUP/UAVSAR/asf.alaska.edu/$ID # NOBACKUP
 base=$file_dir/raw
+file_inc=/att/gpfsfs/atrepo01/data/ORNL/ABoVE_Archive/datapool.asf.alaska.edu/INC/UA/$ID.inc
 printf "\nASF dir: \t\t $file_dir_ASC\n"
 printf "file_dir: \t\t $file_dir\n"
 printf "Base dir:\t\t $base\n\n"
@@ -46,8 +47,15 @@ else
 	if=( $( find $file_dir_ASC -name *.grd -type f | sort -n) )
 
 		# MKDIR
-	printf "\tCreating C3 dir\n"
+	printf "\tCreating C3 and raw dirs\n"
 	mkdir -p $c3
+	mkdir -p $base
+	
+		# COPY INC FILE
+	if [ -f $base/$ID.inc ]; then
+		echo Needed to copy INC: $file_inc  ">>>>>"  $base
+	fi
+	cp -u $file_inc $base
 
 		#CONVERT MLC
 	printf "\tConvert MLC\n"
