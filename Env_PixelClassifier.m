@@ -8,7 +8,7 @@ if load_env
 else
     
     %% Params
-    env.trainingClassRasters=1; % set to 1 to make training class rasters; 0 for viewing image only
+    env.trainingClassRasters=0; % set to 1 to make training class rasters; 0 for viewing image only
     env.rangeCorrection=1;
     % which input images
     %% Image I/O and viewing params
@@ -77,9 +77,9 @@ else
         addpath /att/gpfsfs/home/ekyzivat/scripts/random-wetlands/dnafinder-Cohen-a2b974e
         addpath /att/gpfsfs/home/ekyzivat/scripts/PixelClassifier-fork
         addpath /att/gpfsfs/home/ekyzivat/scripts/random-wetlands
-        env.trainFileNums=[8]; % [1 2]
-        env.output.train_dir='/att/nobackup/ekyzivat/PixelClassifier/Train21_2/';
-        env.output.test_dir='/att/nobackup/ekyzivat/PixelClassifier/Test21_2/';
+        env.trainFileNums=[12 13]; % [1 2]
+        env.output.train_dir='/att/nobackup/ekyzivat/PixelClassifier/Train24/';
+        env.output.test_dir='/att/nobackup/ekyzivat/PixelClassifier/Test24/';
         env.bulk_plot_dir='/dev/null/';
 
             % viewing image dir

@@ -38,7 +38,7 @@ for n=env.trainFileNums; % file number from input
 %             filesep,  env.input(n).name, '.inc']);
 %     else
     f.inc_dir=dir([env.input(n).im_dir,'raw', filesep, '*inc']); % if using, fix for unix
-    end
+%     end
     f.gray_imgs_freeman=dir([env.input(n).im_dir_nband, 'Freeman*.bin']);
     f.gray_imgs_c3=dir([env.input(n).im_dir_nband_c, 'C*.bin']);
     if isempty(f.inc_dir) || size(f.inc_dir, 1) > 1 || isempty(f.gray_imgs_freeman)...
