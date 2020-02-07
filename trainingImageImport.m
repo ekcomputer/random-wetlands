@@ -8,18 +8,30 @@ clear; close all
 %% I/O
 Env_PixelClassifier % load environment vars
 trainingClassRasters=env.trainingClassRasters; % set to 1 to make training class rasters; 0 for viewing image only
-vrt_pth=[env.tempDir, 'nband_image.vrt'];
+
 for n=env.trainFileNums; % file number from input
     %% load / gdal VRT stack / path formatting
-
+        
+        % options
+        if trainingClassRasters
+            stack_path=[env.output.train_dir, env.input(n).name, '_', env.inputType,'.tif'];
+            vrt_pth=[env.output.train_dir, env.input(n).name, '_', env.inputType,'.vrt']
+        else
+            stack_path=[env.output.test_dir, env.input(n).name, '_', env.inputType,'.tif'];
+            vrt_pth=[env.output.test_dir, env.input(n).name, '_', env.inputType,'.vrt']
+        end
+        
         % display I/O params for visual check
         disp('Check to make sure I/O paths are corret:')
-        env.input(env.trainFileNums).cls_pth
-        env.output.train_dir
-        env.output.test_dir
-         fprintf('File numbers: %d\n', env.trainFileNums)
-        env.inputType
-        fprintf('Rangecorrection: %d\n', env.rangeCorrection);
+        fprintf('Training class path:\t %s\n', env.input(env.trainFileNums).cls_pth)
+        fprintf('Training dir: \t%s\n', env.output.train_dir)
+        fprintf('Test dir: \t%s\n', env.output.test_dir)
+        fprintf('File numbers: \t%s\n', num2str(env.trainFileNums))
+        f.names={env.input.name};
+        fprintf('File IDs:\n');
+        disp(f.names(env.trainFileNums)')
+        fprintf('Input type: \t%s\n', env.inputType)
+        fprintf('Rangecorrection: \t%d\n', env.rangeCorrection);
         if trainingClassRasters==0;
             disp('Making stacked image only- no training class rasters.  Output to test folder')
         else
@@ -43,12 +55,14 @@ for n=env.trainFileNums; % file number from input
     f.gray_imgs_c3=dir([env.input(n).im_dir_nband_c, 'C*.bin']);
     if isempty(f.inc_dir) || size(f.inc_dir, 1) > 1 || isempty(f.gray_imgs_freeman)...
             || isempty(f.gray_imgs_c3) 
-        error('No < inc, freeman, or C3 > file found.')
+        warning('No < inc, freeman, or C3 > file found.')
+        continue
     end
     f.inc=f(1).inc_dir.name;
-    if exist([env.input(n).im_dir, 'raw', filesep, env.input(n).name, '.inc.hdr']) ~= 2
+    if exist([env.input(n).im_dir, 'raw', filesep, env.input(n).name, '.inc.hdr']) ~= 2 % if inc.hdr DNE
         copyfile([env.input(n).im_dir,'C3', filesep, 'mask_valid_pixels.bin.hdr'], [env.input(n).im_dir, 'raw', filesep, env.input(n).name, '.inc.hdr']);
-        fprintf('Creating inc.hdr file: %s\n', [env.input(n).im_dir, 'raw', filesep, env.input(n).name, '.inc.hdr'])
+        f.w=sprintf('Creating inc.hdr file: %s\n', [env.input(n).im_dir, 'raw', filesep, env.input(n).name, '.inc.hdr']);
+        warning(f.w);
     end
                 % merge structures
     f.gray_imgs_freeman_tbl=struct2table(f.gray_imgs_freeman); 
@@ -86,13 +100,6 @@ for n=env.trainFileNums; % file number from input
     if ~ismember(length({f.pths{f.band_order}}), [1 3 4 5 10]) && ~isunix
        warning('check inputs') 
        return
-    end
-    
-    %% options
-    if trainingClassRasters
-        stack_path=[env.output.train_dir, env.input(n).name, '_', env.inputType,'.tif'];
-    else
-        stack_path=[env.output.test_dir, env.input(n).name, '_', env.inputType,'.tif'];
     end
 
     %%  save log files
@@ -158,11 +165,11 @@ for n=env.trainFileNums; % file number from input
                 if strcmp(env.inputType, 'Freeman-inc') || strcmp(env.inputType, 'C3-inc')
                     disp('Range correction...')
                     stack(:,:,1:end-1)=stack(:,:,1:end-1).*(cosd(env.constants.imCenter)./cos(stack(:,:,end))).^env.constants.n;
-                    stack(repmat(stack(:,:,1)==env.constants.noDataValue, [1, 1, 3]))=env.constants.noDataValue;    %mask out nodata
+                    stack(repmat(stack(:,:,1)==env.constants.noDataValue, [1, 1, nBands]))=env.constants.noDataValue;    %mask out nodata
                 elseif strcmp(env.inputType, 'Norm-Fr-C11-inc')
                     disp('Range correction...')
                     stack(:,:,4)=stack(:,:,4).*(cosd(env.constants.imCenter)./cos(stack(:,:,end))).^env.constants.n;
-                    stack(repmat(stack(:,:,1)==env.constants.noDataValue, [1, 1, 3]))=env.constants.noDataValue;    %mask out nodata
+                    stack(repmat(stack(:,:,1)==env.constants.noDataValue, [1, 1, nBands]))=env.constants.noDataValue;    %mask out nodata
                else
                     error('check input class')
                 end
@@ -175,16 +182,19 @@ for n=env.trainFileNums; % file number from input
             end
        
                 % write using geotiffwrite and add mask using gdal
-                try
-                    geotiffwrite([stack_path, '_temp.tif'],stack, R, 'GeoKeyDirectoryTag',gti.GeoTIFFTags.GeoKeyDirectoryTag)
-                catch
+                lastwarn('') % reset
+                [warnMsg, warnId] = lastwarn;
+                    % Try
+                geotiffwrite([stack_path, '_temp.tif'],stack, R, 'GeoKeyDirectoryTag',gti.GeoTIFFTags.GeoKeyDirectoryTag)
+                if ~isempty(warnMsg)
                     disp('Writing big geotiff')
-                    biggeotiffwrite([stack_path, '_temp.tif'],stack, R);
+                    biggeotiffwrite([stack_path, '_temp.tif'],stack, R, env.proj_source);
                 end
+                    % can use gdal edit instead...
             cmd=sprintf('gdalwarp "%s" "%s" -overwrite -srcnodata -10000 -dstnodata -10000 -multi -wo NUM_THREADS=2 -co COMPRESS=DEFLATE',...
                 [stack_path, '_temp.tif'], stack_path)
             system(cmd);
-            delete([stack_path, '_temp.tif']);
+            delete([stack_path, '_temp*']);
         end
         
     else

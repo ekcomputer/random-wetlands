@@ -13,13 +13,14 @@ window=3 # moving window size for decomp
 #export PATH=$PATH:~/polsarPro/Soft/bin/data_process_\\files.brown.edu\Home\ekyzivat\Documents\Training\SAR\PolSARProv5sngl/
 #export PATH=$PATH:~/polsarPro/Soft/bin/bmp_process/
 
-file_dir_ASC=$1
+file_dir_input=$1 # could have ASC path or just ID
 
 #
 
-file_dir_tmp=${file_dir_ASC#/att/gpfsfs/atrepo01/data/ORNL/ABoVE_Archive/datapool.asf.alaska.edu/PROJECTED/UA/}
+file_dir_tmp=${file_dir_input#/att/gpfsfs/atrepo01/data/ORNL/ABoVE_Archive/datapool.asf.alaska.edu/PROJECTED/UA/}
 #echo File dir 1: $file_dir1
 ID=${file_dir_tmp%_grd}
+file_dir_ASC=/att/gpfsfs/atrepo01/data/ORNL/ABoVE_Archive/datapool.asf.alaska.edu/PROJECTED/UA/$ID"_grd" # add in ASC prefix
 file_dir=$NOBACKUP/UAVSAR/asf.alaska.edu/$ID # NOBACKUP
 base=$file_dir/raw
 file_inc=/att/gpfsfs/atrepo01/data/ORNL/ABoVE_Archive/datapool.asf.alaska.edu/INC/UA/$ID.inc
@@ -86,7 +87,7 @@ else
 	for file in $bin_files; do
 		#echo $file
 		envi_config_file.exe -bin $file -nam $file.hdr -iodf 4 -fnr $inr -fnc $inc
-		./editEnviHdr.sh $file_dir_ASC/*.ann $file.hdr
+		editEnviHdr.sh $file_dir_ASC/*.ann $file.hdr
 	done
 
 fi

@@ -77,7 +77,7 @@ else
         addpath /att/gpfsfs/home/ekyzivat/scripts/random-wetlands/dnafinder-Cohen-a2b974e
         addpath /att/gpfsfs/home/ekyzivat/scripts/PixelClassifier-fork
         addpath /att/gpfsfs/home/ekyzivat/scripts/random-wetlands
-        env.trainFileNums=[12 13]; % [1 2]
+        env.trainFileNums=[10 11 14 15]; %[1 2 8 9 10 11 12 13]; % [1 2]
         env.output.train_dir='/att/nobackup/ekyzivat/PixelClassifier/Train24/';
         env.output.test_dir='/att/nobackup/ekyzivat/PixelClassifier/Test24/';
         env.bulk_plot_dir='/dev/null/';
@@ -89,13 +89,15 @@ else
         env.tempDir='/att/nobackup/ekyzivat/PixelClassifierTemp/';
 
             % training image and classes input and bounding boxes
-        env.input(1).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/padelE_36000_18047_000_180821_L090_CX_01/';
+        env.input(1).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/padelE_36000_18047_000_180821_L090_CX_01/';
         env.input(1).cls_pth=       '';%'F:\PAD2019\classification_training\training2018PAD.shp';
         env.input(1).name=          'padelE_36000_18047_000_180821_L090_CX_01';
+        env.input(1).bb=            [-2062054 3722869 -1944050 3771023];
 
-        env.input(2).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/padelE_36000_19059_003_190904_L090_CX_01/';
+        env.input(2).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/padelE_36000_19059_003_190904_L090_CX_01/';
         env.input(2).cls_pth=       '';%'F:\PAD2019\classification_training\training2018PAD.shp';
         env.input(2).name=          'padelE_36000_19059_003_190904_L090_CX_01';
+        env.input(2).bb=            [-2062054 3722869 -1944050 3771023];
         
         env.input(8).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/yflats_21508_17069_009_170621_L090_CX_01/';
         env.input(8).cls_pth=       ''; %FILL
@@ -117,15 +119,25 @@ else
         env.input(11).name=          'bakerc_16008_19059_012_190904_L090_CX_01';
         env.input(11).bb=            [-926392 2606036 -905775 2667020]; %-2033247.02283896 3729820.83180865 -2017337.22173237 3742108.79560523];
 
-        env.input(12).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/bakerc_16008_19059_012_190904_L090_CX_01/';
+        env.input(12).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/daring_21405_17063_010_170614_L090_CX_01/';
         env.input(12).cls_pth=       ''; %FILL
-        env.input(12).name=          'bakerc_16008_19059_012_190904_L090_CX_01';
-        env.input(12).bb=            [-926392 2606036 -905775 2667020]; %-2033247.02283896 3729820.83180865 -2017337.22173237 3742108.79560523];
+        env.input(12).name=          'daring_21405_17063_010_170614_L090_CX_01';
+        env.input(12).bb=            [-828919, 2739998, -696353, 2878150]; %-2033247.02283896 3729820.83180865 -2017337.22173237 3742108.79560523];
         
-        env.input(13).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/bakerc_16008_19059_012_190904_L090_CX_01/';
+        env.input(13).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/daring_21405_17094_010_170909_L090_CX_01/';
         env.input(13).cls_pth=       ''; %FILL
-        env.input(13).name=          'bakerc_16008_19059_012_190904_L090_CX_01';
-        env.input(13).bb=            [-926392 2606036 -905775 2667020]; %-2033247.02283896 3729820.83180865 -2017337.22173237 3742108.79560523];
+        env.input(13).name=          'daring_21405_17094_010_170909_L090_CX_01';
+        env.input(13).bb=            [-828919, 2739998, -696353, 2878150]; 
+        
+        env.input(14).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/bakerc_16008_18047_005_180821_L090_CX_01/';
+        env.input(14).cls_pth=       ''; %FILL
+        env.input(14).name=          'bakerc_16008_18047_005_180821_L090_CX_01'; % new
+        env.input(14).bb=            [-926392 2606036 -905775 2667020]; 
+        
+        env.input(15).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/bakerc_16008_19060_037_190905_L090_CX_01/';
+        env.input(15).cls_pth=       ''; %FILL
+        env.input(15).name=          'bakerc_16008_19060_037_190905_L090_CX_01'; % new
+        env.input(15).bb=            [-926392 2606036 -905775 2667020]; 
         
         
         
@@ -236,6 +248,14 @@ else
     %% validition set partitioning
     env.valPartitionRatio=0.15; % what percentage held back for validation % NOT inverse of ratio between no of training and total (= training + val) pixels
     env.seed=22; % random number gen seed!
+    
+    %% proj source
+    
+    if ~isunix
+        env.proj_source='F:\UAVSAR\Georeferenced\proj\102001.prj';
+    else
+        env.proj_source='/att/gpfsfs/home/ekyzivat/scripts/proj/102001.prj';
+    end
 end
 %% acknowledgements
 % matlab file exchange ENVI read/write

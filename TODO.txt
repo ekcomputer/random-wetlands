@@ -31,6 +31,11 @@ Add tall shrub class!
 * dynamically assign mean incidence angle, or use lookup table from metatdata.ann file
 Speed up trainingImageImport.m by adding parallel
 Fix GeoTiffWrite alternatives for large bigtiffs
+Auto/streamlined env.input(xx) ingest
+**Add H/a/alpha or Sinclair matrix or AVIRIS into workflows
+Illum angle correction for shield
+Multithread gdalwarp, dep on linux or Brown- but careful if running loops in parallel
+RE-write parallel_cat_run.sh as a slurm batch file that uses srun instead of bash to call the processing function 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~PixelClassifier~~~~~~~~~~~~~~~~~~~~~~~~~
 TODO: change plotting for n-band images; 
@@ -54,12 +59,14 @@ More radiometric cal: I would plot sigma, gamma and Freeman values based on inc 
     I could also implement the Ulander 1996 illum. area correction
     Run with only raw Freeman image ratios or inter-class variance
 view(treeBag.Trees{1}, 'Mode', 'graph')
+
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LINUX~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 prep trainingImageImport.m to be like viewingImageImport.m
 add ability to sbatch each test file in parallel!  Need command line input for which files to run on
 X make range correction additions linux-compatible
 set data dir input files to parse out beginning paths and _grd so I can use same for both scripts
 X Fix stacking bug so I can run on second Shield Image! X
+parallelize training imageImport to use parfor on two cores 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~NOTE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 nodata value is not dynamically defined in the gdal calls

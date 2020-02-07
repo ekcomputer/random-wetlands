@@ -5,10 +5,10 @@
 printf "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\nStarting processing files...\n"
 
 	# no input file parsing
-cat $2 | parallel "bash $1 {} "
+for file_dir in $(cat $2)
+do
+	bash $1 $file_dir
+done
+#cat $2 | parallel "bash $1 {} "
 
-	#input file parsing
-#cat $2 | sed "s+/att/gpfsfs/atrepo01/data/ORNL/ABoVE_Archive/datapool.asf.alaska.edu/PROJECTED/UA/++" | sed "s+^+$NOBACKUP/UAVSAR/asf.alaska.edu/+g" | sed 's+_grd++g' | parallel "bash $1 {} "ls
-
-#| parallel "bash $1 {} "ls
 printf "Done processing files.\n"
