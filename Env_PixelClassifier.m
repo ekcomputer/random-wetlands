@@ -13,71 +13,12 @@ else
     % which input images
     %% Image I/O and viewing params
     env.inputType='Freeman-inc'; %'Freeman', 'C3', 'Freeman-T3' or 'gray', 'Freeman-inc', 'C3-inc'
-
-    if ~isunix
-                % training file output directory
-        env.output.train_dir='F:\PAD2019\classification_training\PixelClassifier\Train24\';
-        % env.output.train_dir='F:\PAD2019\classification_training\PixelClassifier\Train_origClass\Train';
-        env.output.test_dir='F:\PAD2019\classification_training\PixelClassifier\Test24\';
-        % env.output.val_dir='F:\PAD2019\classification_training\PixelClassifier\Validation\';
-        % env.output.current_model='F:\PAD2019\classification_training\PixelClassifier\model5.mat';
-        % where the model is
-        % where images are
-            % Which files to import as training images
-        env.trainFileNums=[1 2]; % [1 2]
-            % plotting
-        env.bulk_plot_dir='D:\pic\UAVSAR_classification\';
-
-            % viewing image dir
-        env.viewingImageDir='F:\UAVSAR\Georeferenced\'; % optional
-
-            % temp
-            
-        env.tempDir='F:\PAD2019\classification_training\PixelClassifierTemp\';
-
-            % training image and classes input and bounding boxes
-        env.input(1).im_dir=        'F:\UAVSAR\padelE_36000_18047_000_180821_L090_CX_01\';
-        env.input(1).cls_pth=       'F:\PAD2019\classification_training\training2018PAD_Jan28_allClasses.shp';
-        env.input(1).name=          'padelE_36000_18047_000_180821_L090_CX_01';
-        env.input(1).bb=            [];%[-111.913 58.323 -110.894 58.99]; %xmin ymin xmax ymax
-
-        env.input(2).im_dir=        'F:\UAVSAR\padelE_36000_19059_003_190904_L090_CX_01\';
-        % env.input(2).cls_pth=       'F:\PAD2019\classification_training\training2019PAD.shp';
-        env.input(2).cls_pth=       'F:\PAD2019\classification_training\training2019PAD_Jan28_allClasses.shp';% dummy for bounding box only
-        env.input(2).name=          'padelE_36000_19059_003_190904_L090_CX_01';
-        env.input(2).bb=            [];%[-111.913 58.323 -110.894 58.99]; 
-
-        env.input(3).im_dir=        'F:\UAVSAR\PADELT_36000_17062_003_170613_L090_CX_01\';
-        env.input(3).cls_pth=       'F:\PAD2019\classification_training\training2019PAD_Jan01_allClasses.shp';% dummy for bounding box only
-        env.input(3).name=          'PADELT_36000_17062_003_170613_L090_CX_01'; 
-        env.input(3).bb=            [];%[-107.128 52.586]; 
-        
-        env.input(4).im_dir=        'F:\UAVSAR\padelE_36000_17093_007_170908_L090_CX_01\';
-        env.input(4).cls_pth=       'F:\PAD2019\classification_training\training2019PAD_Jan01_allClasses.shp';
-        env.input(4).name=          'padelE_36000_17093_007_170908_L090_CX_01';
-        env.input(4).bb=            [];%[-107.128 52.586]; 
-        
-        env.input(5).im_dir=        'F:\UAVSAR\redber_30704_17092_000_170907_L090_CX_01\Pout\';
-        env.input(5).cls_pth=       '';
-        env.input(5).name=          'redber_30704_17092_000_170907_L090_CX_01';
-        env.input(5).bb=            [];%[-107.128 52.586]; 
-
-        env.input(6).im_dir=        'F:\UAVSAR\PADELT_36000_17062_003_170613_L090_CX_01\';
-        env.input(6).cls_pth=       '';
-        env.input(6).name=          'PADELT_36000_17062_003_170613_L090_CX_01';
-        env.input(6).bb=            [];%[-107.128 52.586]; 
-
-        env.input(7).im_dir=        'F:\UAVSAR\yflats_21609_17069_011_170621_L090_CX_01\';
-        env.input(7).cls_pth=       ''; %FILL
-        env.input(7).name=          'yflats_21609_17069_011_170621_L090_CX_01';
-        env.input(7).bb=            [];
-
-    else % on ASC cloud / unix
-            % addpath
+    if isunix % on ASC
+           % addpath
         addpath /att/gpfsfs/home/ekyzivat/scripts/random-wetlands/dnafinder-Cohen-a2b974e
         addpath /att/gpfsfs/home/ekyzivat/scripts/PixelClassifier-fork
         addpath /att/gpfsfs/home/ekyzivat/scripts/random-wetlands
-        env.trainFileNums=[10 11 14 15]; %[1 2 8 9 10 11 12 13]; % [1 2]
+        env.trainFileNums=[12 13]; %[1 2 8 9 10 11 12 13]; % [1 2]
         env.output.train_dir='/att/nobackup/ekyzivat/PixelClassifier/Train24/';
         env.output.test_dir='/att/nobackup/ekyzivat/PixelClassifier/Test24/';
         env.bulk_plot_dir='/dev/null/';
@@ -87,73 +28,64 @@ else
 
             % temp
         env.tempDir='/att/nobackup/ekyzivat/PixelClassifierTemp/';
-
-            % training image and classes input and bounding boxes
-        env.input(1).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/padelE_36000_18047_000_180821_L090_CX_01/';
-        env.input(1).cls_pth=       '';%'F:\PAD2019\classification_training\training2018PAD.shp';
-        env.input(1).name=          'padelE_36000_18047_000_180821_L090_CX_01';
-        env.input(1).bb=            [-2062054 3722869 -1944050 3771023];
-
-        env.input(2).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/padelE_36000_19059_003_190904_L090_CX_01/';
-        env.input(2).cls_pth=       '';%'F:\PAD2019\classification_training\training2018PAD.shp';
-        env.input(2).name=          'padelE_36000_19059_003_190904_L090_CX_01';
-        env.input(2).bb=            [-2062054 3722869 -1944050 3771023];
+    else % on local
+            % Which files to import as training images
+        env.trainFileNums=[1 2]; % [1 2]
         
-        env.input(8).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/yflats_21508_17069_009_170621_L090_CX_01/';
-        env.input(8).cls_pth=       ''; %FILL
-        env.input(8).name=          'yflats_21508_17069_009_170621_L090_CX_01';
-        env.input(8).bb=            [-2062054 3722869 -1944050 3771023]; %[-2033247.02283896 3729820.83180865 -2017337.22173237 3742108.79560523]; % in Canada Albers coords gdal: xmin ymin xmax ymax
+            % training file output directory
+        env.output.train_dir='F:\PAD2019\classification_training\PixelClassifier\Train24\';
+        env.output.test_dir='F:\PAD2019\classification_training\PixelClassifier\Test24\';
+            
+            % plotting
+        env.bulk_plot_dir='D:\pic\UAVSAR_classification\';
         
-        env.input(9).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/yflatW_21508_17098_006_170916_L090_CX_01/';
-        env.input(9).cls_pth=       ''; %FILL
-        env.input(9).name=          'yflatW_21508_17098_006_170916_L090_CX_01';
-        env.input(9).bb=            [-2062054 3722869 -1944050 3771023]; %-2033247.02283896 3729820.83180865 -2017337.22173237 3742108.79560523];
+            % viewing image dir
+        env.viewingImageDir='F:\UAVSAR\Georeferenced\'; % optional
         
-        env.input(10).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/bakerc_16008_18047_005_180821_L090_CX_02/';
-        env.input(10).cls_pth=       ''; %FILL
-        env.input(10).name=          'bakerc_16008_18047_005_180821_L090_CX_02';
-        env.input(10).bb=            [-926392 2606036 -905775 2667020]; %-2033247.02283896 3729820.83180865 -2017337.22173237 3742108.79560523];
-
-        env.input(11).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/bakerc_16008_19059_012_190904_L090_CX_01/';
-        env.input(11).cls_pth=       ''; %FILL
-        env.input(11).name=          'bakerc_16008_19059_012_190904_L090_CX_01';
-        env.input(11).bb=            [-926392 2606036 -905775 2667020]; %-2033247.02283896 3729820.83180865 -2017337.22173237 3742108.79560523];
-
-        env.input(12).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/daring_21405_17063_010_170614_L090_CX_01/';
-        env.input(12).cls_pth=       ''; %FILL
-        env.input(12).name=          'daring_21405_17063_010_170614_L090_CX_01';
-        env.input(12).bb=            [-828919, 2739998, -696353, 2878150]; %-2033247.02283896 3729820.83180865 -2017337.22173237 3742108.79560523];
-        
-        env.input(13).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/daring_21405_17094_010_170909_L090_CX_01/';
-        env.input(13).cls_pth=       ''; %FILL
-        env.input(13).name=          'daring_21405_17094_010_170909_L090_CX_01';
-        env.input(13).bb=            [-828919, 2739998, -696353, 2878150]; 
-        
-        env.input(14).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/bakerc_16008_18047_005_180821_L090_CX_01/';
-        env.input(14).cls_pth=       ''; %FILL
-        env.input(14).name=          'bakerc_16008_18047_005_180821_L090_CX_01'; % new
-        env.input(14).bb=            [-926392 2606036 -905775 2667020]; 
-        
-        env.input(15).im_dir=        '/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/bakerc_16008_19060_037_190905_L090_CX_01/';
-        env.input(15).cls_pth=       ''; %FILL
-        env.input(15).name=          'bakerc_16008_19060_037_190905_L090_CX_01'; % new
-        env.input(15).bb=            [-926392 2606036 -905775 2667020]; 
-        
-        
-        
-        % 
-%         env.input(9).im_dir=        '';
-%         env.input(9).cls_pth=       ''; %FILL
-%         env.input(9).name=          'yflatW_21508_17098_006_170916_L090_CX_01';
-%         env.input(9).bb=            [[]; %-2033247.02283896 3729820.83180865 -2017337.22173237 3742108.79560523];
-% 
-%         env.input(9).im_dir=        '';
-%         env.input(9).cls_pth=       ''; %FILL
-%         env.input(9).name=          'yflatW_21508_17098_006_170916_L090_CX_01';
-%         env.input(9).bb=            [[]; %-2033247.02283896 3729820.83180865 -2017337.22173237 3742108.79560523];
-
+            % temp           
+        env.tempDir='F:\PAD2019\classification_training\PixelClassifierTemp\';
     end
-
+    %% Parse input runfile
+    
+    if isunix
+        xls_in=['/att/gpfsfs/home/ekyzivat/scripts/random-wetlands' filesep, 'run_inputs', filesep, 'run_inputs.xlsx'];
+    else
+        xls_in=['.' filesep, 'run_inputs', filesep, 'run_inputs.xlsx']; % relative path could be problematic
+    end
+    xls=importdata(xls_in); 
+    xls.headers=xls.textdata(1,:);
+    xls.hdr.name=find(strcmp(xls.headers, 'name'));
+    xls.hdr.im_dir=find(strcmp(xls.headers, 'im_dir'));
+    xls.hdr.cls_pth=find(strcmp(xls.headers, 'cls_pth'));
+    xls.hdr.bb=find(strcmp(xls.headers, 'bb_xmin'));
+    xls.hdr.im_dir_local=find(strcmp(xls.headers, 'im_dir_local'));
+    xls.hdr.cls_pth_local=find(strcmp(xls.headers, 'cls_pth_local'));
+    for n=1:size(xls.data,1)
+        
+        % text args
+        env.input(n).name       =   xls.textdata{n+2, xls.hdr.name};
+        
+        % number args
+        env.input(n).bb         =   xls.data(n, xls.hdr.bb:xls.hdr.bb+3);
+        
+        % text arguments that are system-dependent
+        if isunix
+            env.input(n).im_dir    =   xls.textdata{n+2, xls.hdr.im_dir};
+            env.input(n).cls_pth   =   xls.textdata{n+2, xls.hdr.cls_pth};
+            if isempty(env.input(n).im_dir) % if I didn't specifiy
+                env.input(n).im_dir=  ['/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/',...
+                    env.input(n).name, filesep];
+            end
+        else
+            env.input(n).im_dir    =   xls.textdata{n+2, xls.hdr.im_dir_local};
+            env.input(n).cls_pth   =   xls.textdata{n+2, xls.hdr.cls_pth_local};
+            if isempty(env.input(n).im_dir) % if I didn't specifiy
+                env.input(n).im_dir=  ['F:\UAVSAR\',...
+                    env.input(n).name, filesep];
+            end
+        end
+    end
+    
         % model I/O (todo: add smart suffix automatically to avoid overwrite)
     env.output.current_model=[env.output.test_dir, 'model.mat'];
 %     env.viewFileNums=[4];

@@ -35,6 +35,7 @@ Auto/streamlined env.input(xx) ingest
 **Add H/a/alpha or Sinclair matrix or AVIRIS into workflows
 Illum angle correction for shield
 Multithread gdalwarp, dep on linux or Brown- but careful if running loops in parallel
+add ifunix branch to use gdaledit.py instead of gdalwarp
 RE-write parallel_cat_run.sh as a slurm batch file that uses srun instead of bash to call the processing function 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~PixelClassifier~~~~~~~~~~~~~~~~~~~~~~~~~
