@@ -18,7 +18,7 @@ else
         addpath /att/gpfsfs/home/ekyzivat/scripts/random-wetlands/dnafinder-Cohen-a2b974e
         addpath /att/gpfsfs/home/ekyzivat/scripts/PixelClassifier-fork
         addpath /att/gpfsfs/home/ekyzivat/scripts/random-wetlands
-        env.trainFileNums=[12 13]; %[1 2 8 9 10 11 12 13]; % [1 2]
+        env.trainFileNums=[18 19]; %[1 2 8 9 10 11 12 13]; % [1 2]
         env.output.train_dir='/att/nobackup/ekyzivat/PixelClassifier/Train24/';
         env.output.test_dir='/att/nobackup/ekyzivat/PixelClassifier/Test24/';
         env.bulk_plot_dir='/dev/null/';
