@@ -48,41 +48,33 @@ else
     %% Parse input runfile
     
     if isunix
-        xls_in=['/att/gpfsfs/home/ekyzivat/scripts/random-wetlands' filesep, 'run_inputs', filesep, 'run_inputs.xlsx'];
+        csv_in=['/att/gpfsfs/home/ekyzivat/scripts/random-wetlands' filesep, 'run_inputs', filesep, 'run_inputs.csv'];
     else
-        xls_in=['.' filesep, 'run_inputs', filesep, 'run_inputs.xlsx']; % relative path could be problematic
+        csv_in=['.' filesep, 'run_inputs', filesep, 'run_inputs.csv'];
     end
-    xls=importdata(xls_in); 
-    xls.headers=xls.textdata(1,:);
-    xls.hdr.name=find(strcmp(xls.headers, 'name'));
-    xls.hdr.im_dir=find(strcmp(xls.headers, 'im_dir'));
-    xls.hdr.cls_pth=find(strcmp(xls.headers, 'cls_pth'));
-    xls.hdr.bb=find(strcmp(xls.headers, 'bb_xmin'));
-    xls.hdr.im_dir_local=find(strcmp(xls.headers, 'im_dir_local'));
-    xls.hdr.cls_pth_local=find(strcmp(xls.headers, 'cls_pth_local'));
+    csv=readtable(csv_in);
+%     csv(1:end-1,:); % delete last info row
+    xls.data=table2struct(csv);   
+    env.input=xls.data;
     for n=1:size(xls.data,1)
+
+        env.input(n).bb         =   [xls.data(n).bb_xmin, xls.data(n).bb_ymin,...
+            xls.data(n).bb_xmax, xls.data(n).bb_ymax];
         
-        % text args
-        env.input(n).name       =   xls.textdata{n+2, xls.hdr.name};
-        
-        % number args
-        env.input(n).bb         =   xls.data(n, xls.hdr.bb:xls.hdr.bb+3);
-        
-        % text arguments that are system-dependent
-        if isunix
-            env.input(n).im_dir    =   xls.textdata{n+2, xls.hdr.im_dir};
-            env.input(n).cls_pth   =   xls.textdata{n+2, xls.hdr.cls_pth};
-            if isempty(env.input(n).im_dir) % if I didn't specifiy
-                env.input(n).im_dir=  ['/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/',...
-                    env.input(n).name, filesep];
-            end
-        else
-            env.input(n).im_dir    =   xls.textdata{n+2, xls.hdr.im_dir_local};
-            env.input(n).cls_pth   =   xls.textdata{n+2, xls.hdr.cls_pth_local};
+%         % text arguments that are system-dependent
+        if ~isunix
+            env.input(n).im_dir    =   env.input(n).im_dir_local;
+            env.input(n).cls_pth   =   env.input(n).cls_pth_local;
             if isempty(env.input(n).im_dir) % if I didn't specifiy
                 env.input(n).im_dir=  ['F:\UAVSAR\',...
                     env.input(n).name, filesep];
             end
+        else
+            if isempty(env.input(n).im_dir) % if I didn't specifiy
+                env.input(n).im_dir=  ['/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/',...
+                env.input(n).name, filesep];
+            end
+
         end
     end
     
