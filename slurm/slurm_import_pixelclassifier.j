@@ -1,7 +1,8 @@
 #!/bin/bash
 #SBATCH --job-name=import_PC
+#SBATCH --ntasks=1
 #SBATCH --mem-per-cpu=32G
-#SBATCH  --cpus-per-task=4
+#SBATCH  --cpus-per-task=8
 #SBATCH --export=ALL
 # #SBATCH --time-min=1:45
 #SBATCH --mail-user=ekyzivat

@@ -45,7 +45,7 @@ else
     test_im=imread(strtrim(georef_in));
 end
 mask=isnan(test_im(:,:,end)); % negative data mask
-out(mask)=env.constants.noDataValue_ouput;
+out(mask)=env.constants.noDataValue_ouput; %%% HERE 2/18/20: mask is different size than out
 %% write
 geotiffwrite(output_pth, out, gt.SpatialRef, 'GeoKeyDirectoryTag',gt.GeoTIFFTags.GeoKeyDirectoryTag);
 % gdal_calc.py -A input1.tif -B input2.tif --outfile=result.tif --calc="A+B"
