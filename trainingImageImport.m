@@ -127,6 +127,14 @@ for n=env.trainFileNums; % file number from input
     else
         if ~isempty(env.input(n).bb)
             f.bb=env.input(n).bb;
+            
+                % check bb fits inside of image
+            f.bb_area=(f.bb(3)-f.bb(1))*(f.bb(4)-f.bb(2));
+            if f.bb_area> 5e10
+                warning('Input bounding box area is greater than 50,000 km2') 
+            elseif f.bb_area> 5e12
+                error('Input bounding box area is greater than 5,000,000 km2') 
+            end
             f.bb_fmtd=num2str(f.bb);
             useFullExtent=0;
         else
@@ -180,7 +188,13 @@ for n=env.trainFileNums; % file number from input
                 disp('Freeman normalization...')
                 stack(:,:,1:3)=stack(:,:,1:3)./sum(stack(:,:,1:3), 3);
             end
-       
+                
+                % another check to make sure correct bounding box was used
+                
+                f.sumValidpx=sum(sum(stack(:,:,1)>0));
+                if f.sumValidpx < 5000
+                   warning('Output tif has less than 5,000 valid pixels.')
+                end
                 % write using geotiffwrite and add mask using gdal
                 lastwarn('') % reset
                 [warnMsg, warnId] = lastwarn;

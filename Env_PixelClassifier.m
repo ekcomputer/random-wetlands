@@ -8,7 +8,7 @@ if load_env
 else
     
     %% Params
-    env.trainingClassRasters=0; % set to 1 to make training class rasters; 0 for viewing image only
+    env.trainingClassRasters=1; % set to 1 to make training class rasters; 0 for viewing image only
     env.rangeCorrection=1;
     % which input images
     %% Image I/O and viewing params
@@ -19,8 +19,8 @@ else
         addpath /att/gpfsfs/home/ekyzivat/scripts/PixelClassifier-fork
         addpath /att/gpfsfs/home/ekyzivat/scripts/random-wetlands
         env.trainFileNums=[18 19]; %[1 2 8 9 10 11 12 13]; % [1 2]
-        env.output.train_dir='/att/nobackup/ekyzivat/PixelClassifier/Train24/';
-        env.output.test_dir='/att/nobackup/ekyzivat/PixelClassifier/Test24/';
+        env.output.train_dir='/att/nobackup/ekyzivat/PixelClassifier/Train25/';
+        env.output.test_dir='/att/nobackup/ekyzivat/PixelClassifier/Test25/';
         env.bulk_plot_dir='/dev/null/';
 
             % viewing image dir
@@ -30,11 +30,11 @@ else
         env.tempDir='/att/nobackup/ekyzivat/PixelClassifierTemp/';
     else % on local
             % Which files to import as training images
-        env.trainFileNums=[1 2]; % [1 2]
+        env.trainFileNums=[1]; % [1 2]
         
             % training file output directory
-        env.output.train_dir='F:\PAD2019\classification_training\PixelClassifier\Train24\';
-        env.output.test_dir='F:\PAD2019\classification_training\PixelClassifier\Test24\';
+        env.output.train_dir='F:\PAD2019\classification_training\PixelClassifier\Train25\';
+        env.output.test_dir='F:\PAD2019\classification_training\PixelClassifier\Test25\';
             
             % plotting
         env.bulk_plot_dir='D:\pic\UAVSAR_classification\';
@@ -50,7 +50,7 @@ else
     if isunix
         csv_in=['/att/gpfsfs/home/ekyzivat/scripts/random-wetlands' filesep, 'run_inputs', filesep, 'run_inputs.csv'];
     else
-        csv_in=['.' filesep, 'run_inputs', filesep, 'run_inputs.csv'];
+        csv_in=['D:\Dropbox\Matlab\ABoVE\UAVSAR' filesep, 'run_inputs', filesep, 'run_inputs.csv'];
     end
     csv=readtable(csv_in);
 %     csv(1:end-1,:); % delete last info row

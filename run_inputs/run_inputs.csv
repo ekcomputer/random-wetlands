@@ -1,6 +1,6 @@
 index,name,im_dir,cls_pth,bb_xmin,bb_ymin,bb_xmax,bb_ymax,im_dir_local,cls_pth_local,Note
-1,padelE_36000_18047_000_180821_L090_CX_01,/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/padelE_36000_18047_000_180821_L090_CX_01/,,-2062054,3722869,-1944050,3771023,F:\UAVSAR\padelE_36000_18047_000_180821_L090_CX_01\,F:\PAD2019\classification_training\training2018PAD_Jan28_allClasses.shp,
-2,padelE_36000_19059_003_190904_L090_CX_01,/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/padelE_36000_19059_003_190904_L090_CX_01/,,-2062054,3722869,-1944050,3771023,F:\UAVSAR\padelE_36000_19059_003_190904_L090_CX_01\,F:\PAD2019\classification_training\training2019PAD_Jan28_allClasses.shp,
+1,padelE_36000_18047_000_180821_L090_CX_01,/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/padelE_36000_18047_000_180821_L090_CX_01/,,-885957.8971,2135429.092,-858494.8906,2200084.856,F:\UAVSAR\padelE_36000_18047_000_180821_L090_CX_01\,F:\PAD2019\classification_training\training2018PAD_Jan28_allClasses.shp,
+2,padelE_36000_19059_003_190904_L090_CX_01,/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/padelE_36000_19059_003_190904_L090_CX_01/,,-885957.8971,2135429.092,-858494.8906,2200084.856,F:\UAVSAR\padelE_36000_19059_003_190904_L090_CX_01\,F:\PAD2019\classification_training\training2019PAD_Jan28_allClasses.shp,
 3,PADELT_36000_17062_003_170613_L090_CX_01,,,,,,,F:\UAVSAR\PADELT_36000_17062_003_170613_L090_CX_01\,F:\PAD2019\classification_training\training2019PAD_Jan01_allClasses.shp,
 4,padelE_36000_17093_007_170908_L090_CX_01,,,,,,,F:\UAVSAR\padelE_36000_17093_007_170908_L090_CX_01\,F:\PAD2019\classification_training\training2019PAD_Jan01_allClasses.shp,
 5,redber_30704_17092_000_170907_L090_CX_01,,,,,,,F:\UAVSAR\redber_30704_17092_000_170907_L090_CX_01\Pout\,,
