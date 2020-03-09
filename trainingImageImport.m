@@ -15,10 +15,10 @@ for n=env.trainFileNums; % file number from input
         % options
         if trainingClassRasters
             stack_path=[env.output.train_dir, env.input(n).name, '_', env.inputType,'.tif'];
-            vrt_pth=[env.output.train_dir, env.input(n).name, '_', env.inputType,'.vrt']
+            vrt_pth=[env.output.train_dir, env.input(n).name, '_', env.inputType,'.vrt'];
         else
             stack_path=[env.output.test_dir, env.input(n).name, '_', env.inputType,'.tif'];
-            vrt_pth=[env.output.test_dir, env.input(n).name, '_', env.inputType,'.vrt']
+            vrt_pth=[env.output.test_dir, env.input(n).name, '_', env.inputType,'.vrt'];
         end
         
         % display I/O params for visual check

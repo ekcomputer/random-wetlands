@@ -1,12 +1,14 @@
-function heading = CalculateRangeHeading(name)
+function heading = CalculateRangeHeading(name, varargin)
 
-% function that looks up heading of aircraft based on flight ID name
+% function that looks up heading of aircraft based on flight ID name.  If
+% second arg is given, function calls transformHeading.m
 
-% Input:  name    =   string of flight ID from filename
-       
-% Output: heading =   matrix with entries downRange and upRange in radians
-%                     downrange is direction that range decreases
-%                     positive heading is clockwise
+% Input:    name        =   string of flight ID from filename
+%           Optional: R =   mapcells ref giving boundin box of image
+%           Optional: prj =   mapcells ref projection
+% Output:   heading     =   matrix with entries downRange and upRange in radians
+%                           downrange is direction that range decreases
+%                           positive heading is clockwise
 % 
 % TESTING
 % name='padelE_36000_19059_003_190904_L090_CX_01'
@@ -42,3 +44,11 @@ pegHeadingRad=deg2rad(pegHeadingDeg);
 
 heading(1)=mod(pegHeadingRad+pi/2, 2*pi); % downrange: direction that range decreases
 heading(2)=mod(pegHeadingRad+3*pi/2, 2*pi); % uprange: direction that range increases
+
+%% Part III. Calculate range headings (optional)
+
+if exist('varargin') >0
+   heading=transformHeading(heading, varargin{1}, varargin{2});
+else
+    warning('No SRS conversion for heading.')
+end
