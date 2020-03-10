@@ -51,10 +51,8 @@ Delete class mask images in addOutputImages.m as cleanup
 make mem efficient by possibly modifying way imClassify.m saves subsets{i} all the same
 Re-write to only compute 4 sigmas, not >=8
 Possible LOO cross val on n-value for range correction, and try non-cosine as well
-* Change to not load all files in dir. into memory!
 try adding in NaNs, but removing NaNs just before steerable detector to save compute time...
 save uncertainties of each class by normalizing class probs by total prob
-* Add histogram matching or use diff decomp (Sinclair) so as to accurately compare between seasons/years if bad calibration... yFlats vals were low
 More radiometric cal: I would plot sigma, gamma and Freeman values based on inc angle and eval if I need to improve my method.
     Then, I could come up with empirical correction, or use Chao's values.
     I could also implement the Ulander 1996 illum. area correction
@@ -62,7 +60,12 @@ More radiometric cal: I would plot sigma, gamma and Freeman values based on inc 
 view(treeBag.Trees{1}, 'Mode', 'graph')
 * Rewrite for large datasets or chunk up YF lines (auto change chunk size if isunix)
 ** if classifying in parallel (2 workers), make parpool(4) and call for 8 cpus, or change chunking size and num cpus during classification to avoid memory crash! 
-* Rotate offset images and only use directions parallel to look angle (discard orthogonals)
+* Change to not load all files in dir. into memory!
+* Put slope into classifier?
+* Fix training image bug on ASC (search for %%HERE in combine_imgs; mask is wrong size or output is NaN)
+* Add histogram matching or use diff decomp (Sinclair) so as to accurately compare between seasons/years if bad calibration... yFlats vals were low
+
+* Radiometric terrain correction / MapReady.... redo entire workflow...
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LINUX~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 prep trainingImageImport.m to be like viewingImageImport.m
@@ -91,6 +94,7 @@ XAdd Lee filter (wiener2.m)
 X Remove some of the filters from sigma: i.e. Hess
 After AGU: add NoData class, use translation features just for x- to combat overlay effect?
 *** Add in W2 class (removed by mistake...)!!!
+* Rotate offset images and only use directions parallel to look angle (discard orthogonals)
 
 ~~~~~~~~~~Modify for re-distribution of PixelClassifier Code~~~~~~~~~~~~~~
 rfTrain.m

@@ -6,7 +6,7 @@ function heading = CalculateRangeHeading(name, varargin)
 % Input:    name        =   string of flight ID from filename
 %           Optional: R =   mapcells ref giving boundin box of image
 %           Optional: prj =   mapcells ref projection
-% Output:   heading     =   matrix with entries downRange and upRange in radians
+% Output:   heading     =   row vector with entries downRange and upRange in radians
 %                           downrange is direction that range decreases
 %                           positive heading is clockwise
 % 
@@ -22,6 +22,7 @@ if strcmp(name, 'NaN')
     warning('CalculateRangeHeading has input ''NaN''.  Using default of 0.')
     heading=0;
 end
+heading=zeros([1 2]);
 %% Part I. Parse name
 global env
 numID=find(strcmp({env.input.name},name)); % entry number in env structure
@@ -30,7 +31,7 @@ annDir=[rootDir, filesep, 'raw']; % .ann file dir
 f.pth=dir([annDir, filesep, '*.ann']); % tmp
 annPath=[annDir, filesep, f.pth(1).name];
 fid=fopen(annPath);
-f.raw=textscan(fid, '%s', 'Delimiter', '\n')
+f.raw=textscan(fid, '%s', 'Delimiter', '\n');
 f.pegHeadingTruth=strfind(f.raw{1},'set_phdg'); % boolean - ish
 f.pegHeadingLine=find(cellfun(@(x)~isempty(x), f.pegHeadingTruth));
 f.pegHeadingLineStr=textscan(f.raw{1}{f.pegHeadingLine}, '%s');

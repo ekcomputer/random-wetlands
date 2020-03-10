@@ -152,7 +152,8 @@ else
     %% classes
         % set order of classes (defines numerical index, which will be written
         % to meta file)
-    env.class_names={'W1', 'SW', 'HW', 'TW', 'GW', 'GD', 'SD', 'FD', 'FD2', 'TD', 'W2'}; %{'W1', 'GW', 'GD', 'SW', 'SD', 'FD'}; %, 'TD', 'TW'}; % {'W1', 'W2', 'EU', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FW', 'FD'}, no BG; {'W1', 'W2', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FD'}; % < prior to  Dec 2  
+    env.class_names={'W1', 'SW', 'HW', 'TW', 'GW', 'GD',...
+        'SD', 'FD', 'FD2', 'TD', 'W2', 'BG', 'FW', 'WD'}; %{'W1', 'GW', 'GD', 'SW', 'SD', 'FD'}; %, 'TD', 'TW'}; % {'W1', 'W2', 'EU', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FW', 'FD'}, no BG; {'W1', 'W2', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FD'}; % < prior to  Dec 2  
 %     env.class_names={'W1', 'GW', 'GD', 'SW', 'SD', 'FD'};
     env.class_names_full={'Water', 'Graminoid Wet','Graminoid Dry', 'Shrub Wet', 'Shrub Dry', 'Forest Dry'};
 
