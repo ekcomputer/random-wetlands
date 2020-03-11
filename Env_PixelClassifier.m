@@ -1,24 +1,24 @@
 % env vars for running pixel classifier
 clear env
 global env
+
+%% Params
+env.trainingClassRasters=1; % set to 1 to make training class rasters; 0 for viewing image only
+env.rangeCorrection=1;
 load_env=0; % load env. from previous run?
 if load_env 
     uiopen('F:\PAD2019\classification_training\PixelClassifier\*.mat')
     env=model.env;
 else
     
-    %% Params
-    env.trainingClassRasters=1; % set to 1 to make training class rasters; 0 for viewing image only
-    env.rangeCorrection=1;
-    % which input images
-    %% Image I/O and viewing params
+%% Image I/O and viewing params
     env.inputType='Freeman-inc'; %'Freeman', 'C3', 'Freeman-T3' or 'gray', 'Freeman-inc', 'C3-inc'
     if isunix % on ASC
            % addpath
         addpath /att/gpfsfs/home/ekyzivat/scripts/random-wetlands/dnafinder-Cohen-a2b974e
         addpath /att/gpfsfs/home/ekyzivat/scripts/PixelClassifier-fork
         addpath /att/gpfsfs/home/ekyzivat/scripts/random-wetlands
-        env.trainFileNums=[18 19]; %[1 2 8 9 10 11 12 13]; % [1 2]
+        env.trainFileNums=[7]; %[1 2 8 9 10 11 12 13]; % [1 2]
         env.output.train_dir='/att/nobackup/ekyzivat/PixelClassifier/Train25/';
         env.output.test_dir='/att/nobackup/ekyzivat/PixelClassifier/Test25/';
         env.bulk_plot_dir='/dev/null/';
@@ -30,7 +30,7 @@ else
         env.tempDir='/att/nobackup/ekyzivat/PixelClassifierTemp/';
     else % on local
             % Which files to import as training images
-        env.trainFileNums=[1]; % [1 2]
+        env.trainFileNums=[7]; % [1 2]
         
             % training file output directory
         env.output.train_dir='F:\PAD2019\classification_training\PixelClassifier\Train25\';
@@ -45,7 +45,7 @@ else
             % temp           
         env.tempDir='F:\PAD2019\classification_training\PixelClassifierTemp\';
     end
-    %% Parse input runfile
+%% Parse input runfile
     
     if isunix
         csv_in=['/att/gpfsfs/home/ekyzivat/scripts/random-wetlands' filesep, 'run_inputs', filesep, 'run_inputs.csv'];
@@ -81,7 +81,7 @@ else
         % model I/O (todo: add smart suffix automatically to avoid overwrite)
     env.output.current_model=[env.output.test_dir, 'model.mat'];
 %     env.viewFileNums=[4];
-    %% classification training params
+%% classification training params
     env.pixelClassifier.use_raw_image=1;
     env.pixelClassifier.sigmas=[]; %[1 2 3];
     % basic image features are simply derivatives (up to second order) in different scales;
@@ -119,7 +119,7 @@ else
     env.pixelClassifier.speckleFilter=[1];
     % whether to use diffuse filter (replace with lee refined, if
     % desired...)
-    %% classification params
+%% classification params
 
     env.pixelClassifier.run.outputMasks = true;
     % if to output binary masks corresponding to pixel classes
@@ -146,18 +146,14 @@ else
     env.constants.n=0.5; %1.64; % range correction exponent
     env.constants.noDataValue=-10000;
     env.constants.noDataValue_ouput=0;
-
-
-
-    %% classes
+%% classes
         % set order of classes (defines numerical index, which will be written
         % to meta file)
     env.class_names={'W1', 'SW', 'HW', 'TW', 'GW', 'GD',...
         'SD', 'FD', 'FD2', 'TD', 'W2', 'BG', 'FW', 'WD'}; %{'W1', 'GW', 'GD', 'SW', 'SD', 'FD'}; %, 'TD', 'TW'}; % {'W1', 'W2', 'EU', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FW', 'FD'}, no BG; {'W1', 'W2', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FD'}; % < prior to  Dec 2  
 %     env.class_names={'W1', 'GW', 'GD', 'SW', 'SD', 'FD'};
     env.class_names_full={'Water', 'Graminoid Wet','Graminoid Dry', 'Shrub Wet', 'Shrub Dry', 'Forest Dry'};
-
-    %% colors
+%% colors
     env.plot.colors_hex={'BED2FF', '58D918','FFC861','31780D','BF9649','8ACC34'};% NEED to fix color-blindness {'BED2FF','A80000','E69800','38A800', 'A87000', '732600'};
     if ~isunix
        for i=1:length(env.plot.colors_hex)
@@ -167,14 +163,13 @@ else
        end
     end
     
-    %% plots
+%% plots
     
     env.plot.bandLabels={'Double','Volume', 'Single', 'Range'};
-    %% validition set partitioning
+%% validition set partitioning
     env.valPartitionRatio=0.15; % what percentage held back for validation % NOT inverse of ratio between no of training and total (= training + val) pixels
-    env.seed=22; % random number gen seed!
-    
-    %% proj source
+    env.seed=22; % random number gen seed!  
+%% proj source
     
     if ~isunix
         env.proj_source='F:\UAVSAR\Georeferenced\proj\102001.prj';
