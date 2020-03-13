@@ -37,6 +37,7 @@ for n=env.trainFileNums; % file number from input
         else
             disp('Making stacked image and training class rasters.')
         end
+        fprintf('FILE: \t%s\n', env.input(n).name)
         disp('Press any key to continue')
         if n==env.trainFileNums(1)
             pause()
@@ -143,7 +144,7 @@ for n=env.trainFileNums; % file number from input
         end
     end
     %% gdal warp to project and select bounding box of training image
-    if exist(stack_path)==0
+    if exist(stack_path)==0 %% HERE <==================== why isn't this branch earlier?
             % stack (build VRT)
         cmd=sprintf('gdalbuildvrt -separate %s %s', vrt_pth, f.gray_imgs_formatted)
         system(cmd);
@@ -156,11 +157,6 @@ for n=env.trainFileNums; % file number from input
                 vrt_pth, stack_path)
         end
         system(cmd);
-                % gdal translate
-        %     cmd=sprintf('gdal_translate "%s" "%s" -co COMPRESS=LZW',...
-        %     stack_path_0, stack_path)
-        %     system(cmd);
-        %     delete(stack_path_0)
     
         %% range correction and/or normalization
     

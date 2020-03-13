@@ -30,7 +30,7 @@ else
         env.tempDir='/att/nobackup/ekyzivat/PixelClassifierTemp/';
     else % on local
             % Which files to import as training images
-        env.trainFileNums=[7]; % [1 2]
+        env.trainFileNums=[1,2,7,8,9]; %15% [1 2]
         
             % training file output directory
         env.output.train_dir='F:\PAD2019\classification_training\PixelClassifier\Train25\';
