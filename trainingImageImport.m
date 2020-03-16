@@ -3,9 +3,11 @@
 % training image merged as a 3 or 6-band raster
 % 
 
-%% User params
+%% Preliminary
 clear; close all
-%% I/O
+warning('off', 'MATLAB:MKDIR:DirectoryExists');
+
+%% User params and I/O
 Env_PixelClassifier % load environment vars
 trainingClassRasters=env.trainingClassRasters; % set to 1 to make training class rasters; 0 for viewing image only
 
@@ -22,26 +24,28 @@ for n=env.trainFileNums; % file number from input
         end
         
         % display I/O params for visual check
-        disp('Check to make sure I/O paths are corret:')
-        fprintf('Training class path:\t %s\n', env.input(env.trainFileNums).cls_pth)
-        fprintf('Training dir: \t%s\n', env.output.train_dir)
-        fprintf('Test dir: \t%s\n', env.output.test_dir)
-        fprintf('File numbers: \t%s\n', num2str(env.trainFileNums))
-        f.names={env.input.name};
-        fprintf('File IDs:\n');
-        disp(f.names(env.trainFileNums)')
-        fprintf('Input type: \t%s\n', env.inputType)
-        fprintf('Rangecorrection: \t%d\n', env.rangeCorrection);
-        if trainingClassRasters==0;
-            disp('Making stacked image only- no training class rasters.  Output to test folder')
-        else
-            disp('Making stacked image and training class rasters.')
-        end
-        fprintf('FILE: \t%s\n', env.input(n).name)
-        disp('Press any key to continue')
+       
+       
         if n==env.trainFileNums(1)
+             disp('Check to make sure I/O paths are corret:')
+            fprintf('Training class path:\t %s\n', env.input(env.trainFileNums).cls_pth)
+            fprintf('Training dir: \t%s\n', env.output.train_dir)
+            fprintf('Test dir: \t%s\n', env.output.test_dir)
+            fprintf('File numbers: \t%s\n', num2str(env.trainFileNums))
+            f.names={env.input.name};
+            fprintf('File IDs:\n');
+            disp(f.names(env.trainFileNums)')
+            fprintf('Input type: \t%s\n', env.inputType)
+            fprintf('Rangecorrection: \t%d\n', env.rangeCorrection);
+            if trainingClassRasters==0;
+                disp('Making stacked image only- no training class rasters.  Output to test folder')
+            else
+                disp('Making stacked image and training class rasters.')
+            end
+            disp('Press any key to continue')
             pause()
         end
+        fprintf('FILE: \t%s\n', env.input(n).name)
 
         % common to all if branches
     env.input(n).im_dir_nband=[env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, ''];
@@ -55,7 +59,7 @@ for n=env.trainFileNums; % file number from input
     f.gray_imgs_freeman=dir([env.input(n).im_dir_nband, 'Freeman*.bin']);
     f.gray_imgs_c3=dir([env.input(n).im_dir_nband_c, 'C*.bin']);
     if isempty(f.inc_dir) || size(f.inc_dir, 1) > 1 || isempty(f.gray_imgs_freeman)...
-            || isempty(f.gray_imgs_c3) 
+            || and(isempty(f.gray_imgs_c3), contains(env.inputType, 'C3-inc'))
         warning('No < inc, freeman, or C3 > file found.')
         continue
     end
@@ -125,6 +129,7 @@ for n=env.trainFileNums; % file number from input
         R=shapeinfo(env.input(n).cls_pth);
         f.bb=R.BoundingBox([1 3 2 4]);
         f.bb_fmtd=num2str(f.bb);
+        useFullExtent=0;
     else
         if ~isempty(env.input(n).bb)
             f.bb=env.input(n).bb;
