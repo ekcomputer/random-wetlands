@@ -9,14 +9,14 @@ Run,Raw,sigma,Offsets,speckle,OffsetSigma,LoGSigma,SteerableFilterSigma,nTree,mi
 11,1,2,,,,2,na,10,40,5,3,,,"1,2",,,update training
 12,1,2,,,,2,na,15,40,5,3,,"3,5","1,2",,,
 13,1,2,,,,2,na,15,40,5,3,,"3,5","1,2",,,update training Day I
-14,1,na,,,,na,na,15,40,5,3,,na,,,8,Dec 2 Training no TW/TD
-15,1,na,,,,na,na,15,40,5,3,,na,,,9,Dec 2 Training with TW/TD
-16,1,,,,,na,2,35,40,5,3,,na,,,8,"Dec 2 Training no BG, TW/TD"
-17,1,1,,,,na,1,35,40,5,3,,"3,9",,,6,
+14,1,na,,,,na,na,15,40,5,3,,na,,0.73,8,Dec 2 Training no TW/TD
+15,1,na,,,,na,na,15,40,5,3,,na,,0.01,9,Dec 2 Training with TW/TD
+16,1,,,,,na,2,35,40,5,3,,na,,0.8,8,"Dec 2 Training no BG, TW/TD"
+17,1,1,,,,na,1,35,40,5,3,,"3,9",,0.78,6,
 18,1,,,,,na,na,35,40,5,4,1,3,,,,Jan 6 test for range
-19,1,,,,,na,na,35,40,5,4,2,na,,,,"test TD, TW"
-20,1,,,,,na,na,35,40,5,4,,na,,,,view all features
-21,1,,3,1,2,na,na,40,40,5,4,,5,,,,"larger image, selected features"
+19,1,,,,,na,na,35,40,5,4,2,na,,0.82,,"test TD, TW"
+20,1,,,,,na,na,35,40,5,4,,na,,0.87,,view all features
+21,1,,3,1,2,na,na,40,40,5,4,,5,,0.87,,"larger image, selected features, best so far"
 22,1,,,1,,na,na,40,40,5,7,,,,,11,C3
 23,1,,,,,na,na,40,40,5,4,,,,,,4-band normalized experiment
 24,1,,,1,,na,na,40,40,5,4,,5,,,,PAD fixed GD
