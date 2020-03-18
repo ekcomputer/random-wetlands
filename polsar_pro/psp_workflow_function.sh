@@ -24,16 +24,27 @@ file_dir_ASC=/att/gpfsfs/atrepo01/data/ORNL/ABoVE_Archive/datapool.asf.alaska.ed
 file_dir=$NOBACKUP/UAVSAR/asf.alaska.edu/$ID # NOBACKUP
 base=$file_dir/raw
 file_inc=/att/gpfsfs/atrepo01/data/ORNL/ABoVE_Archive/datapool.asf.alaska.edu/INC/UA/$ID.inc
-printf "\nASF dir: \t\t $file_dir_ASC\n"
-printf "file_dir: \t\t $file_dir\n"
-printf "Base dir:\t\t $base\n\n"
 
 #
-if [ -e $file_dir/freeman/C3/Freeman_Odd.bin ]
+if [ -e $file_dir/freeman/C3/Freeman_Odd.bin ] [ # -e foo.txt] #
 then 
-	echo "... Already processed (Freeman_Odd.bin exists)... skipping."
+	echo "... Already processed $ID (Freeman_Odd.bin exists)... skipping."
 else 
-	
+		# Check if file exists on ASC.  If not, use imported file
+	printf "\tCHECKING IF INPUT FILES EXIST ON ASC\n"
+	if [ -d $file_dir_ASC ]
+	then 
+		:
+	else
+		file_dir_ASC=$file_dir/raw
+		file_inc=$file_dir/raw/$ID.inc
+		printf "\tFile not found on ASC.  Using uploaded files in $file_dir.\n"
+	fi
+		
+		# PRINT FILENAMES
+	printf "\nASF dir: \t\t $file_dir_ASC\n"
+	printf "file_dir: \t\t $file_dir\n"
+	printf "Base dir:\t\t $base\n\n"
 		# READ HEADER (not essential)
 	printf "\tReading header\n"
 	uavsar_header.exe -hf $file_dir_ASC/*.ann -id $file_dir_ASC -od $file_dir -df grd \
@@ -57,6 +68,13 @@ else
 		echo Needed to copy INC: $file_inc  ">>>>>"  $base
 	fi
 	cp -u $file_inc $base
+
+		# COPY ANN FILE
+	if [ -f $base/$ID.ann ]; then
+		echo Needed to copy ANN: $file_dir_ASC/*.ann  ">>>>>"  $base
+	fi
+	cp -u $file_dir_ASC/*.ann $base
+
 
 		#CONVERT MLC
 	printf "\tConvert MLC\n"
