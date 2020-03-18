@@ -1,11 +1,38 @@
 % env vars for running pixel classifier
+
+% INSTRUCTIONS:
+% Update env.class_dir_local each time I have new training files.  UPdate
+% env.class_dir_asc automatically as long as I update env.run
+
+%% Preliminary
 clear env
-global env
+global env 
 
 %% Params
 env.trainingClassRasters=1; % set to 1 to make training class rasters; 0 for viewing image only
 env.rangeCorrection=1;
 load_env=0; % load env. from previous run?
+env.run='25';
+env.output.cls_dir_local='/att/nobackup/ekyzivat/PixelClassifier';
+env.output.cls_dir_asc='/att/nobackup/ekyzivat/PixelClassifier';
+env.class_dir_local='F:\PAD2019\classification_training\Checkpoint-2020-march-12';
+    % Which files to import as training images
+if isunix % on ASC
+    env.trainFileNums=[7,9];%9;%[1,2,7,8,9,15]; %[7]; %[1 2 8 9 10 11 12 13]; % [1 2]
+else % on local
+    env.trainFileNums=[1,2]; %15% [1 2]
+end    
+
+%% Dynamic I/O
+env.class_dir_asc=[env.output.cls_dir_asc, filesep, 'Train', env.run, filesep, 'shp'];
+
+%% Constant params
+if isunix
+    env.asc.annDir='/att/gpfsfs/atrepo01/data/ORNL/ABoVE_Archive/datapool.asf.alaska.edu/METADATA/UA';
+else
+    env.asc.annDir='';
+end
+%% Load env? 
 if load_env 
     uiopen('F:\PAD2019\classification_training\PixelClassifier\*.mat')
     env=model.env;
@@ -18,9 +45,8 @@ else
         addpath /att/gpfsfs/home/ekyzivat/scripts/random-wetlands/dnafinder-Cohen-a2b974e
         addpath /att/gpfsfs/home/ekyzivat/scripts/PixelClassifier-fork
         addpath /att/gpfsfs/home/ekyzivat/scripts/random-wetlands
-        env.trainFileNums=[7]; %[1 2 8 9 10 11 12 13]; % [1 2]
-        env.output.train_dir='/att/nobackup/ekyzivat/PixelClassifier/Train25/';
-        env.output.test_dir='/att/nobackup/ekyzivat/PixelClassifier/Test25/';
+        env.output.train_dir=[env.output.cls_dir_asc, filesep, 'Train', env.run, '/'];
+        env.output.test_dir=[env.output.cls_dir_asc, filesep, 'Test', env.run, '/'];
         env.bulk_plot_dir='/dev/null/';
 
             % viewing image dir
@@ -28,13 +54,10 @@ else
 
             % temp
         env.tempDir='/att/nobackup/ekyzivat/PixelClassifierTemp/';
-    else % on local
-            % Which files to import as training images
-        env.trainFileNums=[1,2,7,8,9]; %15% [1 2]
-        
+    else % on local 
             % training file output directory
-        env.output.train_dir='F:\PAD2019\classification_training\PixelClassifier\Train25\';
-        env.output.test_dir='F:\PAD2019\classification_training\PixelClassifier\Test25\';
+        env.output.train_dir=[env.output.cls_dir_local, filesep, 'Train', env.run, '\'];
+        env.output.test_dir=[env.output.cls_dir_local, filesep, 'Test', env.run, '\'];
             
             % plotting
         env.bulk_plot_dir='D:\pic\UAVSAR_classification\';
@@ -57,19 +80,21 @@ else
     xls.data=table2struct(csv);   
     env.input=xls.data;
     for n=1:size(xls.data,1)
-
+%         env.input(n).cls_pth=env.class_dir
         env.input(n).bb         =   [xls.data(n).bb_xmin, xls.data(n).bb_ymin,...
             xls.data(n).bb_xmax, xls.data(n).bb_ymax];
         
 %         % text arguments that are system-dependent
         if ~isunix
             env.input(n).im_dir    =   env.input(n).im_dir_local;
-            env.input(n).cls_pth   =   env.input(n).cls_pth_local;
+%             env.input(n).cls_pth   =   env.input(n).cls_pth_local;
+            env.input(n).cls_pth   = [env.class_dir_local, '\', xls.data(n).cls_name];
             if isempty(env.input(n).im_dir) % if I didn't specifiy
                 env.input(n).im_dir=  ['F:\UAVSAR\',...
                     env.input(n).name, filesep];
             end
         else
+            env.input(n).cls_pth   = [env.class_dir_asc, '/', xls.data(n).cls_name];
             if isempty(env.input(n).im_dir) % if I didn't specifiy
                 env.input(n).im_dir=  ['/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/',...
                 env.input(n).name, filesep];

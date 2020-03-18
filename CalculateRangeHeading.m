@@ -2,6 +2,8 @@ function heading = CalculateRangeHeading(name, varargin)
 
 % function that looks up heading of aircraft based on flight ID name.  If
 % second arg is given, function calls transformHeading.m
+% relies on looking up heading from .ann file in a specified directory,
+% given by env.asc.annDir
 
 % Input:    name        =   string of flight ID from filename
 %           Optional: R =   mapcells ref giving boundin box of image
@@ -26,10 +28,16 @@ heading=zeros([1 2]);
 %% Part I. Parse name
 global env
 numID=find(strcmp({env.input.name},name)); % entry number in env structure
-rootDir=env.input(numID).im_dir; % root dir
-annDir=[rootDir, filesep, 'raw']; % .ann file dir
-f.pth=dir([annDir, filesep, '*.ann']); % tmp
-annPath=[annDir, filesep, f.pth(1).name];
+numID=numID(1); % just in case flight ID appears twice in input structure (as if using different bounding boxes)
+if ~isunix % data is local
+    rootDir=env.input(numID).im_dir; % root dir
+    annDir=[rootDir, filesep, 'raw']; % .ann file dir
+    f.pth=dir([annDir, filesep, '*.ann']); % tmp
+    annPath=[annDir, filesep, f.pth(1).name];
+else % on ASC, data is in repository
+    annPath=[env.asc.annDir, filesep, env.input(numID).name, '.ann'];
+end
+
 fid=fopen(annPath);
 f.raw=textscan(fid, '%s', 'Delimiter', '\n');
 f.pegHeadingTruth=strfind(f.raw{1},'set_phdg'); % boolean - ish

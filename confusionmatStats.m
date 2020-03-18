@@ -63,17 +63,21 @@ fprintf('Overall accuracy: %2.1f %%\n',O)
 %% note 
 %% Plot
 % l=env.class_names; l{end+1}='ZTotal';
-figure;
-cm=confusionchart(C, class_names);
-cm.RowSummary = 'row-normalized';
-cm.ColumnSummary = 'column-normalized';
-cm.FontSize=14;
-cm.XLabel='Predicted Class (Errors of ommission)';
-cm.YLabel='True Class (Errors of commission)';
+if exist('confusionchart')==5  % if R2018b or greater, when this function was introduced
+    figure;
+    cm=confusionchart(C, class_names);
+    cm.RowSummary = 'row-normalized';
+    cm.ColumnSummary = 'column-normalized';
+    cm.FontSize=14;
+    cm.XLabel='Predicted Class (Errors of ommission)';
+    cm.YLabel='True Class (Errors of commission)';
 
-    % make second copy with totals, not percents
-h=figure;
-cm1 = copyobj(cm,h);
-cm1.RowSummary = 'absolute';
-cm1.ColumnSummary = 'absolute';
+        % make second copy with totals, not percents
+    h=figure;
+    cm1 = copyobj(cm,h);
+    cm1.RowSummary = 'absolute';
+    cm1.ColumnSummary = 'absolute';
+else 
+    cm=NaN;
+end
 C=C1; % for output

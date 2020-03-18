@@ -37,6 +37,7 @@ Auto/streamlined env.input(xx) ingest
 Multithread gdalwarp, dep on linux or Brown- but careful if running loops in parallel
 add ifunix branch to use gdaledit.py instead of gdalwarp
 RE-write parallel_cat_run.sh as a slurm batch file that uses srun instead of bash to call the processing function 
+Add aliases to view most recent slrum-###.out file.  Create standard output files a la https://gist.github.com/zkamvar/3d1fa899db5eecb1295de4cd84052a7b
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~PixelClassifier~~~~~~~~~~~~~~~~~~~~~~~~~
 TODO: change plotting for n-band images; 
@@ -99,3 +100,6 @@ After AGU: add NoData class, use translation features just for x- to combat over
 ~~~~~~~~~~Modify for re-distribution of PixelClassifier Code~~~~~~~~~~~~~~
 rfTrain.m
 pixelClassifierTrain.m - validition and concat of n=3 bandns to make F
+
+~~~~~~~~~~~~~~~~~~~~~~~~Requirements~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+gdal (not the gdal python scripts though)
