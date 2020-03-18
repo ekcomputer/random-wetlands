@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=PixClas
+#SBATCH --job-name=PixClasT
 #SBATCH --mem-per-cpu=32G
 #SBATCH --cpus-per-task=8
 #SBATCH --export=ALL
@@ -22,7 +22,7 @@ echo "  Started at:           " `/bin/date`
 srun -n 1 matlab -nodisplay -nosplash -nodesktop -r "addpath \
     /att/gpfsfs/home/ekyzivat/scripts/PixelClassifier-fork \
     /att/gpfsfs/home/ekyzivat/scripts/random-wetlands; \
-    run('/att/gpfsfs/home/ekyzivat/scripts/PixelClassifier-fork/pixelClassifier.m'); \
+    run('/att/gpfsfs/home/ekyzivat/scripts/PixelClassifier-fork/pixelClassifierTrain.m'); \
     exit;"
 
 ## Reporting stop ###############################

@@ -11,6 +11,15 @@
 # test comment
 #  --ntasks-per-node=1
 # #SBATCH --ntasks=8
+
+## Reporting  start #############################
+start_time="$(date -u +%s)"
+echo "  Job: $SLURM_ARRAY_JOB_ID"
+echo
+echo "  Started on:           " `/bin/hostname -s`
+echo "  Started at:           " `/bin/date`
+#################################################
+
 srun -n 1 matlab -nodisplay -nosplash -nodesktop -r "addpath \
     /att/gpfsfs/home/ekyzivat/scripts/PixelClassifier-fork \
     /att/gpfsfs/home/ekyzivat/scripts/random-wetlands; \
@@ -18,3 +27,10 @@ srun -n 1 matlab -nodisplay -nosplash -nodesktop -r "addpath \
     run('/att/gpfsfs/home/ekyzivat/scripts/PixelClassifier-fork/pixelClassifier.m'); \
     exit;"
 
+## Reporting stop ###############################
+echo "  Finished at:           " `date`
+end_time="$(date -u +%s)"
+elapsed="$(($end_time-$start_time))"
+echo "  Minutes elapsed:       " $(($elapsed / 60))
+echo
+#################################################
