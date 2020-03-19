@@ -9,16 +9,16 @@ clear env
 global env 
 
 %% Params
-env.trainingClassRasters=1; % set to 1 to make training class rasters; 0 for viewing image only
+env.trainingClassRasters=0; % set to 1 to make training class rasters; 0 for viewing image only
 env.rangeCorrection=1;
 load_env=0; % load env. from previous run?
-env.run='25';
+env.run='26';
 env.output.cls_dir_local='/att/nobackup/ekyzivat/PixelClassifier';
 env.output.cls_dir_asc='/att/nobackup/ekyzivat/PixelClassifier';
 env.class_dir_local='F:\PAD2019\classification_training\Checkpoint-2020-march-12';
     % Which files to import as training images
 if isunix % on ASC
-    env.trainFileNums=[7,9];%9;%[1,2,7,8,9,15]; %[7]; %[1 2 8 9 10 11 12 13]; % [1 2]
+    env.trainFileNums=[1,2,7,8,9,15]; %[7]; %[1 2 8 9 10 11 12 13]; % [1 2]
 else % on local
     env.trainFileNums=[1,2]; %15% [1 2]
 end    
@@ -29,6 +29,7 @@ env.class_dir_asc=[env.output.cls_dir_asc, filesep, 'Train', env.run, filesep, '
 %% Constant params
 if isunix
     env.asc.annDir='/att/gpfsfs/atrepo01/data/ORNL/ABoVE_Archive/datapool.asf.alaska.edu/METADATA/UA';
+    env.asc.parProfile='LocalProfile1- EK-ASC';
 else
     env.asc.annDir='';
 end
@@ -146,11 +147,11 @@ else
     % desired...)
 %% classification params
 
-    env.pixelClassifier.run.outputMasks = true;
+    env.pixelClassifier.run.outputMasks = false;
     % if to output binary masks corresponding to pixel classes
     env.pixelClassifier.run.outputProbMaps = false;
     % if to output probability maps from which output masks are derived
-    env.pixelClassifier.run.nSubsets = 25; %[50];
+    env.pixelClassifier.run.nSubsets = 32; %[50];
     % the set of pixels to be classified is split in this many subsets;
     % if nSubsets > 1, the subsets are classified using 'parfor' with
     % the currently-opened parallel pool (or a new default one if none is open);

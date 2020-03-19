@@ -1,6 +1,7 @@
 % script to add n 1-band mask files to make 1 n-band categorical raster
 % TODO: generalize so I can use it in other dirs
 % Written  by Ethan Kyzivat
+% DEPRECATED
 function addOutputImages(filename)
 global env
 

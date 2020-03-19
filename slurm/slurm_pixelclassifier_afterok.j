@@ -5,6 +5,7 @@
 #SBATCH --export=ALL
 #SBATCH --mail-user=ekyzivat
 #SBATCH --mail-type=ALL # test
+#SBATCH --dependency=afterok:253 # <======= change this as needed with input
 # # -D ~/slurm-logs
 # test comment
 #  --ntasks-per-node=1

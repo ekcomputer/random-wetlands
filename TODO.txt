@@ -42,7 +42,6 @@ Add aliases to view most recent slrum-###.out file.  Create standard output file
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~PixelClassifier~~~~~~~~~~~~~~~~~~~~~~~~~
 TODO: change plotting for n-band images; 
 test w multiple imgs in training dir (maybe set to load indiv training image sets into mem one at a time); 
-circumvent output method of writing to sep files, then combining- just combine on the first try (in pixelclassifier.m); (save output training diagram/image to folder)
 mirror window in movingstd instead of shrink...
 k-fold cross val for number of leaves?
 Memory optimization/block proc, if necessary
@@ -67,6 +66,7 @@ view(treeBag.Trees{1}, 'Mode', 'graph')
 * Add histogram matching or use diff decomp (Sinclair) so as to accurately compare between seasons/years if bad calibration... yFlats vals were low
 
 * Radiometric terrain correction / MapReady.... redo entire workflow...
+* Improve hot fix that undid class size normalization using random number  generator
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LINUX~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 prep trainingImageImport.m to be like viewingImageImport.m
@@ -76,6 +76,9 @@ set data dir input files to parse out beginning paths and _grd so I can use same
 X Fix stacking bug so I can run on second Shield Image! X
 parallelize training imageImport to use parfor on two cores 
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ASC~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+update gdal-python to 2.1.2+ to fix gdal_edit.py error: http://osgeo-org.1560.x6.nabble.com/gdal-dev-OpenEx-not-found-gdal-edit-py-td5334123.html
+Updae Matlab to R 2019a or greater to import confusionplot()
 ~~~~~~~~~~~~~~~~~~~~~~~~NOTE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 nodata value is not dynamically defined in the gdal calls
 pixelClassifierTrain doesn't have if statements for non Freeman-inc input class options
@@ -96,6 +99,7 @@ X Remove some of the filters from sigma: i.e. Hess
 After AGU: add NoData class, use translation features just for x- to combat overlay effect?
 *** Add in W2 class (removed by mistake...)!!!
 * Rotate offset images and only use directions parallel to look angle (discard orthogonals)
+circumvent output method of writing to sep files, then combining- just combine on the first try (in pixelclassifier.m); (save output training diagram/image to folder)
 
 ~~~~~~~~~~Modify for re-distribution of PixelClassifier Code~~~~~~~~~~~~~~
 rfTrain.m
