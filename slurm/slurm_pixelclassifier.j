@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=PixClas
-#SBATCH --mem-per-cpu=16G
-#SBATCH --ntasks=16
+#SBATCH --mem-per-cpu=32G
+#SBATCH --cpus-per-task=8
 #SBATCH --export=ALL
 #SBATCH --mail-user=ekyzivat
 #SBATCH --mail-type=ALL # test
