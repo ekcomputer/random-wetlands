@@ -28,14 +28,14 @@ for n=env.trainFileNums; % file number from input
        
         if n==env.trainFileNums(1)
              disp('Check to make sure I/O paths are corret:')
-            fprintf('Training class path:\t %s\n', env.input(env.trainFileNums).cls_pth)
-            fprintf('Training dir: \t%s\n', env.output.train_dir)
-            fprintf('Test dir: \t%s\n', env.output.test_dir)
-            fprintf('File numbers: \t%s\n', num2str(env.trainFileNums))
+            fprintf('Training class path: \t%s\n', env.input(env.trainFileNums).cls_pth)
+            fprintf('Training dir: \t\t%s\n', env.output.train_dir)
+            fprintf('Test dir: \t\t%s\n', env.output.test_dir)
+            fprintf('File numbers:\t\t%s\n', num2str(env.trainFileNums))
             f.names={env.input.name};
-            fprintf('File IDs:\n');
-            disp(f.names(env.trainFileNums)')
-            fprintf('Input type: \t%s\n', env.inputType)
+            fprintf('File IDs:\n\t\t\t%s\n', strjoin(f.names(env.trainFileNums), '\n\t\t\t'));
+%             disp(f.names(env.trainFileNums)')
+            fprintf('Input type: \t\t%s\n', env.inputType)
             fprintf('Rangecorrection: \t%d\n', env.rangeCorrection);
             if trainingClassRasters==0;
                 disp('Making stacked image only- no training class rasters.  Output to test folder')
@@ -151,7 +151,7 @@ for n=env.trainFileNums; % file number from input
     %% gdal warp to project and select bounding box of training image
     if exist(stack_path)==0 %% HERE <==================== why isn't this branch earlier?
             % stack (build VRT)
-        cmd=sprintf('gdalbuildvrt -srsnodata %d -vrtnodata %d -separate %s %s', ...
+        cmd=sprintf('gdalbuildvrt -srcnodata %d -vrtnodata %d -separate %s %s', ...
             env.constants.noDataValue, env.constants.noDataValue, vrt_pth, f.gray_imgs_formatted)
         system(cmd);
             % gdal warp

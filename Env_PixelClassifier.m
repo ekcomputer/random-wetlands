@@ -9,22 +9,23 @@ clear env
 global env 
 
 %% Params
-env.trainingClassRasters=0; % set to 1 to make training class rasters; 0 for viewing image only
+env.trainingClassRasters=1; % set to 1 to make training class rasters; 0 for viewing image only
 env.rangeCorrection=1;
 load_env=0; % load env. from previous run?
-env.run='27';
+env.run='28';
+env.training_run='25'; % set different from env.run if using a model from previous run.  Only matters on ASC.
 env.output.cls_dir_local='/att/nobackup/ekyzivat/PixelClassifier';
 env.output.cls_dir_asc='/att/nobackup/ekyzivat/PixelClassifier';
 env.class_dir_local='F:\PAD2019\classification_training\Checkpoint-2020-march-12';
     % Which files to import as training images
 if isunix % on ASC
-    env.trainFileNums=[1,2,7,8,9,15]; %[7]; %[1 2 8 9 10 11 12 13]; % [1 2]
+    env.trainFileNums=1; %[1,2,7,8,9,15]; %[7]; %[1 2 8 9 10 11 12 13]; % [1 2]
 else % on local
     env.trainFileNums=[1,2]; %15% [1 2]
 end    
 
 %% Dynamic I/O
-env.class_dir_asc=[env.output.cls_dir_asc, filesep, 'Train', env.run, filesep, 'shp'];
+env.class_dir_asc=[env.output.cls_dir_asc, filesep, 'Train', env.training_run, filesep, 'shp'];
 
 %% Constant params
 if isunix
