@@ -18,6 +18,10 @@ echo "  Started on:           " `/bin/hostname -s`
 echo "  Started at:           " `/bin/date`
 #################################################
 
+## Source
+source /opt/PGSCplus-2.2.2/init-gdal.sh
+
+## Run
 srun -n 1 matlab -nodisplay -nosplash -nodesktop -r "addpath \
     /att/gpfsfs/home/ekyzivat/scripts/PixelClassifier-fork \
     /att/gpfsfs/home/ekyzivat/scripts/random-wetlands; \

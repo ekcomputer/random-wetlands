@@ -151,7 +151,8 @@ for n=env.trainFileNums; % file number from input
     %% gdal warp to project and select bounding box of training image
     if exist(stack_path)==0 %% HERE <==================== why isn't this branch earlier?
             % stack (build VRT)
-        cmd=sprintf('gdalbuildvrt -separate %s %s', vrt_pth, f.gray_imgs_formatted)
+        cmd=sprintf('gdalbuildvrt -srsnodata %d -vrtnodata %d -separate %s %s', ...
+            env.constants.noDataValue, env.constants.noDataValue, vrt_pth, f.gray_imgs_formatted)
         system(cmd);
             % gdal warp
         if ~useFullExtent % is srcnodata really -10000 or is it zero?

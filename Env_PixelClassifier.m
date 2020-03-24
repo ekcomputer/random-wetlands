@@ -12,7 +12,7 @@ global env
 env.trainingClassRasters=0; % set to 1 to make training class rasters; 0 for viewing image only
 env.rangeCorrection=1;
 load_env=0; % load env. from previous run?
-env.run='26';
+env.run='27';
 env.output.cls_dir_local='/att/nobackup/ekyzivat/PixelClassifier';
 env.output.cls_dir_asc='/att/nobackup/ekyzivat/PixelClassifier';
 env.class_dir_local='F:\PAD2019\classification_training\Checkpoint-2020-march-12';
@@ -151,7 +151,7 @@ else
     % if to output binary masks corresponding to pixel classes
     env.pixelClassifier.run.outputProbMaps = false;
     % if to output probability maps from which output masks are derived
-    env.pixelClassifier.run.nSubsets = 32; %[50];
+    env.pixelClassifier.run.nSubsets = 64; %[50];
     % the set of pixels to be classified is split in this many subsets;
     % if nSubsets > 1, the subsets are classified using 'parfor' with
     % the currently-opened parallel pool (or a new default one if none is open);

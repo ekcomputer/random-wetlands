@@ -38,7 +38,7 @@ geotiffwrite(output_pth, im, gt.SpatialRef, 'GeoKeyDirectoryTag',gt.GeoTIFFTags.
 % gdal_calc.py -A input1.tif -B input2.tif --outfile=result.tif --calc="A+B"
 
 %% Add NoData values to rasters
-if 1==0 % don't implement until ASC updates python gdal to 2.1.2 +
+if 1==1 % don't implement until ASC updates python gdal to 2.1.2 +
     cmd=sprintf('gdal_edit.py -a_nodata %d %s', env.constants.noDataValue_ouput, output_pth);
     system(cmd)
 end
