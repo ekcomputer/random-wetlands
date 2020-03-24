@@ -16,7 +16,6 @@ add cost functions...;
 noData mask for training;
 turn off parallel except if on a cluster?
 speckle filtering?
-*Need better water and FD classes
 *Run training for lots of param options and figure out which ones most imp- then use those
 *Better training data! Then re-run trainingImageImport.m
 *Try with C3 matrix or other decomp to see if yellow overlay is improved or better class distinction.
@@ -101,6 +100,7 @@ After AGU: add NoData class, use translation features just for x- to combat over
 *** Add in W2 class (removed by mistake...)!!!
 * Rotate offset images and only use directions parallel to look angle (discard orthogonals)
 circumvent output method of writing to sep files, then combining- just combine on the first try (in pixelclassifier.m); (save output training diagram/image to folder)
+*Need better water and FD classes
 
 ~~~~~~~~~~Modify for re-distribution of PixelClassifier Code~~~~~~~~~~~~~~
 rfTrain.m

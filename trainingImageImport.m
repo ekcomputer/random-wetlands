@@ -193,24 +193,32 @@ for n=env.trainFileNums; % file number from input
                 
                 % another check to make sure correct bounding box was used
                 
-                f.sumValidpx=sum(sum(stack(:,:,1)>0));
-                if f.sumValidpx < 5000
-                   warning('Output tif has less than 5,000 valid pixels.')
-                end
-                % write using geotiffwrite and add mask using gdal
-                lastwarn('') % reset
-                [warnMsg, warnId] = lastwarn;
-                    % Try
-                geotiffwrite([stack_path, '_temp.tif'],stack, R, 'GeoKeyDirectoryTag',gti.GeoTIFFTags.GeoKeyDirectoryTag)
-                if ~isempty(warnMsg)
-                    disp('Writing big geotiff')
-                    biggeotiffwrite([stack_path, '_temp.tif'],stack, R, env.proj_source);
-                end
+            f.sumValidpx=sum(sum(stack(:,:,1)>0));
+            if f.sumValidpx < 5000
+               warning('Output tif has less than 5,000 valid pixels.')
+            end
+            % write using geotiffwrite and add mask using gdal
+            lastwarn('') % reset
+            [warnMsg, warnId] = lastwarn;
+                % Try
+            geotiffwrite([stack_path, '_temp.tif'],stack, R, 'GeoKeyDirectoryTag',gti.GeoTIFFTags.GeoKeyDirectoryTag)
+            if ~isempty(warnMsg)
+                disp('Writing big geotiff')
+                biggeotiffwrite([stack_path, '_temp.tif'],stack, R, env.proj_source);
+            end
+            
                     % can use gdal edit instead...
-            cmd=sprintf('gdalwarp "%s" "%s" -overwrite -srcnodata -10000 -dstnodata -10000 -multi -wo NUM_THREADS=2 -co COMPRESS=DEFLATE',...
-                [stack_path, '_temp.tif'], stack_path)
-            system(cmd);
-            delete([stack_path, '_temp*']);
+            if ~isunix
+                cmd=sprintf('gdalwarp "%s" "%s" -overwrite -srcnodata -10000 -dstnodata -10000 -multi -wo NUM_THREADS=2 -co COMPRESS=DEFLATE',...
+                    [stack_path, '_temp.tif'], stack_path)
+                system(cmd);
+                delete([stack_path, '_temp*']);
+            else
+                cmd=sprintf('gdal_edit.py "%s" -a_nodata %d',...
+                    [stack_path, '_temp.tif'], env.constants.noDataValue)
+                system(cmd);
+                movefile([stack_path, '_temp.tif'], stack_path);
+            end
         end
         
     else
