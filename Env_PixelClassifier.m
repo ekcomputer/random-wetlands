@@ -11,6 +11,7 @@ global env
 %% Params
 env.trainingClassRasters=1; % set to 1 to make training class rasters; 0 for viewing image only
 env.rangeCorrection=1;
+env.equalizeTrainClassSizes=1; % Delete some training data so that all training classes have aprox. = sizes (not per image, but overall)
 load_env=0; % load env. from previous run?
 env.run='28';
 env.training_run='25'; % set different from env.run if using a model from previous run.  Only matters on ASC.
