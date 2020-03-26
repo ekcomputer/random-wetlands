@@ -156,11 +156,11 @@ for n=env.trainFileNums; % file number from input
         system(cmd);
             % gdal warp
         if ~useFullExtent % is srcnodata really -10000 or is it zero?
-            cmd=sprintf('gdalwarp "%s" "%s" -srcnodata -10000 -dstnodata -10000 -wo NUM_THREADS=8 -co COMPRESS=DEFLATE -te %s -t_srs PROJCS["Canada_Albers_Equal_Area_Conic",GEOGCS["GCS_North_American_1983",DATUM["North_American_Datum_1983",SPHEROID["GRS_1980",6378137,298.257222101]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Albers_Conic_Equal_Area"],PARAMETER["False_Easting",0],PARAMETER["False_Northing",0],PARAMETER["longitude_of_center",-96],PARAMETER["Standard_Parallel_1",50],PARAMETER["Standard_Parallel_2",70],PARAMETER["latitude_of_center",40],UNIT["Meter",1],AUTHORITY["EPSG","102001"]]',...
-                vrt_pth, stack_path, f.bb_fmtd)
+            cmd=sprintf('gdalwarp "%s" "%s" -srcnodata -10000 -dstnodata -10000 -wo NUM_THREADS=ALL_CPUS --config GDAL_CACHEMAX %d -co COMPRESS=DEFLATE -te %s -t_srs PROJCS["Canada_Albers_Equal_Area_Conic",GEOGCS["GCS_North_American_1983",DATUM["North_American_Datum_1983",SPHEROID["GRS_1980",6378137,298.257222101]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Albers_Conic_Equal_Area"],PARAMETER["False_Easting",0],PARAMETER["False_Northing",0],PARAMETER["longitude_of_center",-96],PARAMETER["Standard_Parallel_1",50],PARAMETER["Standard_Parallel_2",70],PARAMETER["latitude_of_center",40],UNIT["Meter",1],AUTHORITY["EPSG","102001"]]',...
+                vrt_pth, stack_path, env.gdal.CACHEMAX, f.bb_fmtd)
         else
-            cmd=sprintf('gdalwarp "%s" "%s" -srcnodata -10000 -dstnodata -10000  -wo NUM_THREADS=8 -co COMPRESS=DEFLATE -t_srs PROJCS["Canada_Albers_Equal_Area_Conic",GEOGCS["GCS_North_American_1983",DATUM["North_American_Datum_1983",SPHEROID["GRS_1980",6378137,298.257222101]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Albers_Conic_Equal_Area"],PARAMETER["False_Easting",0],PARAMETER["False_Northing",0],PARAMETER["longitude_of_center",-96],PARAMETER["Standard_Parallel_1",50],PARAMETER["Standard_Parallel_2",70],PARAMETER["latitude_of_center",40],UNIT["Meter",1],AUTHORITY["EPSG","102001"]]',...
-                vrt_pth, stack_path)
+            cmd=sprintf('gdalwarp "%s" "%s" -srcnodata -10000 -dstnodata -10000  -wo NUM_THREADS=ALL_CPUS --config GDAL_CACHEMAX %d -co COMPRESS=DEFLATE -t_srs PROJCS["Canada_Albers_Equal_Area_Conic",GEOGCS["GCS_North_American_1983",DATUM["North_American_Datum_1983",SPHEROID["GRS_1980",6378137,298.257222101]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Albers_Conic_Equal_Area"],PARAMETER["False_Easting",0],PARAMETER["False_Northing",0],PARAMETER["longitude_of_center",-96],PARAMETER["Standard_Parallel_1",50],PARAMETER["Standard_Parallel_2",70],PARAMETER["latitude_of_center",40],UNIT["Meter",1],AUTHORITY["EPSG","102001"]]',...
+                vrt_pth, stack_path, env.gdal.CACHEMAX)
         end
         system(cmd);
     
@@ -206,11 +206,10 @@ for n=env.trainFileNums; % file number from input
                 disp('Writing big geotiff')
                 biggeotiffwrite([stack_path, '_temp.tif'],stack, R, env.proj_source);
             end
-            
-                    % can use gdal edit instead...
             if ~isunix
-                cmd=sprintf('gdalwarp "%s" "%s" -overwrite -srcnodata -10000 -dstnodata -10000 -multi -wo NUM_THREADS=2 -co COMPRESS=DEFLATE',...
-                    [stack_path, '_temp.tif'], stack_path)
+                clear stack_path % save room in mem for gdalwarp
+                cmd=sprintf('gdalwarp "%s" "%s" -overwrite -srcnodata -10000 -dstnodata -10000 -multi -wo NUM_THREADS=ALL_CPUS --config GDAL_CACHEMAX %d -co COMPRESS=DEFLATE',...
+                    [stack_path, '_temp.tif'], stack_path, env.gdal.CACHEMAX)
                 system(cmd);
                 delete([stack_path, '_temp*']);
             else

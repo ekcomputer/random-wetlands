@@ -20,14 +20,18 @@ env.output.cls_dir_asc='/att/nobackup/ekyzivat/PixelClassifier';
 env.class_dir_local='F:\PAD2019\classification_training\Checkpoint-2020-march-12';
     % Which files to import as training images
 if isunix % on ASC
-    env.trainFileNums=1; %[1,2,7,8,9,15]; %[7]; %[1 2 8 9 10 11 12 13]; % [1 2]
+    env.trainFileNums=8; %[1,2,7,8,9,15]; %[7]; %[1 2 8 9 10 11 12 13]; % [1 2]
 else % on local
     env.trainFileNums=[1,2]; %15% [1 2]
 end    
 
 %% Dynamic I/O
 env.class_dir_asc=[env.output.cls_dir_asc, filesep, 'Train', env.training_run, filesep, 'shp'];
-
+if isunix
+    env.gdal.CACHEMAX = 8000; %~4GB
+else
+    env.gdal.CACHEMAX = 2000; %~2GB
+end
 %% Constant params
 if isunix
     env.asc.annDir='/att/gpfsfs/atrepo01/data/ORNL/ABoVE_Archive/datapool.asf.alaska.edu/METADATA/UA';
