@@ -1,6 +1,7 @@
 #!/bin/bash
 # Script to add georef line to ENVI header
 # inputs are .ann and .hdr file name
+# note: imaginary .bin files have wrong data type (float instead of complex)
 
 	#PARSE
 long=$(cat $1 | grep -e "grd_pwr.col_addr" | awk '{print $4}')
