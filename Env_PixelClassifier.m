@@ -9,7 +9,7 @@ clear env
 global env 
 
 %% Params
-env.trainingClassRasters=1; % set to 1 to make training class rasters; 0 for viewing image only
+env.trainingClassRasters=0; % set to 1 to make training class rasters; 0 for viewing image only
 env.rangeCorrection=1;
 env.equalizeTrainClassSizes=1; % Delete some training data so that all training classes have aprox. = sizes (not per image, but overall)
 load_env=0; % load env. from previous run?
@@ -20,7 +20,7 @@ env.output.cls_dir_asc='/att/nobackup/ekyzivat/PixelClassifier';
 env.class_dir_local='F:\PAD2019\classification_training\Checkpoint-2020-march-12';
     % Which files to import as training images
 if isunix % on ASC
-    env.trainFileNums=[1,2,7,8,9,15]; %[1,2,7,8,9,15]; %[7]; %[1 2 8 9 10 11 12 13]; % [1 2]
+    env.trainFileNums=[1,2,3,4,7,8,9,13, 14, 15, 16, 17]; %[1,2,7,8,9,15]; %[7]; %[1 2 8 9 10 11 12 13]; % [1 2]
 else % on local
     env.trainFileNums=[1,2]; %15% [1 2]
 end    
@@ -112,6 +112,7 @@ else
     
         % model I/O (todo: add smart suffix automatically to avoid overwrite)
     env.output.current_model=[env.output.test_dir, 'model.mat'];
+    env.output.current_training=[env.output.test_dir, 'training.mat'];
 %     env.viewFileNums=[4];
 %% classification training params
     env.pixelClassifier.use_raw_image=1;

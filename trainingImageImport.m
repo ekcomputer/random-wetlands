@@ -201,8 +201,13 @@ for n=env.trainFileNums; % file number from input
             lastwarn('') % reset
             [warnMsg, warnId] = lastwarn;
                 % Try
-            geotiffwrite([stack_path, '_temp.tif'],stack, R, 'GeoKeyDirectoryTag',gti.GeoTIFFTags.GeoKeyDirectoryTag)
-            if ~isempty(warnMsg)
+            try
+                geotiffwrite([stack_path, '_temp.tif'],stack, R, 'GeoKeyDirectoryTag',gti.GeoTIFFTags.GeoKeyDirectoryTag)
+                gtwrite_failed=0;
+            catch
+                gtwrite_failed=1;
+            end
+                if ~isempty(warnMsg) || gtwrite_failed % sometimes it throws an error, sometimes a warning
                 disp('Writing big geotiff')
                 biggeotiffwrite([stack_path, '_temp.tif'],stack, R, env.proj_source);
             end

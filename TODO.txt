@@ -64,7 +64,9 @@ view(treeBag.Trees{1}, 'Mode', 'graph')
 * Add histogram matching or use diff decomp (Sinclair) so as to accurately compare between seasons/years if bad calibration... yFlats vals were low
 * Radiometric terrain correction / MapReady.... redo entire workflow...
 * Improve hot fix that undid class size normalization using random number  generator
-* Don't classify NoData areas!
+* Don't classify NoData areas!  Don't train with NoData areas!  Don't do filters on -10000 vals that should be NoData (rm conversion from NaN)
+Why 2 offset features?  Just use one.
+** Do range correction before decomp...perhaps using JPL/Marc workflow
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LINUX~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 prep trainingImageImport.m to be like viewingImageImport.m

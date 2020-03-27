@@ -80,4 +80,11 @@ if exist('confusionchart')==5  % if R2018b or greater, when this function was in
 else 
     cm=NaN;
 end
-C=C1; % for output
+
+%% Display CM table, regardless of whether or not it opens in a figure
+varNames=class_names;
+    varNames{end+1}='Total';
+    cm_table=array2table(C1, 'VariableNames', varNames, 'RowNames', varNames);
+    fprintf('\nConfusion Matrix:\n')
+    disp(cm_table)
+% C=C1; % for output

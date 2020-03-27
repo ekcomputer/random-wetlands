@@ -1,4 +1,4 @@
-function biggeotiffwrite(FILENAME, A, R, vargin)
+function biggeotiffwrite(FILENAME, A, R, varargin)
 % 'w'  will create a classic TIFF file
 % 'w8' will create a BigTIFF file
 % This option is the only differentiator when writing to these two formats.
