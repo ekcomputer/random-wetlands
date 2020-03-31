@@ -83,8 +83,12 @@ end
 
 %% Display CM table, regardless of whether or not it opens in a figure
 varNames=class_names;
-    varNames{end+1}='Total';
+varNames{end+1}='Total';
+try
     cm_table=array2table(C1, 'VariableNames', varNames, 'RowNames', varNames);
     fprintf('\nConfusion Matrix:\n')
     disp(cm_table)
+catch
+    warning('Cannot display Confusion Marix Table.  Error in confusionmatStats: probably caused by some training classes not being present in training data, but being present in class names list ')
+end
 % C=C1; % for output

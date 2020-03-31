@@ -27,7 +27,7 @@ for n=env.trainFileNums; % file number from input
        
        
         if n==env.trainFileNums(1)
-             disp('Check to make sure I/O paths are corret:')
+             disp('Check to make sure I/O paths are correct:')
             fprintf('Training class path: \t%s\n', env.input(env.trainFileNums).cls_pth)
             fprintf('Training dir: \t\t%s\n', env.output.train_dir)
             fprintf('Test dir: \t\t%s\n', env.output.test_dir)
