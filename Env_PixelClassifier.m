@@ -29,6 +29,7 @@ end
 env.class_dir_asc=[env.output.cls_dir_asc, filesep, 'Train', env.training_run, filesep, 'shp'];
 if isunix
     env.gdal.CACHEMAX = 8000; %~4GB
+    env.output.train_dir=[env.output.cls_dir_asc, filesep, 'Train', env.training_run, '/'];
 else
     env.gdal.CACHEMAX = 2000; %~2GB
 end
@@ -52,7 +53,6 @@ else
         addpath /att/gpfsfs/home/ekyzivat/scripts/random-wetlands/dnafinder-Cohen-a2b974e
         addpath /att/gpfsfs/home/ekyzivat/scripts/PixelClassifier-fork
         addpath /att/gpfsfs/home/ekyzivat/scripts/random-wetlands
-        env.output.train_dir=[env.output.cls_dir_asc, filesep, 'Train', env.run, '/'];
         env.output.test_dir=[env.output.cls_dir_asc, filesep, 'Test', env.run, '/'];
         env.bulk_plot_dir='/dev/null/';
 

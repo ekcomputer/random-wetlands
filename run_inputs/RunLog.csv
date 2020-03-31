@@ -23,7 +23,7 @@ Run,Raw,sigma,Offsets,speckle,OffsetSigma,LoGSigma,SteerableFilterSigma,nTree,mi
 25,1,na,3,1,2,na,na,40,40,5,4,6,3,5,1,25,32,97.1,0.953,14,25,1,,"added FW and WD and new training areas; classifying training rasters (subsets); using hot fix that includes all training pixels; with 2 large YF files having improper heading info: OA =97.0, k=0.952.  Three files had mem crash"
 26,1,na,3,1,2,na,na,40,40,5,4,,2,5,1,32,,,,14,25,1,,"same model as 25, but successfully debugged mem crash and ran on remaining three files"
 27,1,na,3,1,2,na,na,40,40,5,4,,2,5,1,32,52,,,14,25,1,283,same as before?
-28,1,na,3,1,2,na,na,40,40,5,4,,2,5,1,32,,,,14,25,,,debugging 0 vs nodata
+28,1,na,3,1,2,na,na,40,40,5,4,,2,5,1,32,,,,14,25,,,debugging 0 vs nodata; debugging NoData use in classifying
 29,,,,,,,,,,,,,,,,,,,,,,,,
 30,,,,,,,,,,,,,,,,,,,,,,,,
 31,,,,,,,,,,,,,,,,,,,,,,,,

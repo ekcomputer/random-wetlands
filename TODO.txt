@@ -37,6 +37,7 @@ Multithread gdalwarp, dep on linux or Brown- but careful if running loops in par
 add ifunix branch to use gdaledit.py instead of gdalwarp
 RE-write parallel_cat_run.sh as a slurm batch file that uses srun instead of bash to call the processing function 
 Add aliases to view most recent slrum-###.out file.  Create standard output files a la https://gist.github.com/zkamvar/3d1fa899db5eecb1295de4cd84052a7b
+NOTE: env.output.train_dir and env.class_dir_asc point to same thing-are redundant
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~PixelClassifier~~~~~~~~~~~~~~~~~~~~~~~~~
 TODO: change plotting for n-band images; 

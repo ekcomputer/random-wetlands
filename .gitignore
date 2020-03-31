@@ -2,3 +2,5 @@
 *.hdr
 *.txt
 *.xlsx
+*.m~
+*.sh~
