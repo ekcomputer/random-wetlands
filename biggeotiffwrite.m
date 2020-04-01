@@ -35,7 +35,7 @@ worldfilewrite(R, gti_out);
 if exist(varargin{1})==2 % if varargin exists in workplace and is file
     proj_source=varargin{1};
     [fdir, fname]=fileparts(FILENAME);
-    proj_output=[fdir, fname, '.proj'];
+    proj_output=[fdir, fname, '.prj'];
     copyfile(proj_source, proj_output) 
     fprintf('Creating .proj file: %s\n', proj_output)
 end
