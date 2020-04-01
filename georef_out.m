@@ -26,13 +26,13 @@ end
 
 %% apply mask
 
-if ~isunix
-    test_im=imread([env.output.test_dir, georef_in]);
-else
-    test_im=imread(strtrim(georef_in));
-end
-mask=isnan(test_im(:,:,end)); % negative data mask
-im(mask)=env.constants.noDataValue_ouput; %%% HERE 2/18/20: mask is different size than out
+% if ~isunix
+%     test_im=imread([env.output.test_dir, georef_in]);
+% else
+%     test_im=imread(strtrim(georef_in));
+% end
+% mask=isnan(test_im(:,:,end)); % negative data mask
+% im(mask)=env.constants.noDataValue_ouput; %%% HERE 2/18/20: mask is different size than out
 %% write
 geotiffwrite(output_pth, im, gt.SpatialRef, 'GeoKeyDirectoryTag',gt.GeoTIFFTags.GeoKeyDirectoryTag);
 % gdal_calc.py -A input1.tif -B input2.tif --outfile=result.tif --calc="A+B"
@@ -40,5 +40,5 @@ geotiffwrite(output_pth, im, gt.SpatialRef, 'GeoKeyDirectoryTag',gt.GeoTIFFTags.
 %% Add NoData values to rasters
 if isunix % don't implement until ASC updates python gdal to 2.1.2 +
     cmd=sprintf('gdal_edit.py -a_nodata %d %s', env.constants.noDataValue_ouput, output_pth);
-    system(cmd)
+    system(cmd);
 end
