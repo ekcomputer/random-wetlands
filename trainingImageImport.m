@@ -201,15 +201,23 @@ for n=env.trainFileNums; % file number from input
             lastwarn('') % reset
             [warnMsg, warnId] = lastwarn;
                 % Try
+            gtwrite_failed=0;
             try
-                geotiffwrite([stack_path, '_temp.tif'],stack, R, 'GeoKeyDirectoryTag',gti.GeoTIFFTags.GeoKeyDirectoryTag)
-                gtwrite_failed=0;
+                if ~isunix
+                    geotiffwrite([stack_path, '_temp.tif'],stack, R, 'GeoKeyDirectoryTag',gti.GeoTIFFTags.GeoKeyDirectoryTag)              
+                else
+                    geotiffwrite(stack_path,stack, R, 'GeoKeyDirectoryTag',gti.GeoTIFFTags.GeoKeyDirectoryTag)    %overwrite          
+                end
             catch
                 gtwrite_failed=1;
             end
                 if ~isempty(warnMsg) || gtwrite_failed % sometimes it throws an error, sometimes a warning
                 disp('Writing big geotiff')
+            if ~isunix
                 biggeotiffwrite([stack_path, '_temp.tif'],stack, R, env.proj_source);
+            else
+                biggeotiffwrite(stack_path,stack, R, env.proj_source);
+            end
             end
             if ~isunix
                 clear stack_path % save room in mem for gdalwarp
@@ -219,9 +227,8 @@ for n=env.trainFileNums; % file number from input
                 delete([stack_path, '_temp*']);
             else
                 cmd=sprintf('gdal_edit.py "%s" -a_nodata %d',...
-                    [stack_path, '_temp.tif'], env.constants.noDataValue)
+                    stack_path, env.constants.noDataValue)
                 system(cmd);
-                movefile([stack_path, '_temp.tif'], stack_path);
             end
         end
         

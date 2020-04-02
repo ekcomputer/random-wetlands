@@ -1,4 +1,4 @@
-function addOutputImages(name, im)
+function georef_out(name, im)
 % script to write a geotiff from just a filename and image matrix.  It
 % calls global env structure to query input image with same name so it can
 % extact georef info and masked pixels.

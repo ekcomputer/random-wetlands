@@ -26,10 +26,7 @@ Test effect of not using incidence angle as a feature to remove potential range-
 Update colors to be color-blind friendly
 Near-and far range masking or simply save output file w range band
 Add tall shrub class!
-* Fix NoData output issues...
 * dynamically assign mean incidence angle, or use lookup table from metatdata.ann file
-Speed up trainingImageImport.m by adding parallel
-Fix GeoTiffWrite alternatives for large bigtiffs
 Auto/streamlined env.input(xx) ingest
 **Add H/a/alpha or Sinclair matrix or AVIRIS into workflows
 *Illum angle correction for shield
@@ -37,7 +34,7 @@ Multithread gdalwarp, dep on linux or Brown- but careful if running loops in par
 add ifunix branch to use gdaledit.py instead of gdalwarp
 RE-write parallel_cat_run.sh as a slurm batch file that uses srun instead of bash to call the processing function 
 Add aliases to view most recent slrum-###.out file.  Create standard output files a la https://gist.github.com/zkamvar/3d1fa899db5eecb1295de4cd84052a7b
-NOTE: env.output.train_dir and env.class_dir_asc point to same thing-are redundant
+*Parallelize trainingImageimport.m - use parfor to run all the gdal tasks at once - but this will require renaming structures and setting different gdal CACHEMAX
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~PixelClassifier~~~~~~~~~~~~~~~~~~~~~~~~~
 TODO: change plotting for n-band images; 
@@ -65,9 +62,8 @@ view(treeBag.Trees{1}, 'Mode', 'graph')
 * Add histogram matching or use diff decomp (Sinclair) so as to accurately compare between seasons/years if bad calibration... yFlats vals were low
 * Radiometric terrain correction / MapReady.... redo entire workflow...
 * Improve hot fix that undid class size normalization using random number  generator
-* Don't classify NoData areas!  Don't train with NoData areas!  Don't do filters on -10000 vals that should be NoData (rm conversion from NaN)
-Why 2 offset features?  Just use one.
 ** Do range correction before decomp...perhaps using JPL/Marc workflow
+** Change error assessment to randomly select by polygon, not by pixel, so as to produce more realistic metrics
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LINUX~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 prep trainingImageImport.m to be like viewingImageImport.m
@@ -79,7 +75,7 @@ parallelize training imageImport to use parfor on two cores
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ASC~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 update gdal-python to 2.1.2+ to fix gdal_edit.py error: http://osgeo-org.1560.x6.nabble.com/gdal-dev-OpenEx-not-found-gdal-edit-py-td5334123.html
-Updae Matlab to R 2019a or greater to import confusionplot()
+(Updae Matlab to R 2019a or greater to import confusionplot() )
 Ask if they have or can install Matlab Distributed Computing Server
 
 ~~~~~~~~~~~~~~~~~~~~~~~~NOTE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
@@ -104,6 +100,10 @@ After AGU: add NoData class, use translation features just for x- to combat over
 * Rotate offset images and only use directions parallel to look angle (discard orthogonals)
 circumvent output method of writing to sep files, then combining- just combine on the first try (in pixelclassifier.m); (save output training diagram/image to folder)
 *Need better water and FD classes
+* Don't classify NoData areas!  Don't train with NoData areas!  Don't do filters on -10000 vals that should be NoData (rm conversion from NaN)
+NOTE: env.output.train_dir and env.class_dir_asc point to same thing-are redundant
+* Fix NoData output issues...
+Fix GeoTiffWrite alternatives for large bigtiffs
 
 ~~~~~~~~~~Modify for re-distribution of PixelClassifier Code~~~~~~~~~~~~~~
 rfTrain.m
@@ -111,4 +111,4 @@ pixelClassifierTrain.m - validition and concat of n=3 bandns to make F
 ** if classifying in parallel (2 workers), make parpool(4) and call for 8 cpus, or change chunking size and num cpus during classification to avoid memory crash! 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~Requirements~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-gdal (not the gdal python scripts though)
+gdal (and/or the gdal python scripts though)
