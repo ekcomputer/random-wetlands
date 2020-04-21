@@ -25,7 +25,7 @@ Run,Raw,sigma,Offsets,speckle,OffsetSigma,LoGSigma,SteerableFilterSigma,nTree,mi
 27,1,na,3,1,2,na,na,40,40,5,4,,2,5,1,32,52,,,14,25,1,283,same as before?
 28,1,na,3,1,2,na,na,40,40,5,4,,2,5,1,32,,,,14,25,,,debugging 0 vs nodata; debugging NoData use in classifying
 29,,,,,,,,,,,,,,,,,,,,,,,,has largest collection of test images as of yet
-30,,,,,,,,,,,,,,,,,,,,,,,,
+30,,,,,,,,,,,,,,,,,,,,,,,,"New training areas for PAD, YF, BakerC"
 31,,,,,,,,,,,,,,,,,,,,,,,,
 32,,,,,,,,,,,,,,,,,,,,,,,,
 33,,,,,,,,,,,,,,,,,,,,,,,,
