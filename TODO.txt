@@ -31,10 +31,10 @@ Auto/streamlined env.input(xx) ingest
 **Add H/a/alpha or Sinclair matrix or AVIRIS into workflows
 *Illum angle correction for shield
 Multithread gdalwarp, dep on linux or Brown- but careful if running loops in parallel
-add ifunix branch to use gdaledit.py instead of gdalwarp
 RE-write parallel_cat_run.sh as a slurm batch file that uses srun instead of bash to call the processing function 
 Add aliases to view most recent slrum-###.out file.  Create standard output files a la https://gist.github.com/zkamvar/3d1fa899db5eecb1295de4cd84052a7b
 *Parallelize trainingImageimport.m - use parfor to run all the gdal tasks at once - but this will require renaming structures and setting different gdal CACHEMAX
+Follow-up to Zhange et al 2013 IJRS: invesitage effects of relative class size on RF training.  Make same N vs OA plots, but with among-polygon training/val splits.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~PixelClassifier~~~~~~~~~~~~~~~~~~~~~~~~~
 TODO: change plotting for n-band images; 
@@ -104,6 +104,7 @@ circumvent output method of writing to sep files, then combining- just combine o
 NOTE: env.output.train_dir and env.class_dir_asc point to same thing-are redundant
 * Fix NoData output issues...
 Fix GeoTiffWrite alternatives for large bigtiffs
+add ifunix branch to use gdaledit.py instead of gdalwarp
 
 ~~~~~~~~~~Modify for re-distribution of PixelClassifier Code~~~~~~~~~~~~~~
 rfTrain.m
