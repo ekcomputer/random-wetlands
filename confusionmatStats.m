@@ -15,7 +15,7 @@ function [C, cm, order, k, O, A]=confusionmatStats(validation, label, class_name
 %           O:          Overall accuracy
 %           A:          Users/producers accuracy matrix: col one is PA, col
 %                       2 is UA, rows give vars
-[C, order]=confusionmat(validation,label);
+[C, order]=confusionmat(validation,label, 'order', unique(validation)); % orders by alphabetical list of class names- fixes bug
 
 %%  Layden version https://www.mathworks.com/matlabcentral/fileexchange/69943-simple-cohen-s-kappa
 % C=C;
