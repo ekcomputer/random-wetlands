@@ -8,7 +8,7 @@
 clear env
 global env 
 
-%% Params
+%% Params for trainingImageImport.m
 env.trainingClassRasters=1; % set to 1 to make training class rasters; 0 for viewing image only
 env.rangeCorrection=1;
 env.equalizeTrainClassSizes=1; % Delete some training data so that all training classes have aprox. = sizes (not per image, but overall)
