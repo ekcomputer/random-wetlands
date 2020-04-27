@@ -172,11 +172,11 @@ for n=env.trainFileNums; % file number from input
             nBands=length(f.band_order);
             stack(repmat(stack(:,:,nBands)==env.constants.noDataValue, [1, 1, nBands]))=NaN;
             if env.rangeCorrection % fix NoData value issues...
-                if strcmp(env.inputType, 'Freeman-inc') || strcmp(env.inputType, 'C3-inc')
+                if ismember(env.inputType, {'Freeman-inc','C3-inc', 'Freeman', 'C3', 'T3'})
                     disp('Range correction...')
                     stack(:,:,1:end-1)=stack(:,:,1:end-1).*(cosd(env.constants.imCenter)./cos(stack(:,:,end))).^env.constants.n;
                     stack(repmat(stack(:,:,1)==env.constants.noDataValue, [1, 1, nBands]))=env.constants.noDataValue;    %mask out nodata
-                elseif strcmp(env.inputType, 'Norm-Fr-C11-inc')
+                elseif ismember(env.inputType, {'Norm-Fr-C11-inc'})
                     disp('Range correction...')
                     stack(:,:,4)=stack(:,:,4).*(cosd(env.constants.imCenter)./cos(stack(:,:,end))).^env.constants.n;
                     stack(repmat(stack(:,:,1)==env.constants.noDataValue, [1, 1, nBands]))=env.constants.noDataValue;    %mask out nodata

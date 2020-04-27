@@ -13,12 +13,7 @@ why are training and veiwing images slightly offset?  resampling boundaries?
 (use NoData mask for training data: https://gdal.org/development/rfc/rfc15_nodatabitmask.html#rfc-15, but will need to copy mask_valid_pixels to XXX.msk); (convert to int16 precision to save memory); 
 save arcmap viewing color files...; 
 add cost functions...; 
-noData mask for training;
-turn off parallel except if on a cluster?
-speckle filtering?
 *Run training for lots of param options and figure out which ones most imp- then use those
-*Better training data! Then re-run trainingImageImport.m
-*Try with C3 matrix or other decomp to see if yellow overlay is improved or better class distinction.
 * Try decomp with no moving (boxcar) window filter
 *Range correction and inter-year differences.(ENVI histogram?)
 Run in regression mode to determine optimal class divisions?
@@ -105,6 +100,11 @@ NOTE: env.output.train_dir and env.class_dir_asc point to same thing-are redunda
 * Fix NoData output issues...
 Fix GeoTiffWrite alternatives for large bigtiffs
 add ifunix branch to use gdaledit.py instead of gdalwarp
+*Better training data! Then re-run trainingImageImport.m
+noData mask for training;
+turn off parallel except if on a cluster?
+speckle filtering?
+*Try with C3 or T3 matrix or other decomp to see if yellow overlay is improved or better class distinction.
 
 ~~~~~~~~~~Modify for re-distribution of PixelClassifier Code~~~~~~~~~~~~~~
 rfTrain.m

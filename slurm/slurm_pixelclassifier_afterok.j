@@ -1,11 +1,14 @@
 #!/bin/bash
+
+# first input is job name to run after
+
 #SBATCH --job-name=PixClas
 #SBATCH --mem-per-cpu=32G
 #SBATCH --cpus-per-task=8
 #SBATCH --export=ALL
 #SBATCH --mail-user=ekyzivat
 #SBATCH --mail-type=ALL # test
-#SBATCH --dependency=afterok:253 # <======= change this as needed with input
+#SBATCH --dependency=afterok:318 # <======= change this as needed with input
 # # -D ~/slurm-logs
 # test comment
 #  --ntasks-per-node=1
