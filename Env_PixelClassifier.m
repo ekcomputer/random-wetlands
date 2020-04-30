@@ -8,20 +8,25 @@
 clear env
 global env 
 
-%% Params for trainingImageImport.m
-env.trainingClassRasters=1; % set to 1 to make training class rasters; 0 for viewing image only
+%% options
+load_env=0; % load env. from previous run?
+
+%% Params for training and classifying
 env.rangeCorrection=1;
 env.equalizeTrainClassSizes=1; % Delete some training data so that all training classes have aprox. = sizes (not per image, but overall)
-load_env=0; % load env. from previous run?
-env.run='30';
-env.training_run='30'; % set different from env.run if using a model from previous run.  Only matters on ASC.
+env.run='31';
+env.IncMaskMin=0; %0.5; % minimum inc. angle to allow if applying incidence angle mask % only valid for Freeman, C3, T3 with no inc band used as a feature; set to zero to ignore  <------- HERE
+
+%% Params for trainingImageImport.m
+env.trainingClassRasters=0; % set to 1 to make training class rasters; 0 for viewing image only
+env.training_run='31'; % set different from env.run if using a model from previous run or training to a diff dir.  Only matters on ASC.
 env.training_class_run='30'; % for shapefiles
 env.output.cls_dir_local='/att/nobackup/ekyzivat/PixelClassifier';
 env.output.cls_dir_asc='/att/nobackup/ekyzivat/PixelClassifier';
 env.class_dir_local='F:\PAD2019\classification_training\Checkpoint-2020-march-12';
     % Which files to import as training images
 if isunix % on ASC
-    env.trainFileNums=[1,2,7,8,9,15]; %[1,2,3,4,7,8,9,13, 14, 15, 16, 17]; %; %[7]; %[1 2 8 9 10 11 12 13]; % [1 2]
+    env.trainFileNums=[1, 15]; %[1,2,7,8,9,15]; %[1,2,3,4,7,8,9,13, 14, 15, 16, 17]; %; %[7]; %[1 2 8 9 10 11 12 13]; % [1 2]
 else % on local
     env.trainFileNums=[1,2]; %15% [1 2]
 end    
@@ -48,7 +53,7 @@ if load_env
 else
     
 %% Image I/O and viewing params
-    env.inputType='Freeman-inc'; %'Freeman', 'C3', 'Freeman-T3' or 'gray', 'Freeman-inc', 'C3-inc'
+    env.inputType='Freeman'; %'Freeman', 'C3', 'Freeman-T3' or 'gray', 'Freeman-inc', 'C3-inc', 'T3' <------- HERE
     if isunix % on ASC
            % addpath
         addpath /att/gpfsfs/home/ekyzivat/scripts/random-wetlands/dnafinder-Cohen-a2b974e

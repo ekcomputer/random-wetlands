@@ -15,7 +15,11 @@ function [C, cm, order, k, O, A]=confusionmatStats(validation, label, class_name
 %           O:          Overall accuracy
 %           A:          Users/producers accuracy matrix: col one is PA, col
 %                       2 is UA, rows give vars
-[C, order]=confusionmat(validation,label, 'order', unique(validation)); % orders by alphabetical list of class names- fixes bug
+
+% [C, order]=confusionmat(validation,label, 'order', unique(validation)); %
+% orders by alphabetical list of class names- fixes bug, but introduces new
+% bug if some class names are not used (i.e. clipped out by range clipping)
+[C, order]=confusionmat(validation,label); % orders by alphabetical list of class names- fixes bug
 
 %%  Layden version https://www.mathworks.com/matlabcentral/fileexchange/69943-simple-cohen-s-kappa
 % C=C;
@@ -82,7 +86,8 @@ else
 end
 
 %% Display CM table, regardless of whether or not it opens in a figure
-varNames=class_names;
+varNames=order; % default order is not my input order, so I need to specify
+varNames=cellfun(@(text) text(4:end), varNames, 'UniformOutput', 0); % format to remove numer ordering
 varNames{end+1}='Total';
 try
     cm_table=array2table(C1, 'VariableNames', varNames, 'RowNames', varNames);
