@@ -64,13 +64,13 @@ else
 	mkdir -p $base
 	
 		# COPY INC FILE
-	if [ -f $base/$ID.inc ]; then
+	if [ ! -f $base/$ID.inc ]; then
 		echo Needed to copy INC: $file_inc  ">>>>>"  $base
 	fi
 	cp -u $file_inc $base
 
 		# COPY ANN FILE
-	if [ -f $base/$ID.ann ]; then
+	if [ ! -f $base/$ID.ann ]; then
 		echo Needed to copy ANN: $file_dir_ASC/*.ann  ">>>>>"  $base
 	fi
 	cp -u $file_dir_ASC/*.ann $base
@@ -101,7 +101,7 @@ else
 
 		# BUILD envi headers # note: imaginary .bin files will have wrong data type (float instead of complex)
 	printf "\tENVI Headers\n"
-	bin_files=`find $file_dir -name "*.bin" -o -name "*.inc" -o -name "*.mlc" -o -name "*.slope" -o -name "*.hgt"`
+	bin_files=`find $file_dir -name "*.bin" -o -name "*.inc" -o -name "*.slope" -o -name "*.hgt"`
 	for file in $bin_files; do
 		#echo $file
 		envi_config_file.exe -bin $file -nam $file.hdr -iodf 4 -fnr $inr -fnc $inc

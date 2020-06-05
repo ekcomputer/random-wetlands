@@ -12,9 +12,10 @@ global env
 load_env=0; % load env. from previous run?
 
 %% Params for training and classifying
-env.rangeCorrection=1;
+env.inputType='Sinclair'; %'Freeman', 'C3', 'Freeman-T3' or 'gray', 'Freeman-inc', 'C3-inc', 'T3'
+env.rangeCorrection=0;
 env.equalizeTrainClassSizes=1; % Delete some training data so that all training classes have aprox. = sizes (not per image, but overall)
-env.run='31';
+env.run='32';
 env.IncMaskMin=0; %0.5; % minimum inc. angle to allow if applying incidence angle mask % only valid for Freeman, C3, T3 with no inc band used as a feature; set to zero to ignore  <------- HERE
 
 %% Params for trainingImageImport.m
@@ -53,7 +54,6 @@ if load_env
 else
     
 %% Image I/O and viewing params
-    env.inputType='Freeman'; %'Freeman', 'C3', 'Freeman-T3' or 'gray', 'Freeman-inc', 'C3-inc', 'T3' <------- HERE
     if isunix % on ASC
            % addpath
         addpath /att/gpfsfs/home/ekyzivat/scripts/random-wetlands/dnafinder-Cohen-a2b974e

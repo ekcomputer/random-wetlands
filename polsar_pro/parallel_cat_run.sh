@@ -5,10 +5,10 @@
 printf "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\nStarting processing files...\n"
 
 	# no input file parsing
-cat $2 | parallel "bash $1 {} "
+cat $2 | parallel -k "echo ~~~~~~~~~~~~~~~~~~~~~~~~~~; bash $1 {} " # the -k is really important bc it preserves output order
 
 	#input file parsing
 #cat $2 | sed "s+/att/gpfsfs/atrepo01/data/ORNL/ABoVE_Archive/datapool.asf.alaska.edu/PROJECTED/UA/++" | sed "s+^+$NOBACKUP/UAVSAR/asf.alaska.edu/+g" | sed 's+_grd++g' | parallel "bash $1 {} "ls
 
 #| parallel "bash $1 {} "ls
-printf "Done processing files.\n"
+printf "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\nDone processing files.\n"
