@@ -27,8 +27,8 @@ Run,Raw,sigma,Offsets,speckle,OffsetSigma,LoGSigma,SteerableFilterSigma,nTree,mi
 29,,,,,,,,,,,,,,,,,,,,,,,,has largest collection of test images as of yet
 30,1,na,3,1,2,na,na,40,40,5,4,6,6,5,1,32,"~25 to train, 13 to run",95.8,0.9542,14,30,1,,"New training areas for PAD, YF, BakerC.  Decrease in OA and much worse, visually.  Banding along range...Ran on 4 PAD, YF, BC"
 31,1,na,3,1,2,na,na,40,40,5,4,6,6,5,1,32,,87,0.857,14,30,1,,no range
-32,,,,,,,,,,,,,,,,,,,,,,,,inter-class var?
-33,,,,,,,,,,,,,,,,,,,,,,,,add slope
-34,,,,,,,,,,,,,,,,,,,,,,,,use T3
-35,,,,,,,,,,,,,,,,,,,,,,,,
+32,,,,,,,,,,,,,,,,,,,,,,,,Sinclair matrix (no slope or range) Training from run 30
+33,,,,,,,,,,,,,,,,,,,,,,,,inter-class var?
+34,,,,,,,,,,,,,,,,,,,,,,,,add slope
+35,,,,,,,,,,,,,,,,,,,,,,,,use T3
 36,,,,,,,,,,,,,,,,,,,,,,,,

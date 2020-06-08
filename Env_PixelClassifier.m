@@ -19,15 +19,15 @@ env.run='32';
 env.IncMaskMin=0; %0.5; % minimum inc. angle to allow if applying incidence angle mask % only valid for Freeman, C3, T3 with no inc band used as a feature; set to zero to ignore  <------- HERE
 
 %% Params for trainingImageImport.m
-env.trainingClassRasters=0; % set to 1 to make training class rasters; 0 for viewing image only
-env.training_run='31'; % set different from env.run if using a model from previous run or training to a diff dir.  Only matters on ASC.
+env.trainingClassRasters=1; % set to 1 to make training class rasters; 0 for viewing/classification image only
+env.training_run='32'; % set different from env.run if using a model from previous run or training to a diff dir.  Only matters on ASC.
 env.training_class_run='30'; % for shapefiles
 env.output.cls_dir_local='/att/nobackup/ekyzivat/PixelClassifier';
 env.output.cls_dir_asc='/att/nobackup/ekyzivat/PixelClassifier';
 env.class_dir_local='F:\PAD2019\classification_training\Checkpoint-2020-march-12';
     % Which files to import as training images
 if isunix % on ASC
-    env.trainFileNums=[1, 15]; %[1,2,7,8,9,15]; %[1,2,3,4,7,8,9,13, 14, 15, 16, 17]; %; %[7]; %[1 2 8 9 10 11 12 13]; % [1 2]
+    env.trainFileNums=[1,2,7,8,9,15] %[1, 15]; %[1,2,7,8,9,15]; %[1,2,3,4,7,8,9,13, 14, 15, 16, 17]; %; %[7]; %[1 2 8 9 10 11 12 13]; % [1 2]
 else % on local
     env.trainFileNums=[1,2]; %15% [1 2]
 end    
@@ -87,6 +87,7 @@ else
         csv_in=['/att/gpfsfs/home/ekyzivat/scripts/random-wetlands' filesep, 'run_inputs', filesep, 'run_inputs.csv'];
     else
         csv_in=['D:\Dropbox\Matlab\ABoVE\UAVSAR' filesep, 'run_inputs', filesep, 'run_inputs.csv'];
+        warning(['CSV in is from:', csv_in])
     end
     csv=readtable(csv_in);
 %     csv(1:end-1,:); % delete last info row
@@ -98,7 +99,7 @@ else
             xls.data(n).bb_xmax, xls.data(n).bb_ymax];
         
 %         % text arguments that are system-dependent
-        if ~isunix
+        if ~isunix %local
             env.input(n).im_dir    =   env.input(n).im_dir_local;
 %             env.input(n).cls_pth   =   env.input(n).cls_pth_local;
             env.input(n).cls_pth   = [env.class_dir_local, '\', xls.data(n).cls_name];
@@ -106,7 +107,7 @@ else
                 env.input(n).im_dir=  ['F:\UAVSAR\',...
                     env.input(n).name, filesep];
             end
-        else
+        else %ASC
             env.input(n).cls_pth   = [env.class_dir_asc, '/', xls.data(n).cls_name];
             if isempty(env.input(n).im_dir) % if I didn't specifiy
                 env.input(n).im_dir=  ['/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/',...
@@ -180,8 +181,8 @@ else
 %     env.inputType='Freeman-inc'; % DONT FORGET to change line 105 in
 %     pixelClassifierTrain.m and line 61 in PixelClassifier... to update input Type
     
-    % constands
-    env.constants.imCenter=43; % 49.3 for YF-21508
+    % constants
+    env.constants.imCenter=43; % 49.3 for YF-21508 (used for simple range correction)
     env.constants.n=0.5; %1.64; % range correction exponent
     env.constants.noDataValue=-10000;
     env.constants.noDataValue_ouput=0;

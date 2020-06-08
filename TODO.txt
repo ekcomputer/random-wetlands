@@ -33,6 +33,7 @@ Follow-up to Zhange et al 2013 IJRS: invesitage effects of relative class size o
 alt accuracy metrics - using just 3 classes
 ** use gdalwarp -wm 8000 to set memory!  CACHEMAX may not be enough...
 From RTC: Change my ENVI header bash script in polsar_pro_wkflow to use python script instead
+If I add more files, but don't compute Freeman: modify lines 70-90 in trainingImageImport.m to change filename indexing (no Freeman will be presnet)
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~PixelClassifier~~~~~~~~~~~~~~~~~~~~~~~~~
 TODO: change plotting for n-band images; 
