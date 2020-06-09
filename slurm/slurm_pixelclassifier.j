@@ -9,6 +9,8 @@
 # test comment
 #  --ntasks-per-node=1
 # --time-min=1:45
+#SBATCH -o /home/ekyzivat/slurm-logs/stdout/slurm_pixelclassifier.j.%J.out # -o is stdout # must use full, absolute path
+#SBATCH -e /home/ekyzivat/slurm-logs/stderr/slurm_pixelclassifier.j.%J.err # -e is stderr
 
 ## Reporting  start #############################
 start_time="$(date -u +%s)"
