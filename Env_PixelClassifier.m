@@ -12,7 +12,7 @@ global env
 load_env=0; % load env. from previous run?
 
 %% Params for training and classifying
-env.inputType='Sinclair'; %'Freeman', 'C3', 'Freeman-T3' or 'gray', 'Freeman-inc', 'C3-inc', 'T3'
+env.inputType='Sinclair'; %OPTIONS: 'Freeman', 'C3', 'Freeman-T3' or 'gray', 'Freeman-inc', 'C3-inc', 'T3', 'Norm-Fr-C11-inc', 'Sinclair'
 env.rangeCorrection=0;
 env.equalizeTrainClassSizes=1; % Delete some training data so that all training classes have aprox. = sizes (not per image, but overall)
 env.run='32';
@@ -39,6 +39,34 @@ if isunix
     env.output.train_dir=[env.output.cls_dir_asc, filesep, 'Train', env.training_run, '/'];
 else
     env.gdal.CACHEMAX = 2000; %~2GB
+end
+
+if ismember(env.inputType, {'Freeman','Sinclair', 'Freeman-T3'})
+    env.radar_bands=[1,2,3];
+    env.inc_band=NaN;
+    env.dem_band=NaN;
+elseif ismember(env.inputType, {'C3', 'T3'})
+    env.radar_bands=[1:9];
+    env.inc_band=NaN;
+    env.dem_band=NaN;
+elseif ismember(env.inputType, {'Freeman-inc'})
+    env.radar_bands=[1,2,3];
+    env.inc_band=4;
+    env.dem_band=NaN;
+elseif ismember(env.inputType, {'C3-inc'})
+    env.radar_bands=[1:9];
+    env.inc_band=10;
+    env.dem_band=NaN;
+elseif strcmp(env.inputType, 'Norm-Fr-C11-inc')
+    env.radar_bands=[1,2,3,4];
+    env.inc_band=5;
+    env.dem_band=NaN;
+elseif strcmp(env.inputType, 'gray')
+    env.radar_bands=[1];
+    env.inc_band=NaN;
+    env.dem_band=NaN;
+else
+    error(['unrecognized input format:', env.inputType])
 end
 %% Constant params
 if isunix
@@ -184,7 +212,7 @@ else
     % constants
     env.constants.imCenter=43; % 49.3 for YF-21508 (used for simple range correction)
     env.constants.n=0.5; %1.64; % range correction exponent
-    env.constants.noDataValue=-10000;
+    env.constants.noDataValue=0; %-10000;
     env.constants.noDataValue_ouput=0;
 %% classes
         % set order of classes (defines numerical index, which will be written
