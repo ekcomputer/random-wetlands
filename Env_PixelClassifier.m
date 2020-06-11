@@ -232,8 +232,11 @@ else
     end
     
 %% plots
-    
-    env.plot.bandLabels={'Double','Volume', 'Single', 'Range'};
+    if env.inc_band > 0 % if inc band exists
+        env.plot.bandLabels={'Double','Volume', 'Single', 'Range'};
+    else
+        env.plot.bandLabels={'HH', 'HV', 'VV','DEM'};
+    end
 %% validition set partitioning
     env.valPartitionRatio=0.15; % what percentage held back for validation % NOT inverse of ratio between no of training and total (= training + val) pixels
     env.seed=22; % random number gen seed!  
