@@ -12,25 +12,22 @@ global env
 load_env=0; % load env. from previous run?
 
 %% Params for training and classifying
-env.rangeCorrection=1;
+env.inputType='Sinclair'; %OPTIONS: 'Freeman', 'C3', 'Freeman-T3' or 'gray', 'Freeman-inc', 'C3-inc', 'T3', 'Norm-Fr-C11-inc', 'Sinclair'
+env.rangeCorrection=0;
 env.equalizeTrainClassSizes=1; % Delete some training data so that all training classes have aprox. = sizes (not per image, but overall)
-env.run='31';
-<<<<<<< HEAD
-env.IncMaskMin=0.5; % minimum inc. angle to allow if applying incidence angle mask % only valid for Freeman, C3, T3 with no inc band used as a feature; set to zero to ignore
-=======
+env.run='32';
 env.IncMaskMin=0; %0.5; % minimum inc. angle to allow if applying incidence angle mask % only valid for Freeman, C3, T3 with no inc band used as a feature; set to zero to ignore  <------- HERE
->>>>>>> 40e83ae863983b3e6ccc3002cebc30aa1daf2a95
 
 %% Params for trainingImageImport.m
-env.trainingClassRasters=0; % set to 1 to make training class rasters; 0 for viewing image only
-env.training_run='31'; % set different from env.run if using a model from previous run or training to a diff dir.  Only matters on ASC.
+env.trainingClassRasters=1; % set to 1 to make training class rasters; 0 for viewing/classification image only
+env.training_run='32'; % set different from env.run if using a model from previous run or training to a diff dir.  Only matters on ASC.
 env.training_class_run='30'; % for shapefiles
 env.output.cls_dir_local='/att/nobackup/ekyzivat/PixelClassifier';
 env.output.cls_dir_asc='/att/nobackup/ekyzivat/PixelClassifier';
 env.class_dir_local='F:\PAD2019\classification_training\Checkpoint-2020-march-12';
     % Which files to import as training images
 if isunix % on ASC
-    env.trainFileNums=[1, 15]; %[1,2,7,8,9,15]; %[1,2,3,4,7,8,9,13, 14, 15, 16, 17]; %; %[7]; %[1 2 8 9 10 11 12 13]; % [1 2]
+    env.trainFileNums=[1,2,7,8,9,15] %[1, 15]; %[1,2,7,8,9,15]; %[1,2,3,4,7,8,9,13, 14, 15, 16, 17]; %; %[7]; %[1 2 8 9 10 11 12 13]; % [1 2]
 else % on local
     env.trainFileNums=[1,2]; %15% [1 2]
 end    
@@ -42,6 +39,34 @@ if isunix
     env.output.train_dir=[env.output.cls_dir_asc, filesep, 'Train', env.training_run, '/'];
 else
     env.gdal.CACHEMAX = 2000; %~2GB
+end
+
+if ismember(env.inputType, {'Freeman','Sinclair', 'Freeman-T3'})
+    env.radar_bands=[1,2,3];
+    env.inc_band=NaN;
+    env.dem_band=NaN;
+elseif ismember(env.inputType, {'C3', 'T3'})
+    env.radar_bands=[1:9];
+    env.inc_band=NaN;
+    env.dem_band=NaN;
+elseif ismember(env.inputType, {'Freeman-inc'})
+    env.radar_bands=[1,2,3];
+    env.inc_band=4;
+    env.dem_band=NaN;
+elseif ismember(env.inputType, {'C3-inc'})
+    env.radar_bands=[1:9];
+    env.inc_band=10;
+    env.dem_band=NaN;
+elseif strcmp(env.inputType, 'Norm-Fr-C11-inc')
+    env.radar_bands=[1,2,3,4];
+    env.inc_band=5;
+    env.dem_band=NaN;
+elseif strcmp(env.inputType, 'gray')
+    env.radar_bands=[1];
+    env.inc_band=NaN;
+    env.dem_band=NaN;
+else
+    error(['unrecognized input format:', env.inputType])
 end
 %% Constant params
 if isunix
@@ -57,11 +82,6 @@ if load_env
 else
     
 %% Image I/O and viewing params
-<<<<<<< HEAD
-    env.inputType='Freeman'; %'Freeman', 'C3', 'Freeman-T3' or 'gray', 'Freeman-inc', 'C3-inc', 'T3'
-=======
-    env.inputType='Freeman'; %'Freeman', 'C3', 'Freeman-T3' or 'gray', 'Freeman-inc', 'C3-inc', 'T3' <------- HERE
->>>>>>> 40e83ae863983b3e6ccc3002cebc30aa1daf2a95
     if isunix % on ASC
            % addpath
         addpath /att/gpfsfs/home/ekyzivat/scripts/random-wetlands/dnafinder-Cohen-a2b974e
@@ -95,6 +115,7 @@ else
         csv_in=['/att/gpfsfs/home/ekyzivat/scripts/random-wetlands' filesep, 'run_inputs', filesep, 'run_inputs.csv'];
     else
         csv_in=['D:\Dropbox\Matlab\ABoVE\UAVSAR' filesep, 'run_inputs', filesep, 'run_inputs.csv'];
+        warning(['CSV in is from:', csv_in])
     end
     csv=readtable(csv_in);
 %     csv(1:end-1,:); % delete last info row
@@ -106,7 +127,7 @@ else
             xls.data(n).bb_xmax, xls.data(n).bb_ymax];
         
 %         % text arguments that are system-dependent
-        if ~isunix
+        if ~isunix %local
             env.input(n).im_dir    =   env.input(n).im_dir_local;
 %             env.input(n).cls_pth   =   env.input(n).cls_pth_local;
             env.input(n).cls_pth   = [env.class_dir_local, '\', xls.data(n).cls_name];
@@ -114,7 +135,7 @@ else
                 env.input(n).im_dir=  ['F:\UAVSAR\',...
                     env.input(n).name, filesep];
             end
-        else
+        else %ASC
             env.input(n).cls_pth   = [env.class_dir_asc, '/', xls.data(n).cls_name];
             if isempty(env.input(n).im_dir) % if I didn't specifiy
                 env.input(n).im_dir=  ['/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/',...
@@ -188,10 +209,10 @@ else
 %     env.inputType='Freeman-inc'; % DONT FORGET to change line 105 in
 %     pixelClassifierTrain.m and line 61 in PixelClassifier... to update input Type
     
-    % constands
-    env.constants.imCenter=43; % 49.3 for YF-21508
+    % constants
+    env.constants.imCenter=43; % 49.3 for YF-21508 (used for simple range correction)
     env.constants.n=0.5; %1.64; % range correction exponent
-    env.constants.noDataValue=-10000;
+    env.constants.noDataValue=0; %-10000;
     env.constants.noDataValue_ouput=0;
 %% classes
         % set order of classes (defines numerical index, which will be written
@@ -211,8 +232,11 @@ else
     end
     
 %% plots
-    
-    env.plot.bandLabels={'Double','Volume', 'Single', 'Range'};
+    if env.inc_band > 0 % if inc band exists
+        env.plot.bandLabels={'Double','Volume', 'Single', 'Range'};
+    else
+        env.plot.bandLabels={'HH', 'HV', 'VV','DEM'};
+    end
 %% validition set partitioning
     env.valPartitionRatio=0.15; % what percentage held back for validation % NOT inverse of ratio between no of training and total (= training + val) pixels
     env.seed=22; % random number gen seed!  

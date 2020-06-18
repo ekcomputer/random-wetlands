@@ -1,5 +1,5 @@
 #!/bin/bash
-# script to auto create dirs and run PSP processing (only updating hdr, skipping computations)
+# script to auto move height and slope and inc files... in progress...
 # modified for input to parallel function
 # input is directory name (used to be runfile with directories)
 
@@ -24,7 +24,9 @@ file_dir_ASC=/att/gpfsfs/atrepo01/data/ORNL/ABoVE_Archive/datapool.asf.alaska.ed
 file_dir=$NOBACKUP/UAVSAR/asf.alaska.edu/$ID # NOBACKUP
 base=$file_dir/raw
 file_inc=/att/gpfsfs/atrepo01/data/ORNL/ABoVE_Archive/datapool.asf.alaska.edu/INC/UA/$ID.inc
-
+file_hgt=/att/gpfsfs/atrepo01/data/ORNL/ABoVE_Archive/datapool.asf.alaska.edu/DEM_TIFF/UA/"$ID"_hgt.tif
+file_slope=/att/gpfsfs/atrepo01/data/ORNL/ABoVE_Archive/datapool.asf.alaska.edu/SLOPE/UA/$ID.slope
+dir_mlc=/att/gpfsfs/atrepo01/data/ORNL/ABoVE_Archive/datapool.asf.alaska.edu/COMPLEX/UA/"$ID"_mlc
 #
 
 		# Check if file exists on ASC.  If not, use imported file
@@ -35,6 +37,8 @@ file_inc=/att/gpfsfs/atrepo01/data/ORNL/ABoVE_Archive/datapool.asf.alaska.edu/IN
 	else
 		file_dir_ASC=$file_dir/raw
 		file_inc=$file_dir/raw/$ID.inc
+		file_hgt=$file_dir/raw/$ID_hgt.tif
+		file_slope=$file_dir/raw/$ID.slope
 		printf "\tFile not found on ASC.  Using uploaded files in $file_dir.\n"
 	fi
 		
@@ -45,8 +49,8 @@ file_inc=/att/gpfsfs/atrepo01/data/ORNL/ABoVE_Archive/datapool.asf.alaska.edu/IN
 
 		# READ HEADER (not essential)
 	printf "\n\tReading header\n"
-	uavsar_header.exe -hf $file_dir_ASC/*.ann -id $file_dir_ASC -od $file_dir -df grd \
-	 -tf /home/ekyzivat/.polsarpro-bio_6.0.1/Tmp/`date +%Y-%m-%d-%H-%M-%S_uavsar_config.txt`
+#	uavsar_header.exe -hf $file_dir_ASC/*.ann -id $file_dir_ASC -od $file_dir -df grd \
+#	 -tf /home/ekyzivat/.polsarpro-bio_6.0.1/Tmp/`date +%Y-%m-%d-%H-%M-%S_uavsar_config.txt`
 
 		#PARSE ANN FILE
 	c3=$file_dir/C3
@@ -62,23 +66,40 @@ file_inc=/att/gpfsfs/atrepo01/data/ORNL/ABoVE_Archive/datapool.asf.alaska.edu/IN
 	mkdir -p $base
 	
 		# COPY INC FILE
-	if [ -f $base/$ID.inc ]; then
+	if [ ! -f $base/$ID.inc ]; then
 		echo Needed to copy INC: $file_inc  ">>>>>"  $base
 	fi
 	cp -u $file_inc $base
 
 		# COPY ANN FILE
-	if [ -f $base/$ID.ann ]; then
+	if [ ! -f $base/$ID.ann ]; then
 		echo Needed to copy ANN: $file_dir_ASC/*.ann  ">>>>>"  $base
 	fi
 	cp -u $file_dir_ASC/*.ann $base
 	
-		# Copy HGT or SLP files?
+		# Copy HGT 
+	if [ ! -f $base/"$ID"_hgt.tif ]; then
+		echo Needed to copy HGT: $file_hgt  ">>>>>"  $base
+	fi
+	cp -u $file_hgt $base
+
+		# Copy SLOPE
+	if [ ! -f $base/"$ID".slope ]; then
+		echo Needed to copy SLOPE: $file_slope  ">>>>>"  $base
+	fi
+	cp -u $file_slope $base
+
+		# Copy MLC
+	if [ ! -f $base/*.slc ]; then
+		echo Needed to copy MLC: $dir_mlc/  ">>>>>"  $base
+	fi
+	cp -u $dir_mlc/*.mlc $base
 
 		# BUILD envi headers # note: imaginary .bin files will have wrong data type (float instead of complex)
 	printf "\n\tENVI Headers\n"
 	bin_files=`find $file_dir -name "*.bin" -o -name "*.inc" -o -name "*.slope" -o -name "*.hgt"`
 	for file in $bin_files; do
+		:
 		#echo $file
 		envi_config_file.exe -bin $file -nam $file.hdr -iodf 4 -fnr $inr -fnc $inc
 		editEnviHdr.sh $file_dir_ASC/*.ann $file.hdr
