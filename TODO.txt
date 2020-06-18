@@ -117,3 +117,4 @@ pixelClassifierTrain.m - validition and concat of n=3 bandns to make F
 
 ~~~~~~~~~~~~~~~~~~~~~~~~Requirements~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 gdal (and/or the gdal python scripts though)
+topotoolbox installed and path indicated in env

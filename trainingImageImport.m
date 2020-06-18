@@ -50,18 +50,22 @@ for n=env.trainFileNums; % file number from input
         % common to all if branches
     env.input(n).im_dir_nband=[env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, ''];
     env.input(n).im_dir_nband_c=[env.input(n).im_dir, 'C3', filesep, ''];
-%     if isunix
-%         f.inc_dir=dir(['/att/gpfsfs/atrepo01/data/ORNL/ABoVE_Archive/datapool.asf.alaska.edu/INC/UA',...
-%             filesep,  env.input(n).name, '.inc']);
-%     else
+    
+        % locate files
     f.inc_dir=dir([env.input(n).im_dir,'raw', filesep, '*inc']); % if using, fix for unix
     f.grd_rtc_dir=dir([env.input(n).im_dir,'raw', filesep, '*LUT.grd']);
-%     end
+    f.hgt_dir=dir([env.input(n).im_dir,'raw', filesep, '*_hgt.tif']);
     f.gray_imgs_freeman=dir([env.input(n).im_dir_nband, 'Freeman*.bin']);
     f.gray_imgs_c3=dir([env.input(n).im_dir_nband_c, 'C*.bin']);
+    
+        % check
     if isempty(f.inc_dir) || size(f.inc_dir, 1) > 1 || isempty(f.gray_imgs_freeman)...
             || and(isempty(f.gray_imgs_c3), contains(env.inputType, 'C3-inc'))
         warning('No < inc, freeman, or C3 > file found.')
+        continue
+    end
+    if isempty(f.hgt_dir) & strcmp(env.inputType, 'Sinclair-hgt')
+        warning('No _inc.tif files found.')
         continue
     end
     if isempty(f.grd_rtc_dir) & strcmp(env.inputType, 'Sinclair')
@@ -78,9 +82,11 @@ for n=env.trainFileNums; % file number from input
     f.gray_imgs_freeman_tbl=struct2table(f.gray_imgs_freeman); 
     f.gray_imgs_c3_tbl=struct2table(f.gray_imgs_c3);
     f.gray_imgs_inc_tbl=struct2table(f.inc_dir);
-    f.grd_rtc_dir=struct2table(f.grd_rtc_dir);
+    f.grd_rtc_dir_tbl=struct2table(f.grd_rtc_dir);
+    f.hgt_dir_tbl=struct2table(f.hgt_dir);
+    
     f.gray_imgs=table2struct([f.gray_imgs_freeman_tbl; f.gray_imgs_c3_tbl;...
-        f.grd_rtc_dir; f.gray_imgs_inc_tbl]); % be sure to keep inc as last band
+        f.grd_rtc_dir_tbl; f.hgt_dir_tbl; f.gray_imgs_inc_tbl]); % be sure to keep inc as last band
     
         % format paths
     for k=1:length(f.gray_imgs)
@@ -102,6 +108,8 @@ for n=env.trainFileNums; % file number from input
         f.band_order=[4];
     elseif strcmp(env.inputType, 'Sinclair')
         f.band_order=[13, 14, 15];
+    elseif strcmp(env.inputType, 'Sinclair-hgt')
+        f.band_order=[13, 14, 15, 16];
     else
         error('Unrecognized input type (EK).')
     end

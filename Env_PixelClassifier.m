@@ -12,15 +12,15 @@ global env
 load_env=0; % load env. from previous run?
 
 %% Params for training and classifying
-env.inputType='Sinclair'; %OPTIONS: 'Freeman', 'C3', 'Freeman-T3' or 'gray', 'Freeman-inc', 'C3-inc', 'T3', 'Norm-Fr-C11-inc', 'Sinclair'
+env.inputType='Sinclair-hgt'; %OPTIONS: 'Freeman', 'C3', 'Freeman-T3' or 'gray', 'Freeman-inc', 'C3-inc', 'T3', 'Norm-Fr-C11-inc', 'Sinclair'
 env.rangeCorrection=0;
 env.equalizeTrainClassSizes=1; % Delete some training data so that all training classes have aprox. = sizes (not per image, but overall)
-env.run='32';
+env.run='34';
 env.IncMaskMin=0; %0.5; % minimum inc. angle to allow if applying incidence angle mask % only valid for Freeman, C3, T3 with no inc band used as a feature; set to zero to ignore  <------- HERE
 
 %% Params for trainingImageImport.m
 env.trainingClassRasters=1; % set to 1 to make training class rasters; 0 for viewing/classification image only
-env.training_run='32'; % set different from env.run if using a model from previous run or training to a diff dir.  Only matters on ASC.
+env.training_run='34'; % set different from env.run if using a model from previous run or training to a diff dir.  Only matters on ASC.
 env.training_class_run='30'; % for shapefiles
 env.output.cls_dir_local='/att/nobackup/ekyzivat/PixelClassifier';
 env.output.cls_dir_asc='/att/nobackup/ekyzivat/PixelClassifier';
@@ -65,6 +65,10 @@ elseif strcmp(env.inputType, 'gray')
     env.radar_bands=[1];
     env.inc_band=NaN;
     env.dem_band=NaN;
+elseif strcmp(env.inputType, 'Sinclair-hgt')
+    env.radar_bands=[1,2,3];
+    env.inc_band=NaN;
+    env.dem_band=4;
 else
     error(['unrecognized input format:', env.inputType])
 end
@@ -75,6 +79,7 @@ if isunix
 else
     env.asc.annDir='';
 end
+env.paths.topotoolbox='/home/ekyzivat/scripts/topotoolbox';
 %% Load env? 
 if load_env 
     uiopen('F:\PAD2019\classification_training\PixelClassifier\*.mat')
@@ -158,7 +163,7 @@ else
     % each creates 9 features
     env.pixelClassifier.offsets=[3]; %[3 5]; %OPTIONAL,
     % in pixels; for offset features (see imageFeatures.m)
-    % each creates 8 features
+    % each creates 8 ->2 features
     % set to [] to ignore offset features
     env.pixelClassifier.osSigma = [2]; %2;
     % sigma for offset features (std dev of gaussian used for filter)
@@ -174,7 +179,7 @@ else
     % steerable filter features sigmas (see imageFeatures.m)
     % set to [] to ignore steerable filter features
     % ridge (or edge) detection
-    env.pixelClassifier.nTrees = 40; %20;
+    env.pixelClassifier.nTrees = 30; %20;
     % number of decision trees in the random forest ensemble
     env.pixelClassifier.minLeafSize = 40; %60;
     % minimum number of observations per tree leaf
@@ -183,10 +188,15 @@ else
     % this puts a cap on the number of training samples and can improve training speed
     env.pixelClassifier.textureWindows=[5];
     % size of moving window to compute moving std dev
-    
     env.pixelClassifier.speckleFilter=[1];
     % whether to use diffuse filter (replace with lee refined, if
     % desired...)
+    env.pixelClassifier.gradient_smooth_kernel=7;
+    % if > 0, computes max gradient (slope) in 8 directions of DEM band,
+    % smoothing with a kernel of gradient_smooth_kernel
+    env.pixelClassifier.tpi_kernel=7;
+    % if > 0 , computes the TPI-topographic position index- using kernel
+    % size tpi_kernel
 %% classification params
 
     env.pixelClassifier.run.outputMasks = false;
