@@ -19,7 +19,6 @@ function [C, cm, order, k, O, A]=confusionmatStats(validation, label, class_name
 % [C, order]=confusionmat(validation,label, 'order', unique(validation)); %
 % orders by alphabetical list of class names- fixes bug, but introduces new
 % bug if some class names are not used (i.e. clipped out by range clipping)
-global env
 [C, order]=confusionmat(validation,label); % orders by alphabetical list of class names- fixes bug
 
 %%  Layden version https://www.mathworks.com/matlabcentral/fileexchange/69943-simple-cohen-s-kappa
@@ -68,7 +67,7 @@ fprintf('Overall accuracy: %2.1f %%\n',O)
 %% note 
 %% Plot
 % l=env.class_names; l{end+1}='ZTotal';
-if exist('confusionchart')==2  % if R2018b or greater, when this function was introduced
+if exist('confusionchart')==5  % if R2018b or greater, when this function was introduced
     figure;
     cm=confusionchart(C, class_names);
     cm.RowSummary = 'row-normalized';
@@ -95,45 +94,6 @@ try
     fprintf('\nConfusion Matrix:\n')
     disp(cm_table)
 catch
-    warning('Cannot display Confusion Matrix Table.  Error in confusionmatStats: probably caused by some training classes not being present in training data, but being present in class names list ')
+    warning('Cannot display Confusion Marix Table.  Error in confusionmatStats: probably caused by some training classes not being present in training data, but being present in class names list ')
 end
 % C=C1; % for output
-
-%% alt metrics
-
-% try
-%     meta_classes=fieldnames(env.classes);
-%     nMeta_classes=length(fieldnames(env.classes));
-%     
-%         % defensive check
-%     if length(env.class_names) ~= length(env.classes.water)+length(env.classes.inun_veg)+length(env.classes.dry_veg) % not dynamic
-%         warning('Need to redefine env.classes in Env_pixelClassifier.m')
-%     end
-%     cm_table_alt_tmp=table('Size', [size(cm_table, 2), nMeta_classes], 'VariableTypes',...
-%         {'double','double','double'},'RowNames', varNames,... % varNames comes from 'order'
-%         'VariableNames', fieldnames(env.classes)); % 'double's are not dynamic...
-%         
-%         % combine columns % see groupsummary
-%     for m = 1:nMeta_classes
-%         for c= 1:length(env.classes.(meta_classes{m}))
-%             cm_table_alt_tmp.(meta_classes{m})=cm_table_alt_tmp.(meta_classes{m})+cm_table.(env.class_names{c});
-%         end
-%     end
-%     
-%     % rows
-%     
-%         cm_table_alt=table('Size', [nMeta_classes, nMeta_classes], 'VariableTypes',...
-%         {'double','double','double'},'RowNames', fieldnames(env.classes),...
-%         'VariableNames', fieldnames(env.classes)); % 'double's are not dynamic...
-%         
-%         % combine columns % see groupsummary
-%     for m = 1:nMeta_classes % column index
-%         for m2 = 1:nMeta_classes % row index
-%             mask=ismember(varNames, env.classes.(meta_classes{m2}));
-%             cm_table_alt.(meta_classes{m})(m2)=sum(cm_table_alt_tmp.(meta_classes{m})(mask));
-%         end
-%     end
-%         % combine rows 
-% catch
-%     warning('alt. metrics failed')
-% end
