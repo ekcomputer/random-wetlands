@@ -1,0 +1,6 @@
+*.m text
+*.~ text
+
+## NOTE: on my windows box, global autocrlf=true; on linux, 
+## ... global autocrlf=input
+## see http://schacon.github.io/git/gitattributes.html
