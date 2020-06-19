@@ -221,7 +221,11 @@ else
         'SD', 'FD', 'FD2', 'TD', 'W2', 'BG', 'FW', 'WD'}; %{'W1', 'GW', 'GD', 'SW', 'SD', 'FD'}; %, 'TD', 'TW'}; % {'W1', 'W2', 'EU', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FW', 'FD'}, no BG; {'W1', 'W2', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FD'}; % < prior to  Dec 2  
 %     env.class_names={'W1', 'GW', 'GD', 'SW', 'SD', 'FD'};
     env.class_names_full={'Water', 'Graminoid Wet','Graminoid Dry', 'Shrub Wet', 'Shrub Dry', 'Forest Dry'};
-%% colors
+    env.classes.water={'W1','W2','HW'};
+    env.classes.inun_veg={'HW', 'TW','GW','FW'};
+    env.classes.dry_veg={'GD','SD','FD','FD2','TD','BG','WD'};
+    
+    %% colors
     env.plot.colors_hex={'BED2FF', '58D918','FFC861','31780D','BF9649','8ACC34'};% NEED to fix color-blindness {'BED2FF','A80000','E69800','38A800', 'A87000', '732600'};
     if ~isunix
        for i=1:length(env.plot.colors_hex)
