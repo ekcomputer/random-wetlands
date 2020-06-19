@@ -12,22 +12,22 @@ global env
 load_env=0; % load env. from previous run?
 
 %% Params for training and classifying
-env.inputType='Sinclair-hgt'; %OPTIONS: 'Freeman', 'C3', 'Freeman-T3' or 'gray', 'Freeman-inc', 'C3-inc', 'T3', 'Norm-Fr-C11-inc', 'Sinclair'
+env.inputType='Sinclair'; %OPTIONS: 'Freeman', 'C3', 'Freeman-T3' or 'gray', 'Freeman-inc', 'C3-inc', 'T3', 'Norm-Fr-C11-inc', 'Sinclair', 'Sinclair-hgt'
 env.rangeCorrection=0;
 env.equalizeTrainClassSizes=1; % Delete some training data so that all training classes have aprox. = sizes (not per image, but overall)
-env.run='34';
+env.run='32';
 env.IncMaskMin=0; %0.5; % minimum inc. angle to allow if applying incidence angle mask % only valid for Freeman, C3, T3 with no inc band used as a feature; set to zero to ignore  <------- HERE
 
 %% Params for trainingImageImport.m
-env.trainingClassRasters=1; % set to 1 to make training class rasters; 0 for viewing/classification image only
-env.training_run='34'; % set different from env.run if using a model from previous run or training to a diff dir.  Only matters on ASC.
+env.trainingClassRasters=0; % set to 1 to make training class rasters; 0 for viewing/classification image only in the Test folder
+env.training_run='32'; % set different from env.run if using a model from previous run or training to a diff dir.  Only matters on ASC.
 env.training_class_run='30'; % for shapefiles
 env.output.cls_dir_local='/att/nobackup/ekyzivat/PixelClassifier';
 env.output.cls_dir_asc='/att/nobackup/ekyzivat/PixelClassifier';
 env.class_dir_local='F:\PAD2019\classification_training\Checkpoint-2020-march-12';
     % Which files to import as training images
 if isunix % on ASC
-    env.trainFileNums=[1,2,7,8,9,15] %[1, 15]; %[1,2,7,8,9,15]; %[1,2,3,4,7,8,9,13, 14, 15, 16, 17]; %; %[7]; %[1 2 8 9 10 11 12 13]; % [1 2]
+    env.trainFileNums=[16, 17] %[1, 15]; %[1,2,7,8,9,15]; %[1,2,3,4,7,8,9,13, 14, 15, 16, 17]; %; %[7]; %[1 2 8 9 10 11 12 13]; % [1 2]
 else % on local
     env.trainFileNums=[1,2]; %15% [1 2]
 end    

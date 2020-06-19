@@ -1,36 +1,36 @@
-Run,Raw,sigma,Offsets,speckle,OffsetSigma,LoGSigma,SteerableFilterSigma,nTree,minLeaf,pct,nBands,nTrainImages,nTestImages,TextWindow,gradient_smooth_kernel,tpi_kernel,TrainImNumbers,nSubsets,equalizeTrainClassSizes,Accuracy unit,time_min,OA,k,nClass,Model,TrainingAreas,StableResults,SlurmRun,InputType,Notes
-4,,"1,2,3",,,"3,5",na,2,10,40,5,1,,,,,,"1,2",,,pixel,,,,,,,,,,
-5,,"2,3",,,5,na,2,10,40,5,1,,,,,,"1,2",,,pixel,,,,,,,,,,
-6,,"2,3","3,5",,2,na,2,10,40,5,1,,,,,,"1,2",,,pixel,,,,,,,,,,
-7,,2,"3,5",,2,1,2,10,40,5,1,,,,,,"1,2",,,pixel,,,,,,,,,,best yet!
-8,,3,,,,1,2,10,40,5,1,2,,,,,"1,2",,,pixel,,,,,,,,,,
-9,,3,,,,1,2,10,40,5,3,2,,,,,"1,2",,,pixel,,,,,,,,,,
-10,1,na,,,,na,na,10,40,5,3,,,,,,"1,2",,,pixel,,,,,,,,,,
-11,1,2,,,,2,na,10,40,5,3,,,,,,"1,2",,,pixel,,,,,,,,,,update training
-12,1,2,,,,2,na,15,40,5,3,,,"3,5",,,"1,2",,,pixel,,,,,,,,,,
-13,1,2,,,,2,na,15,40,5,3,,,"3,5",,,"1,2",,,pixel,,,,,,,,,,update training Day I
-14,1,na,,,,na,na,15,40,5,3,,,na,,,,,,pixel,,,0.73,8,,,,,,Dec 2 Training no TW/TD
-15,1,na,,,,na,na,15,40,5,3,,,na,,,,,,pixel,,,0.01,9,,,,,,Dec 2 Training with TW/TD
-16,1,,,,,na,2,35,40,5,3,,,na,,,,,,pixel,,,0.8,8,,,,,,"Dec 2 Training no BG, TW/TD"
-17,1,1,,,,na,1,35,40,5,3,,,"3,9",,,,,,pixel,,,0.78,6,,,,,,
-18,1,,,,,na,na,35,40,5,4,1,,3,,,,,,pixel,,,,,,,,,,Jan 6 test for range
-19,1,,,,,na,na,35,40,5,4,2,,na,,,,,,pixel,,,0.82,,,,,,,"test TD, TW"
-20,1,,,,,na,na,35,40,5,4,,,na,,,,,,pixel,,,0.87,,,,,,,view all features
-21,1,,3,1,2,na,na,40,40,5,4,,,5,,,,,,pixel,,,0.87,,21,,1,,,"larger image, selected features, best so far"
-22,1,,,1,,na,na,40,40,5,7,,,,,,,,,pixel,,,,11,,,,,C3,C3
-23,1,,,,,na,na,40,40,5,4,,,,,,,,,pixel,,,,,,,,,Norm-Fr-C11-inc,4-band normalized experiment
-24,1,,,1,,na,na,40,40,5,4,,,5,,,,,,pixel,,,,,24,,1,,Freeman,PAD fixed GD
-25,1,na,3,1,2,na,na,40,40,5,4,6,3,5,,,1,25,0,pixel,32,97.1,0.953,14,25,25,1,,Freeman,"added FW and WD and new training areas; classifying training rasters (subsets); using hot fix that includes all training pixels; with 2 large YF files having improper heading info: OA =97.0, k=0.952.  Three files had mem crash"
-26,1,na,3,1,2,na,na,40,40,5,4,,2,5,,,1,32,0,pixel,,,,14,25,25,1,,Freeman,"same model as 25, but successfully debugged mem crash and ran on remaining three files"
-27,1,na,3,1,2,na,na,40,40,5,4,,2,5,,,1,32,0,pixel,52,,,14,25,25,1,283,Freeman,same as before?
-28,1,na,3,1,2,na,na,40,40,5,4,,2,5,,,1,32,0,pixel,,,,14,25,25,,,Freeman,debugging 0 vs nodata; debugging NoData use in classifying
-29,,,,,,,,,,,,,,,,,,,0,pixel,,,,,,,,,Freeman,has largest collection of test images as of yet
-30,1,na,3,1,2,na,na,40,40,5,4,6,6,5,,,1,32,0?,pixel,"~25 to train, 13 to run",95.8,0.9542,14,30,30,1,,Freeman,"New training areas for PAD, YF, BakerC.  Slight decrease in OA and much worse, visually.  Banding along range...Ran on 4 PAD, YF, BC"
-31,1,na,3,1,2,na,na,40,40,5,4,6,6,5,,,1,32,?,pixel,,87,0.857,14,31,30,1,,Freeman,"Same training areas, no range. Bed metrics proved to me that I need a better range correction."
-32,1,na,3,1,2,na,na,40,40,5,4,6,6,5,,,1,32,1,pixel,105 to test and train,75.3,0.729,14,32.1,30,1,403,Sinclair,Sinclair matrix (no slope or range) Training from run 30
-32.1,1,na,3,1,2,na,na,40,40,5,4,6,6,5,,,1,32,1,pixel,,84.2,0.827,14,32.1,30,1,na,Sinclair,Re-do after fixing: 1) corrupted tif from data import; 2) only using 2/3 bands
-33,1,na,3,1,2,na,na,40,40,5,4,6,6,5,,,1,32,1,pixel,,,,14,33,30,1,na,SinclairU,SinclairU (fake Sinclair matrix S11S22S33) to test if RTC actually helped…
-34,1,na,3,1,2,na,na,30,40,5,4,6,6,5,7,7,1,32,1,pixel,import: 55; train: 8; test: 37 min,91.4,0.906,14,34,30,,420,Sinclair-hgt,Add DEM info: slope-tpi
-35,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,inter-class var?
-36,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,use T3
+Run,Raw,sigma,Offsets,speckle,OffsetSigma,LoGSigma,SteerableFilterSigma,nTree,minLeaf,pct,nBands,nTrainImages,nTestImages,TextWindow,gradient_smooth_kernel,tpi_kernel,TrainImNumbers,nSubsets,equalizeTrainClassSizes,Accuracy unit,time_min,OA,k,OOB_pred_error,nClass,Model,TrainingAreas,StableResults,SlurmRun,InputType,Notes
+4,,"1,2,3",,,"3,5",na,2,10,40,5,1,,,,,,"1,2",,,pixel,,,,,,,,,,,
+5,,"2,3",,,5,na,2,10,40,5,1,,,,,,"1,2",,,pixel,,,,,,,,,,,
+6,,"2,3","3,5",,2,na,2,10,40,5,1,,,,,,"1,2",,,pixel,,,,,,,,,,,
+7,,2,"3,5",,2,1,2,10,40,5,1,,,,,,"1,2",,,pixel,,,,,,,,,,,best yet!
+8,,3,,,,1,2,10,40,5,1,2,,,,,"1,2",,,pixel,,,,,,,,,,,
+9,,3,,,,1,2,10,40,5,3,2,,,,,"1,2",,,pixel,,,,,,,,,,,
+10,1,na,,,,na,na,10,40,5,3,,,,,,"1,2",,,pixel,,,,,,,,,,,
+11,1,2,,,,2,na,10,40,5,3,,,,,,"1,2",,,pixel,,,,,,,,,,,update training
+12,1,2,,,,2,na,15,40,5,3,,,"3,5",,,"1,2",,,pixel,,,,,,,,,,,
+13,1,2,,,,2,na,15,40,5,3,,,"3,5",,,"1,2",,,pixel,,,,,,,,,,,update training Day I
+14,1,na,,,,na,na,15,40,5,3,,,na,,,,,,pixel,,,0.73,,8,,,,,,Dec 2 Training no TW/TD
+15,1,na,,,,na,na,15,40,5,3,,,na,,,,,,pixel,,,0.01,,9,,,,,,Dec 2 Training with TW/TD
+16,1,,,,,na,2,35,40,5,3,,,na,,,,,,pixel,,,0.8,,8,,,,,,"Dec 2 Training no BG, TW/TD"
+17,1,1,,,,na,1,35,40,5,3,,,"3,9",,,,,,pixel,,,0.78,,6,,,,,,
+18,1,,,,,na,na,35,40,5,4,1,,3,,,,,,pixel,,,,,,,,,,,Jan 6 test for range
+19,1,,,,,na,na,35,40,5,4,2,,na,,,,,,pixel,,,0.82,,,,,,,,"test TD, TW"
+20,1,,,,,na,na,35,40,5,4,,,na,,,,,,pixel,,,0.87,,,,,,,,view all features
+21,1,,3,1,2,na,na,40,40,5,4,,,5,,,,,,pixel,,,0.87,,,21,,1,,,"larger image, selected features, best so far"
+22,1,,,1,,na,na,40,40,5,7,,,,,,,,,pixel,,,,,11,,,,,C3,C3
+23,1,,,,,na,na,40,40,5,4,,,,,,,,,pixel,,,,,,,,,,Norm-Fr-C11-inc,4-band normalized experiment
+24,1,,,1,,na,na,40,40,5,4,,,5,,,,,,pixel,,,,,,24,,1,,Freeman,PAD fixed GD
+25,1,na,3,1,2,na,na,40,40,5,4,6,3,5,,,1,25,0,pixel,32,97.1,0.953,,14,25,25,1,,Freeman,"added FW and WD and new training areas; classifying training rasters (subsets); using hot fix that includes all training pixels; with 2 large YF files having improper heading info: OA =97.0, k=0.952.  Three files had mem crash"
+26,1,na,3,1,2,na,na,40,40,5,4,,2,5,,,1,32,0,pixel,,,,,14,25,25,1,,Freeman,"same model as 25, but successfully debugged mem crash and ran on remaining three files"
+27,1,na,3,1,2,na,na,40,40,5,4,,2,5,,,1,32,0,pixel,52,,,,14,25,25,1,283,Freeman,same as before?
+28,1,na,3,1,2,na,na,40,40,5,4,,2,5,,,1,32,0,pixel,,,,,14,25,25,,,Freeman,debugging 0 vs nodata; debugging NoData use in classifying
+29,,,,,,,,,,,,,,,,,,,0,pixel,,,,,,,,,,Freeman,has largest collection of test images as of yet
+30,1,na,3,1,2,na,na,40,40,5,4,6,6,5,,,1,32,0?,pixel,"~25 to train, 13 to run",95.8,0.9542,,14,30,30,1,,Freeman,"New training areas for PAD, YF, BakerC.  Slight decrease in OA and much worse, visually.  Banding along range...Ran on 4 PAD, YF, BC"
+31,1,na,3,1,2,na,na,40,40,5,4,6,6,5,,,1,32,?,pixel,,87,0.857,,14,31,30,1,,Freeman,"Same training areas, no range. Bed metrics proved to me that I need a better range correction."
+32,1,na,3,1,2,na,na,40,40,5,4,6,6,5,,,1,32,1,pixel,105 to test and train,75.3,0.729,,14,32.1,30,1,403,Sinclair,Sinclair matrix (no slope or range) Training from run 30
+32.1,1,na,3,1,2,na,na,40,40,5,4,6,6,5,,,1,32,1,pixel,,84.2,0.827,0.162,14,32.1,30,1,na,Sinclair,Re-do after fixing: 1) corrupted tif from data import; 2) only using 2/3 bands
+33,1,na,3,1,2,na,na,40,40,5,4,6,6,5,,,1,32,1,pixel,,,,,14,33,30,1,na,SinclairU,SinclairU (fake Sinclair matrix S11S22S33) to test if RTC actually helped…
+34,1,na,3,1,2,na,na,30,40,5,4,6,6,5,7,7,1,32,1,pixel,import: 55; train: 8; test: 37 min,91.4,0.906,0.092,14,34,30,,420,Sinclair-hgt,Add DEM info: slope-tpi
+35,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,inter-class var?
+36,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,use T3

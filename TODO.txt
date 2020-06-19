@@ -63,6 +63,7 @@ view(treeBag.Trees{1}, 'Mode', 'graph')
 * Improve hot fix that undid class size normalization using random number  generator
 ** Do range correction before decomp...perhaps using JPL/Marc workflow
 ** Change error assessment to randomly select by polygon, not by pixel, so as to produce more realistic metrics
+Re-write using blockproc with padding to run in chunks and save memory. Or optimize for images with large NoData areas.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LINUX~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 prep trainingImageImport.m to be like viewingImageImport.m
