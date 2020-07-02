@@ -75,6 +75,23 @@ else
 	fi
 	cp -u $file_dir_ASC/*.ann $base
 
+		# Copy HGT 
+	if [ ! -f $base/"$ID"_hgt.tif ]; then
+		echo Needed to copy HGT: $file_hgt  ">>>>>"  $base
+	fi
+	cp -u $file_hgt $base
+
+		# Copy SLOPE
+	if [ ! -f $base/"$ID".slope ]; then
+		echo Needed to copy SLOPE: $file_slope  ">>>>>"  $base
+	fi
+	cp -u $file_slope $base
+
+		# Copy MLC
+	if [ ! -f $base/*.slc ]; then
+		echo Needed to copy MLC: $dir_mlc/  ">>>>>"  $base
+	fi
+	cp -u $dir_mlc/*.mlc $base
 
 		#CONVERT MLC
 	printf "\tConvert MLC\n"
