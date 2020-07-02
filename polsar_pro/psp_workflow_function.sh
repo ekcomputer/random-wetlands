@@ -22,24 +22,21 @@ file_dir_tmp=${file_dir_input#/att/gpfsfs/atrepo01/data/ORNL/ABoVE_Archive/datap
 ID=${file_dir_tmp%_grd}
 file_dir_ASC=/att/gpfsfs/atrepo01/data/ORNL/ABoVE_Archive/datapool.asf.alaska.edu/PROJECTED/UA/$ID"_grd" # add in ASC prefix
 file_dir=$NOBACKUP/UAVSAR/asf.alaska.edu/$ID # NOBACKUP
-base=$file_dir/raw
-file_inc=/att/gpfsfs/atrepo01/data/ORNL/ABoVE_Archive/datapool.asf.alaska.edu/INC/UA/$ID.inc
+base=$file_dir/complex_lut
+# file_inc=/att/gpfsfs/atrepo01/data/ORNL/ABoVE_Archive/datapool.asf.alaska.edu/INC/UA/$ID.inc
+# file_hgt=/att/gpfsfs/atrepo01/data/ORNL/ABoVE_Archive/datapool.asf.alaska.edu/DEM_TIFF/UA/"$ID"_hgt.tif
+# file_slope=/att/gpfsfs/atrepo01/data/ORNL/ABoVE_Archive/datapool.asf.alaska.edu/SLOPE/UA/$ID.slope
+# dir_mlc=/att/gpfsfs/atrepo01/data/ORNL/ABoVE_Archive/datapool.asf.alaska.edu/COMPLEX/UA/"$ID"_mlc
 
 #
-if [ -e $file_dir/freeman/C3/Freeman_Odd.bin ] [ # -e foo.txt] #
+if [ -e $file_dir/complex_lut/C3/Freeman_Odd.bin ] # [ # -e foo.txt] #
 then 
 	echo "... Already processed $ID (Freeman_Odd.bin exists)... skipping."
+elif [ ! -e $base/$ID.ann ]
+then
+	echo "ERROR: No .ann file found in $base/"
 else 
-		# Check if file exists on ASC.  If not, use imported file
-	printf "\tCHECKING IF INPUT FILES EXIST ON ASC\n"
-	if [ -d $file_dir_ASC ]
-	then 
-		:
-	else
-		file_dir_ASC=$file_dir/raw
-		file_inc=$file_dir/raw/$ID.inc
-		printf "\tFile not found on ASC.  Using uploaded files in $file_dir.\n"
-	fi
+		# skipping file imports, because assumed to have happened in complex-rtc.py
 		
 		# PRINT FILENAMES
 	printf "\nASF dir: \t\t $file_dir_ASC\n"
@@ -47,57 +44,26 @@ else
 	printf "Base dir:\t\t $base\n\n"
 		# READ HEADER (not essential)
 	printf "\tReading header\n"
-	uavsar_header.exe -hf $file_dir_ASC/*.ann -id $file_dir_ASC -od $file_dir -df grd \
+	uavsar_header.exe -hf $base/$ID.ann -id $base -od $base -df grd \
 	 -tf /home/ekyzivat/.polsarpro-bio_6.0.1/Tmp/`date +%Y-%m-%d-%H-%M-%S_uavsar_config.txt`
 
 		#PARSE ANN FILE
-	c3=$file_dir/C3
-	inr=$(grep grd_pwr.set_rows $file_dir_ASC/*.ann | awk '{print $4}')
-	inc=$(grep grd_pwr.set_cols $file_dir_ASC/*.ann | awk '{print $4}')
+	c3=$base/C3
+	inr=$(grep grd_pwr.set_rows $base/$ID.ann | awk '{print $4}')
+	inc=$(grep grd_pwr.set_cols $base/$ID.ann | awk '{print $4}')
 	echo in rows: $inr
 	echo in cols: $inc
-	if=( $( find $file_dir_ASC -name *.grd -type f | sort -n) )
+	if=( $( find $base -name *.grd -type f | sort -n) )
 
 		# MKDIR
-	printf "\tCreating C3 and raw dirs\n"
+	printf "\tCreating C3 dir\n"
 	mkdir -p $c3
-	mkdir -p $base
-	
-		# COPY INC FILE
-	if [ ! -f $base/$ID.inc ]; then
-		echo Needed to copy INC: $file_inc  ">>>>>"  $base
-	fi
-	cp -u $file_inc $base
-
-		# COPY ANN FILE
-	if [ ! -f $base/$ID.ann ]; then
-		echo Needed to copy ANN: $file_dir_ASC/*.ann  ">>>>>"  $base
-	fi
-	cp -u $file_dir_ASC/*.ann $base
-
-		# Copy HGT 
-	if [ ! -f $base/"$ID"_hgt.tif ]; then
-		echo Needed to copy HGT: $file_hgt  ">>>>>"  $base
-	fi
-	cp -u $file_hgt $base
-
-		# Copy SLOPE
-	if [ ! -f $base/"$ID".slope ]; then
-		echo Needed to copy SLOPE: $file_slope  ">>>>>"  $base
-	fi
-	cp -u $file_slope $base
-
-		# Copy MLC
-	if [ ! -f $base/*.slc ]; then
-		echo Needed to copy MLC: $dir_mlc/  ">>>>>"  $base
-	fi
-	cp -u $dir_mlc/*.mlc $base
 
 		#CONVERT MLC
 	printf "\tConvert MLC\n"
-	uavsar_convert_MLC.exe -hf $file_dir_ASC/*.ann -if1 ${if[0]} -if2 ${if[1]} -if3 ${if[2]} -if4 ${if[3]} \
+	uavsar_convert_MLC.exe -hf $base/$ID.ann -if1 ${if[0]} -if2 ${if[1]} -if3 ${if[2]} -if4 ${if[3]} \
 	-if5 ${if[4]} -if6 ${if[5]} \
-	-od $file_dir/C3 -odf C3 -inr $inr -inc $inc -ofr 0 -ofc 0 -fnr $inr -fnc $inc \
+	-od $base/C3 -odf C3 -inr $inr -inc $inc -ofr 0 -ofc 0 -fnr $inr -fnc $inc \
 	-nlr 1 -nlc 1 -ssr 1 -ssc 1 -mem $mem \
 	-errf "/home/ekyzivat/.polsarpro-bio_6.0.1/Tmp/MemoryAllocError.txt" 
 
@@ -107,7 +73,7 @@ else
 
 		# MKDIR DECOMP
 	printf "\tCreating Freeman dir\n"
-	fre=$file_dir/freeman/C3
+	fre=$base/freeman/C3
 	mkdir -p $fre
 
 		# DECOMPOSITION
@@ -118,12 +84,17 @@ else
 
 		# BUILD envi headers # note: imaginary .bin files will have wrong data type (float instead of complex)
 	printf "\tENVI Headers\n"
-	bin_files=`find $file_dir -name "*.bin" -o -name "*.inc" -o -name "*.slope" -o -name "*.hgt"`
+	bin_files=`find $base -name "*.bin"`
 	for file in $bin_files; do
 		#echo $file
-		envi_config_file.exe -bin $file -nam $file.hdr -iodf 4 -fnr $inr -fnc $inc
-		editEnviHdr.sh $file_dir_ASC/*.ann $file.hdr
+		python /home/ekyzivat/scripts/UAVSAR-Radiometric-Calibration-fork/python/buildUAVSARhdr.py -i $base/$ID.ann -r $file -p HHHH
 	done
+
+	# other_bin_files=`find $base -name "*.inc" -o -name "*.slope" -o -name "*.hgt"`
+	# for file in $other_bin_files; do
+	# 	#echo $file
+	# 	python /home/ekyzivat/scripts/UAVSAR-Radiometric-Calibration-fork/python/buildUAVSARhdr.py -i $base/$ID.ann -r $file
+	# done
 
 fi
 
