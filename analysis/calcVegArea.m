@@ -20,6 +20,9 @@ clear
 Env_PixelClassifier
 wet_classes=[1:5 11 13];
 water_classes=[1,3, 11];
+PLOT_xtick_rot=0; % 45 % PLOT xticklabel rotation
+PLOT_view_rot=[90 -90];
+
 %% I/O
 dir_in='F:\PAD2019\classification_training\PixelClassifier\Test32'; % 26 was used for first plots
 % dir_in='F:\PAD2019\classification_training\PixelClassifier\Test31';
@@ -112,52 +115,59 @@ nRows=length(stats);
 stats_tbl=struct2table(stats);
 
 %% Plot 2
-set(groot,'defaultTextInterpreter','none')
+% set(groot,'defaultTextInterpreter','none')
 % simple_labels={'Baker 2019 Sept', 'PAD 2018 Aug', 'PAD 2019 Sept',...
 %     'YF East 2017 Sept', 'YF West 2017 Sept', 'YF West 2017 June'}
 % simple_labels=split(num2str(1:nRows));
 fun=@(str) str(1:18);
 simple_labels=cellfun(fun, {stats.name}, 'UniformOutput', false);
 % plot_order=[1 2 3 6 5 4]
-plot_order=1:nRows; %setdiff(1:nFiles, 20);
+% plot_order=1:nRows; %setdiff(1:nFiles, 20);
+% plot_order= [1,2,4,3,14,7,6,5,9,8,13,12,11,10];
+plot_order=flip([14,13,11,12,6,7,2,3,4,5,1,8,9,10]);
 figure(2)
 
 bar(stats_tbl.frac_inun_veg(plot_order)*100, 'FaceColor', [0.19,0.47,0.05]) %[0.22,0.60,0.41])
-set(gca, 'XTickLabel', simple_labels(plot_order), 'XTickLabelRotation', 45)
+set(gca, 'XTickLabel', simple_labels(plot_order), 'XTickLabelRotation', PLOT_xtick_rot,...
+    'TickLabelInterpreter', 'none', 'view',PLOT_view_rot)
 ylabel('Inundated veg. (% of total area)')
 
 %% Plot 3
 figure(3)
 
 mat2=[[stats.px_water]; [stats.px_inun_veg]; [stats.px_dry]]./[stats.nValidPx]*100;
-b=bar(mat2', 'stacked', 'FaceColor', 'flat'); %set(gca, 'XTick', 1:size(cols.water,1), 'XTickLabel', (lbl_dates))
+b=bar(mat2(:,plot_order)', 'stacked', 'FaceColor', 'flat'); %set(gca, 'XTick', 1:size(cols.water,1), 'XTickLabel', (lbl_dates))
 % colors={'blue', 'green', 'brown'};
 % colormap(flip(brewermap(3, 'RdYlBu')));
 colormap(env.plot.colors_mat([1 4 5],:));
 for k = 1:size(mat2,1)
     b(k).CData = k;
 end
-set(gca, 'XTickLabel', simple_labels(plot_order), 'XTickLabelRotation', 45)
+set(gca, 'XTickLabel', simple_labels(plot_order), 'XTickLabelRotation', PLOT_xtick_rot,...
+    'TickLabelInterpreter', 'none', 'view',PLOT_view_rot)
 ylabel('Landcover classes (% of total area)')
-legend({'Water', 'Inundated \newline vegetation', 'Dry \newline vegetation'}, 'Location', 'eastoutside', 'Interpreter','tex')
+legend({'Water', 'Inundated \newlinevegetation', 'Dry \newlinevegetation'}, 'Location', 'eastoutside', 'Interpreter','tex')
 % title({'Wetland change:', 'Peace-Athabasca Delta'})
 
 %% Plot 4
 figure(4)
 
 bar(stats_tbl.mean_lake_frac_inun_veg(plot_order)*100, 'FaceColor', [0.19,0.47,0.05])
-set(gca, 'XTickLabel', simple_labels(plot_order), 'XTickLabelRotation', 45)
+set(gca, 'XTickLabel', simple_labels(plot_order), 'XTickLabelRotation', PLOT_xtick_rot,...
+    'TickLabelInterpreter', 'none', 'view',PLOT_view_rot)
 ylabel('Inundated veg. (% of total lake area)')
 
 %% Plot 5
 figure(5)
 
 bar(stats_tbl.px_wet(plot_order)./stats_tbl.nValidPx(plot_order)*100, 'FaceColor', [0.15,0.67,0.54])
-set(gca, 'XTickLabel', simple_labels(plot_order), 'XTickLabelRotation', 45)
+set(gca, 'XTickLabel', simple_labels(plot_order), 'XTickLabelRotation', PLOT_xtick_rot,...
+    'TickLabelInterpreter', 'none', 'view',PLOT_view_rot)
 ylabel('Wet area (% of total area)')
 %% Display:
 disp('Result:')
 disp('')
-%% output table
 
-% writetable(struct2table(stats), 'summaryStats.xlsx')
+%% output table
+fname=sprintf('summaryStats_%s.xlsx', date);
+% writetable(struct2table(stats), fname)
