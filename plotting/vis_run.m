@@ -10,7 +10,7 @@
 %% I/O
 clear
 % Env_PixelClassifier
-base='F:\PAD2019\classification_training\PixelClassifier\Test34';
+base='F:\PAD2019\classification_training\PixelClassifier\Test32';
 model_pth = [base, '\model.mat'];
 training_pth = [base, '\training.mat'];
 load(model_pth); load(training_pth);
