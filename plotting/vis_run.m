@@ -10,7 +10,7 @@
 %% I/O
 clear
 % Env_PixelClassifier
-base='F:\PAD2019\classification_training\PixelClassifier\Test34';
+base='F:\PAD2019\classification_training\PixelClassifier\Test32';
 model_pth = [base, '\model.mat'];
 training_pth = [base, '\training.mat'];
 load(model_pth); load(training_pth);
@@ -70,11 +70,14 @@ legend(legend_txt, 'Location', 'best', 'FontSize', 12);
 subplot(1,2,2), plot(oobPredError), title('OOB classification error')
 
 %% confusion matrix
-figure
 [v.C, v.cm, v.order, v.k, v.OA]=confusionmatStats(lb_subset_validation,lb_val_test_cell, env.class_names);
 
 %% alt CM stats
 fprintf('\n~~~~~~~~~~~~~~~~~~~~~~~~~~\nFinal OOB error: %0.3f\n', oobPredError(end))
+
+%% plot features and class boundaries
+viewClassCentroids;
+
 
 %% Plot inc info
 
