@@ -70,11 +70,14 @@ legend(legend_txt, 'Location', 'best', 'FontSize', 12);
 subplot(1,2,2), plot(oobPredError), title('OOB classification error')
 
 %% confusion matrix
-figure
 [v.C, v.cm, v.order, v.k, v.OA]=confusionmatStats(lb_subset_validation,lb_val_test_cell, env.class_names);
 
 %% alt CM stats
 fprintf('\n~~~~~~~~~~~~~~~~~~~~~~~~~~\nFinal OOB error: %0.3f\n', oobPredError(end))
+
+%% plot features and class boundaries
+viewClassCentroids;
+
 
 %% Plot inc info
 
