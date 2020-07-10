@@ -124,6 +124,7 @@ for kathy=1:size(ViewZ,1)
 %     im(:,:,1,kathy) = imresize(rgb2ind(f.cdata,map,'nodither'), 0.25); 
 end
 imwrite(im,map,FileName,'DelayTime',0.09,'LoopCount',inf) %g443800
+fprintf('Saving: %s\n', FileName)
 %% clean up
 close(daObj);
 

@@ -66,6 +66,8 @@ else    legend(env.class_names(classes), 'Location', 'eastoutside') % if diff nu
     disp('Using class name abrevs')
 end
 title('Training classes used')
+axis([-50 10 -50 20]);
+view(0,90)
 
 %% 2D gscatter plot (no alpha)
 
@@ -86,6 +88,7 @@ ft_grid(:,1+0*skip_idx)=x(:);
 ft_grid(:,1+1*skip_idx)=y(:);
 ft_grid(:,1+2*skip_idx)=z(:);
 
+
 %% Predict grid
 ft_grid=ft_all(holdout.test,:); % uncomment to use holdout in testing
 % ft_grid=ft_all; % uncomment for testing to replicate training data
@@ -95,10 +98,12 @@ ft_grid=ft_all(holdout.test,:); % uncomment to use holdout in testing
 ft_grid_db=pow2db(ft_grid);
 
 %% Plot grid classes with gscatter
-figure;
-gscatter(ft_grid_db(:,1+featOS+0*skip_idx), ft_grid_db(:,1+featOS+1*skip_idx),indOfMax_valid)
-legend(env.class_names, 'Location', 'best')
-title('Classification result from test data')
+if 1==2
+    figure;
+    gscatter(ft_grid_db(:,1+featOS+0*skip_idx), ft_grid_db(:,1+featOS+1*skip_idx),indOfMax_valid)
+    legend(env.class_names, 'Location', 'best')
+    title('Classification result from test data')
+end
 
 %% Plot grid classes with scatter3
 figure; hold on
@@ -118,11 +123,13 @@ zlabel('Single bounce (dB)')
 % h.MarkerFaceColor='filled'
 legend(env.class_names(classes)) % if diff number classes
 title('Classification result from test data')
+axis([-50 10 -50 20 -40 10 ]);
+view(0,90)
 
 %% save animated video - uncomment
-figure(1)
-nFrames=200;
-viewZ=30*ones(nFrames,2);
-viewZ(:,1)=linspace(0,360, nFrames);
-vid_file=['D:\vid\AGU2019GIFs\centroidPlot',date,'.gif'];
-CaptureFigVid_EK(viewZ, vid_file,20)
+% figure(1)
+% nFrames=200;
+% viewZ=30*ones(nFrames,2);
+% viewZ(:,1)=linspace(0,360, nFrames);
+% vid_file=['D:\vid\AGU2019GIFs\centroidPlot',date,'.gif'];
+% CaptureFigVid_EK(viewZ, vid_file,20)
