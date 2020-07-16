@@ -12,7 +12,7 @@
 
 % TODO: Add buffers, why is median_lake_frac_inun_veg always 100%  Why so
 % many veg-only lakes?  Add defensive checks if I change or add classes.
-% Flip bar plots sideways to easily read label?
+% Plot side-by-side
 
 %% params
 clear
@@ -22,9 +22,10 @@ wet_classes=[1:5 11 13];
 water_classes=[1,3, 11];
 PLOT_xtick_rot=0; % 45 % PLOT xticklabel rotation
 PLOT_view_rot=[90 -90];
+regionPropsStats = false; % save time by not calc regionprops
 
 %% I/O
-dir_in='F:\PAD2019\classification_training\PixelClassifier\Test32'; % 26 was used for first plots
+dir_in='F:\PAD2019\classification_training\PixelClassifier\Test35'; % 26 was used for first plots
 % dir_in='F:\PAD2019\classification_training\PixelClassifier\Test31';
 files_in=dir([dir_in, filesep, '*cls.tif']); % list of classified tifs
 nFiles=length(files_in);
@@ -46,16 +47,19 @@ for i=1:nFiles % Loop over files
         msk_wet=ismember(im, wet_classes);
         nPx=sum(im(:)>0);
         %% regionprops
-        rpstats(i).props=regionprops(msk_wet, im, 'PixelValues', 'Area', 'Perimeter', 'Centroid');
-
+        if regionPropsStats % if using region props stats
+            rpstats(i).props=regionprops(msk_wet, im, 'PixelValues', 'Area', 'Perimeter', 'Centroid');
+        end
         %% Loop over regions
             % note: area is in px for now
-        stats(i).num_water_bodies=length(rpstats(i).props);
-        for j=1:stats(i).num_water_bodies
-           rpstats(i).props(j).px_water=sum(ismember(rpstats(i).props(j).PixelValues, water_classes)); 
-           rpstats(i).props(j).px_inun_veg=rpstats(i).props(j).Area-rpstats(i).props(j).px_water;
-           rpstats(i).props(j).lake_frac_inun_veg=rpstats(i).props(j).px_inun_veg/rpstats(i).props(j).Area;
-    %        rpstats(i).props(j).frac_inun_veg=rpstats(i).props(j).px_inun_veg/nPx;
+        if regionPropsStats % if using region props stats
+            stats(i).num_water_bodies=length(rpstats(i).props);
+            for j=1:stats(i).num_water_bodies
+               rpstats(i).props(j).px_water=sum(ismember(rpstats(i).props(j).PixelValues, water_classes)); 
+               rpstats(i).props(j).px_inun_veg=rpstats(i).props(j).Area-rpstats(i).props(j).px_water;
+               rpstats(i).props(j).lake_frac_inun_veg=rpstats(i).props(j).px_inun_veg/rpstats(i).props(j).Area;
+        %        rpstats(i).props(j).frac_inun_veg=rpstats(i).props(j).px_inun_veg/nPx;
+            end
         end
 
         %% summary stats
@@ -67,18 +71,18 @@ for i=1:nFiles % Loop over files
         stats(i).nPx=numel(im);
         stats(i).frac_inun_veg=stats(i).px_inun_veg/nPx;
         stats(i).mean_lake_frac_inun_veg=stats(i).px_inun_veg/stats(i).px_wet;
-        stats(i).med_lake_frac_inun=median([rpstats(i).props.lake_frac_inun_veg]); 
+%         stats(i).med_lake_frac_inun=median([rpstats(i).props.lake_frac_inun_veg]); 
         stats(i).name=files_in(i).name;
-        stats(i).num_profundal_only_lakes=sum([rpstats(i).props.px_inun_veg]==0);    % lakes w only open water
-        stats(i).frac_profundal_only_lakes= stats(i).num_profundal_only_lakes / ...
-            stats(i).num_water_bodies;
-        stats(i).num_littoral_lakes=sum([rpstats(i).props.px_inun_veg]>0 &...
-            [rpstats(i).props.px_water]>0);         % lakes w open and inun veg
-        stats(i).frac_littoral_lakes=stats(i).num_littoral_lakes / ...
-            stats(i).num_water_bodies;
-        stats(i).num_littoral_only_lakes=sum([rpstats(i).props.px_water]==0);    % lakes w no open water
-        stats(i).frac_littoral_only_lakes=stats(i).num_littoral_only_lakes / ...
-            stats(i).num_water_bodies;
+%         stats(i).num_profundal_only_lakes=sum([rpstats(i).props.px_inun_veg]==0);    % lakes w only open water
+%         stats(i).frac_profundal_only_lakes= stats(i).num_profundal_only_lakes / ...
+%             stats(i).num_water_bodies;
+%         stats(i).num_littoral_lakes=sum([rpstats(i).props.px_inun_veg]>0 &...
+%             [rpstats(i).props.px_water]>0);         % lakes w open and inun veg
+%         stats(i).frac_littoral_lakes=stats(i).num_littoral_lakes / ...
+%             stats(i).num_water_bodies;
+%         stats(i).num_littoral_only_lakes=sum([rpstats(i).props.px_water]==0);    % lakes w no open water
+%         stats(i).frac_littoral_only_lakes=stats(i).num_littoral_only_lakes / ...
+%             stats(i).num_water_bodies;
 
         %% summary stats in loop
         for j = 1:length(env.class_names)
@@ -103,9 +107,9 @@ for i=1:nFiles % Loop over files
 end
 
 %% mask out error rows
-msk=false(1,length(stats))
+msk=false(1,length(stats));
 for i=1:length(stats)
-    msk(i)=~isempty(stats(i).num_water_bodies);
+    msk(i)=~isempty(stats(i).nPx);
 end
 disp('Masking out empty rows.')
 stats=stats(msk);
@@ -124,11 +128,14 @@ simple_labels=cellfun(fun, {stats.name}, 'UniformOutput', false);
 % plot_order=[1 2 3 6 5 4]
 % plot_order=1:nRows; %setdiff(1:nFiles, 20);
 % plot_order= [1,2,4,3,14,7,6,5,9,8,13,12,11,10];
-plot_order=flip([14,13,11,12,6,7,2,3,4,5,1,8,9,10]);
+% plot_order=flip([14,13,11,12,6,7,2,3,4,5,1,8,9,10]); % Run 32
+% plot_order=1:length(stats); 
+plot_order=flip((length(stats)+1)*ones(1,length(stats))-...
+    [1 2 4 3 17 6 5 16 9 8 7 11 10 15 14 13 12]);
 figure(2)
 
 bar(stats_tbl.frac_inun_veg(plot_order)*100, 'FaceColor', [0.19,0.47,0.05]) %[0.22,0.60,0.41])
-set(gca, 'XTickLabel', simple_labels(plot_order), 'XTickLabelRotation', PLOT_xtick_rot,...
+set(gca, 'XTick', 1:length(stats), 'XTickLabel', simple_labels(plot_order), 'XTickLabelRotation', PLOT_xtick_rot,...
     'TickLabelInterpreter', 'none', 'view',PLOT_view_rot)
 ylabel('Inundated veg. (% of total area)')
 
@@ -144,7 +151,7 @@ for k = 1:size(mat2,1)
     b(k).CData = k;
 end
 set(gca, 'XTickLabel', simple_labels(plot_order), 'XTickLabelRotation', PLOT_xtick_rot,...
-    'TickLabelInterpreter', 'none', 'view',PLOT_view_rot)
+    'TickLabelInterpreter', 'none', 'view',PLOT_view_rot, 'XTick', 1:length(stats))
 ylabel('Landcover classes (% of total area)')
 legend({'Water', 'Inundated \newlinevegetation', 'Dry \newlinevegetation'}, 'Location', 'eastoutside', 'Interpreter','tex')
 % title({'Wetland change:', 'Peace-Athabasca Delta'})
@@ -154,7 +161,7 @@ figure(4)
 
 bar(stats_tbl.mean_lake_frac_inun_veg(plot_order)*100, 'FaceColor', [0.19,0.47,0.05])
 set(gca, 'XTickLabel', simple_labels(plot_order), 'XTickLabelRotation', PLOT_xtick_rot,...
-    'TickLabelInterpreter', 'none', 'view',PLOT_view_rot)
+    'TickLabelInterpreter', 'none', 'view',PLOT_view_rot, 'XTick', 1:length(stats))
 ylabel('Inundated veg. (% of total lake area)')
 
 %% Plot 5
@@ -162,12 +169,13 @@ figure(5)
 
 bar(stats_tbl.px_wet(plot_order)./stats_tbl.nValidPx(plot_order)*100, 'FaceColor', [0.15,0.67,0.54])
 set(gca, 'XTickLabel', simple_labels(plot_order), 'XTickLabelRotation', PLOT_xtick_rot,...
-    'TickLabelInterpreter', 'none', 'view',PLOT_view_rot)
+    'TickLabelInterpreter', 'none', 'view',PLOT_view_rot, 'XTick', 1:length(stats))
 ylabel('Wet area (% of total area)')
 %% Display:
 disp('Result:')
 disp('')
 
 %% output table
-fname=sprintf('summaryStats_%s.xlsx', date);
+% fname=sprintf('summaryStats_%s.xlsx', date);
 % writetable(struct2table(stats), fname)
+% fprintf('Saved: %s\n', fname)
