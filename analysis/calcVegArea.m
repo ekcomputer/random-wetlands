@@ -10,9 +10,9 @@
 %  Ethan Kyzivat, April 2020
 
 
-% TODO: Add buffers, why is median_lake_frac_inun_veg always 100%  Why so
+% TODO: Add buffers to filter out disconnected littoral zones w no water nearby,
+% why is median_lake_frac_inun_veg always 100%  Why so
 % many veg-only lakes?  Add defensive checks if I change or add classes.
-% Plot side-by-side
 
 %% params
 clear
@@ -53,8 +53,8 @@ for i=1:nFiles % Loop over files
         %% Loop over regions
             % note: area is in px for now
         if regionPropsStats % if using region props stats
-            stats(i).num_water_bodies=length(rpstats(i).props);
-            for j=1:stats(i).num_water_bodies
+            stats(i).PROP_num_water_bodies=length(rpstats(i).props);
+            for j=1:stats(i).PROP_num_water_bodies
                rpstats(i).props(j).px_water=sum(ismember(rpstats(i).props(j).PixelValues, water_classes)); 
                rpstats(i).props(j).px_inun_veg=rpstats(i).props(j).Area-rpstats(i).props(j).px_water;
                rpstats(i).props(j).lake_frac_inun_veg=rpstats(i).props(j).px_inun_veg/rpstats(i).props(j).Area;
@@ -71,19 +71,24 @@ for i=1:nFiles % Loop over files
         stats(i).nPx=numel(im);
         stats(i).frac_inun_veg=stats(i).px_inun_veg/nPx;
         stats(i).mean_lake_frac_inun_veg=stats(i).px_inun_veg/stats(i).px_wet;
-%         stats(i).med_lake_frac_inun=median([rpstats(i).props.lake_frac_inun_veg]); 
+        stats(i).LP_ratio_mean=stats(i).px_inun_veg/stats(i).px_water;
         stats(i).name=files_in(i).name;
-%         stats(i).num_profundal_only_lakes=sum([rpstats(i).props.px_inun_veg]==0);    % lakes w only open water
-%         stats(i).frac_profundal_only_lakes= stats(i).num_profundal_only_lakes / ...
-%             stats(i).num_water_bodies;
-%         stats(i).num_littoral_lakes=sum([rpstats(i).props.px_inun_veg]>0 &...
-%             [rpstats(i).props.px_water]>0);         % lakes w open and inun veg
-%         stats(i).frac_littoral_lakes=stats(i).num_littoral_lakes / ...
-%             stats(i).num_water_bodies;
-%         stats(i).num_littoral_only_lakes=sum([rpstats(i).props.px_water]==0);    % lakes w no open water
-%         stats(i).frac_littoral_only_lakes=stats(i).num_littoral_only_lakes / ...
-%             stats(i).num_water_bodies;
-
+        if regionPropsStats
+            stats(i).PROP_med_lake_frac_inun=median([rpstats(i).props.lake_frac_inun_veg]); 
+            stats(i).PROP_num_profundal_only_lakes=sum([rpstats(i).props.px_inun_veg]==0);    % lakes w only open water
+            stats(i).PROP_frac_profundal_only_lakes= stats(i).PROP_num_profundal_only_lakes / ...
+                stats(i).PROP_num_water_bodies;
+            stats(i).PROP_num_littoral_lakes=sum([rpstats(i).props.px_inun_veg]>0 &...
+                [rpstats(i).props.px_water]>0);         % lakes w open and inun veg
+            stats(i).PROP_frac_littoral_lakes=stats(i).PROP_num_littoral_lakes / ...
+                stats(i).PROP_num_water_bodies;
+            stats(i).PROP_num_littoral_only_lakes=sum([rpstats(i).props.px_water]==0);    % lakes w no open water
+            stats(i).PROP_frac_littoral_only_lakes=stats(i).PROP_num_littoral_only_lakes / ...
+                stats(i).PROP_num_water_bodies;
+            % HERE: add mean/med LP ratio, after filtering out littoral
+            % only lakes
+        end
+        
         %% summary stats in loop
         for j = 1:length(env.class_names)
             stats(i).(['px_',env.class_names{j}])=sum(ismember(im(:), j));
@@ -129,9 +134,9 @@ simple_labels=cellfun(fun, {stats.name}, 'UniformOutput', false);
 % plot_order=1:nRows; %setdiff(1:nFiles, 20);
 % plot_order= [1,2,4,3,14,7,6,5,9,8,13,12,11,10];
 % plot_order=flip([14,13,11,12,6,7,2,3,4,5,1,8,9,10]); % Run 32
-% plot_order=1:length(stats); 
-plot_order=flip((length(stats)+1)*ones(1,length(stats))-...
-    [1 2 4 3 17 6 5 16 9 8 7 11 10 15 14 13 12]);
+plot_order=1:length(stats); 
+% plot_order=flip((length(stats)+1)*ones(1,length(stats))-...
+%     [1 2 4 3 17 6 5 16 9 8 7 11 10 15 14 13 12]); % for 17 scenes
 figure(2)
 
 bar(stats_tbl.frac_inun_veg(plot_order)*100, 'FaceColor', [0.19,0.47,0.05]) %[0.22,0.60,0.41])
