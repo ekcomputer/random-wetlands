@@ -42,6 +42,7 @@ else
 	printf "\nASF dir: \t\t $file_dir_ASC\n"
 	printf "file_dir: \t\t $file_dir\n"
 	printf "Base dir:\t\t $base\n\n"
+
 		# READ HEADER (not essential)
 	printf "\tReading header\n"
 	uavsar_header.exe -hf $base/$ID.ann -id $base -od $base -df grd \
