@@ -32,6 +32,7 @@ for n=env.trainFileNums; % file number from input
             fprintf('Training dir: \t\t%s\n', env.output.train_dir)
             fprintf('Test dir: \t\t%s\n', env.output.test_dir)
             fprintf('File numbers:\t\t%s\n', num2str(env.trainFileNums))
+            clear f
             f.names={env.input.name};
             fprintf('File IDs:\n\t\t\t%s\n', strjoin(f.names(env.trainFileNums), '\n\t\t\t'));
 %             disp(f.names(env.trainFileNums)')
@@ -51,15 +52,32 @@ for n=env.trainFileNums; % file number from input
     env.input(n).im_dir_nband=[env.input(n).im_dir, 'freeman', filesep, 'C3', filesep, ''];
     env.input(n).im_dir_nband_c=[env.input(n).im_dir, 'C3', filesep, ''];
     
-        % locate files
+        % locate files  %tag: ENV_INPUT_TYPE
     f.inc_dir=dir([env.input(n).im_dir,'raw', filesep, '*inc']); % if using, fix for unix
     f.grd_rtc_dir=dir([env.input(n).im_dir,'raw', filesep, '*LUT.grd']);
     f.hgt_dir=dir([env.input(n).im_dir,'raw', filesep, '*_hgt.tif']);
     f.gray_imgs_freeman=dir([env.input(n).im_dir_nband, 'Freeman*.bin']);
     f.gray_imgs_c3=dir([env.input(n).im_dir_nband_c, 'C*.bin']);
+    f.LUT_Freeman_dir=dir([env.input(n).im_dir,'complex_lut', filesep,...
+        'freeman', filesep, 'C3',filesep, '*bin']);
     
-        % check
-    if isempty(f.inc_dir) || size(f.inc_dir, 1) > 1 || isempty(f.gray_imgs_freeman)...
+        % add dummy filepaths if there are gaps  %tag: ENV_INPUT_TYPE
+    struct={'inc_dir', 'grd_rtc_dir', 'hgt_dir', 'gray_imgs_freeman', 'gray_imgs_c3', 'LUT_Freeman_dir'};
+    f.lengths=[1,3,1,3,9,3];
+    for iter1=1:length(struct)
+%        f.(struct{iter1})(1).name
+       if isempty(f.(struct{iter1}))
+           f.(struct{iter1})(1).folder='NaN';
+           f.(struct{iter1})(1).name='NaN';
+           f.(struct{iter1})(1).date='NaN';
+           f.(struct{iter1})(1).bytes=-99;
+           f.(struct{iter1})(1).isdir=-99;
+           f.(struct{iter1})(1).datenum=-99;
+           f.(struct{iter1})=repmat(f.(struct{iter1}), [f.lengths(iter1),1]);
+       end
+    end
+        % check  %tag: ENV_INPUT_TYPE
+    if isempty(f.inc_dir) || size(f.inc_dir, 1) > 1 || and(isempty(f.gray_imgs_freeman), ismember(env.inputType, {'Freeman', 'Freeman-inc'}))...
             || and(isempty(f.gray_imgs_c3), contains(env.inputType, 'C3-inc'))
         warning('No < inc, freeman, or C3 > file found.')
         continue
@@ -72,28 +90,35 @@ for n=env.trainFileNums; % file number from input
         warning('No LUT.grd files found.')
         continue
     end
+        if isempty(f.LUT_Freeman_dir) & strcmp(env.inputType, 'LUT-Freeman')
+        warning('No LUT-Freeman.grd files found.')
+        continue
+    end
     f.inc=f(1).inc_dir.name;
     if exist([env.input(n).im_dir, 'raw', filesep, env.input(n).name, '.inc.hdr']) ~= 2 % if inc.hdr DNE
         copyfile([env.input(n).im_dir,'C3', filesep, 'mask_valid_pixels.bin.hdr'], [env.input(n).im_dir, 'raw', filesep, env.input(n).name, '.inc.hdr']);
         f.w=sprintf('Creating inc.hdr file: %s\n', [env.input(n).im_dir, 'raw', filesep, env.input(n).name, '.inc.hdr']);
         warning(f.w);
     end
-                % merge structures
+                % merge structures  %tag: ENV_INPUT_TYPE
     f.gray_imgs_freeman_tbl=struct2table(f.gray_imgs_freeman); 
     f.gray_imgs_c3_tbl=struct2table(f.gray_imgs_c3);
     f.gray_imgs_inc_tbl=struct2table(f.inc_dir);
     f.grd_rtc_dir_tbl=struct2table(f.grd_rtc_dir);
     f.hgt_dir_tbl=struct2table(f.hgt_dir);
+    f.LUT_Freeman_dir_tbl=struct2table(f.LUT_Freeman_dir);
     
     f.gray_imgs=table2struct([f.gray_imgs_freeman_tbl; f.gray_imgs_c3_tbl;...
-        f.grd_rtc_dir_tbl; f.hgt_dir_tbl; f.gray_imgs_inc_tbl]); % be sure to keep inc as last band
+        f.grd_rtc_dir_tbl; f.hgt_dir_tbl; f.LUT_Freeman_dir_tbl; f.gray_imgs_inc_tbl]); % be sure to keep inc as last band
     
         % format paths
+    f.pths=[]; % init
     for k=1:length(f.gray_imgs)
         f.pths{k}=[f.gray_imgs(k).folder, filesep, f.gray_imgs(k).name]; 
     end
     f.max_num_bands=length(f.gray_imgs);
-        % ADD BRANCHES % pick out specific bands and orders
+    
+        % ADD BRANCHES % pick out specific bands and orders  %tag: ENV_INPUT_TYPE
     if strcmp(env.inputType, 'Freeman')      
         f.band_order=[1 3 2];
     elseif strcmp(env.inputType, 'Freeman-inc')
@@ -110,6 +135,8 @@ for n=env.trainFileNums; % file number from input
         f.band_order=[13, 14, 15];
     elseif strcmp(env.inputType, 'Sinclair-hgt')
         f.band_order=[13, 14, 15, 16];
+    elseif strcmp(env.inputType, 'LUT-Freeman')
+        f.band_order=[17, 18,19];
     else
         error('Unrecognized input type (EK).')
     end

@@ -35,11 +35,18 @@ if ~isunix % data is local
     f.pth=dir([annDir, filesep, '*.ann']); % tmp
     annPath=[annDir, filesep, f.pth(1).name];
 else % on ASC, data is in repository
-    annPath=[env.asc.annDir, filesep, env.input(numID).name, '.ann'];
+    try
+        annPath=[env.asc.annDir, filesep, env.input(numID).name, '.ann'];
+        fid=fopen(annPath);
+        f.raw=textscan(fid, '%s', 'Delimiter', '\n');
+    catch % on ASC, data is in nobackup space
+        annPath=[env.input(numID).im_dir, filesep,'raw', filesep...
+            env.input(numID).name, '.ann'];
+        fid=fopen(annPath);
+        f.raw=textscan(fid, '%s', 'Delimiter', '\n');
+    end
 end
 
-fid=fopen(annPath);
-f.raw=textscan(fid, '%s', 'Delimiter', '\n');
 f.pegHeadingTruth=strfind(f.raw{1},'set_phdg'); % boolean - ish
 f.pegHeadingLine=find(cellfun(@(x)~isempty(x), f.pegHeadingTruth));
 f.pegHeadingLineStr=textscan(f.raw{1}{f.pegHeadingLine}, '%s');
