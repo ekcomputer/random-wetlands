@@ -27,7 +27,7 @@ env.output.cls_dir_asc='/att/nobackup/ekyzivat/PixelClassifier';
 env.class_dir_local='F:\PAD2019\classification_training\Checkpoint-2020-march-12';
     % Which files to import as training images
 if isunix % on ASC % tag: common
-    env.trainFileNums=[1 2 7 8 9 15 22]; %[3 4 11 13 14 21 22 23 24 25]; %[3 4 11 13 14 16 17 21 22 23 24 25 26]; %[1 2 3 4 7 8 9 11 13 14 15 16 17 21 22 23 24 25 26] %[1, 15]; %[1,2,7,8,9,15]; %[1,2,3,4,7,8,9,13, 14, 15, 16, 17]; %; %[7]; %[1 2 8 9 10 11 12 13]; % [1 2]
+    env.trainFileNums=[3 4 11 13 14 21 23 24 25 26 30 31 32] % didn't work: 16 17 % [1 2 7 8 9 15 22]; %[3 4 11 13 14 21 22 23 24 25]; %[3 4 11 13 14 16 17 21 22 23 24 25 26]; %[1 2 3 4 7 8 9 11 13 14 15 16 17 21 22 23 24 25 26] %[1, 15]; %[1,2,7,8,9,15]; %[1,2,3,4,7,8,9,13, 14, 15, 16, 17]; %; %[7]; %[1 2 8 9 10 11 12 13]; % [1 2]
 else % on local
     env.trainFileNums=[1,2]; %15% [1 2]
 end    
@@ -228,7 +228,7 @@ else
         % set order of classes (defines numerical index, which will be written
         % to meta file)
     env.class_names={'W1', 'SW', 'HW', 'TW', 'GW', 'GD',...
-        'SD', 'FD', 'FD2', 'TD', 'W2', 'BG', 'FW', 'WD'}; %{'W1', 'GW', 'GD', 'SW', 'SD', 'FD'}; %, 'TD', 'TW'}; % {'W1', 'W2', 'EU', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FW', 'FD'}, no BG; {'W1', 'W2', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FD'}; % < prior to  Dec 2  
+        'SD', 'FD', 'FD2', 'TD', 'W2', 'BG', 'FW', 'WD', 'BA'}; %{'W1', 'GW', 'GD', 'SW', 'SD', 'FD'}; %, 'TD', 'TW'}; % {'W1', 'W2', 'EU', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FW', 'FD'}, no BG; {'W1', 'W2', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FD'}; % < prior to  Dec 2  
 %     env.class_names={'W1', 'GW', 'GD', 'SW', 'SD', 'FD'};
     env.class_names_full={'Water', 'Graminoid Wet','Graminoid Dry', 'Shrub Wet', 'Shrub Dry', 'Forest Dry'};
 %% colors

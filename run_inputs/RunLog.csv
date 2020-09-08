@@ -34,8 +34,8 @@ Run,Raw,sigma,Offsets,speckle,OffsetSigma,LoGSigma,SteerableFilterSigma,nTree,mi
 35,1,na,3,1,2,na,na,30,40,5,3,6,13,5,,,[1 2 3 4 7 8 9 11 13 14 15 16 17 21 22 23 24 25 26],32,1,0,0,pixel,,87.4,0.864,0.13,14,35,30,1,454,,LUT-Freeman,,"Running over all fileshad some issues importing Yukon Flats 21 604 from 2017 because it didn't include our study area I forgot.  Also issues importing Bonanza Creek lines, but I fixed those bugs (problem was indexing images in training image import if not all of the optional images existed as files)."
 36,1,na,3,1,2,na,na,40,40,5,3,2,,5,,,[1 15],32,1,0,0,pixel,,90.4,0.892,,14,36,30,1,,,Freeman,30-Jul,"Test to compare to LUT-Freeman (run 31), using built-in range correction. First try: I accidently used four bands (results: 80.7/0.895)"
 36.3,1,na,3,1,2,na,na,40,40,5,3,6,,5,,,[1 2 7 8 9 15],32,1,0,0,pixel,,86.8,0.856,,14,36,30,1,492,,Freeman,,"Test to compare to LUT-Freeman (run 31), using built-in range correction. this time, I ran it on all six training images."
-37,,,,,,,,,,,,7,,,,,[1 2 7 8 9 15 22],,,,,,,85.3,0.838,,14,37,37,,501,,Freeman,8/31/2020,"New (final) training, with padelW input image for opposite look direction."
-38,,,,,,,,,,,,,,,,,[1 2 7 8 9 15 22],,,,,,,,,,15,38,38,,,,Freeman,,Updated training to finalv2 by creating BA class from BG. Working on nodata holes bug…
+37,1,na,3,1,2,na,na,40,40,5,3,7,7,,,,[1 2 7 8 9 15 22],,,,,,,85.3,0.838,,14,37,37,,501,,Freeman,8/31/2020,"New (final) training, with padelW input image for opposite look direction."
+38,,,,,,,,,,,,,>10,,,,[1 2 7 8 9 15 22],,,,,,,,,,15,38,38,,,,Freeman,,Updated training to finalv2 by creating BA class from BG. Working on nodata holes bug…
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
