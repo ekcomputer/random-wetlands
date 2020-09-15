@@ -13,6 +13,8 @@
 % TODO: Add buffers to filter out disconnected littoral zones w no water nearby,
 % why is median_lake_frac_inun_veg always 100%  Why so
 % many veg-only lakes?  Add defensive checks if I change or add classes.
+% Output .mat file. Filter by size, or buffered water bodies with only
+% littoral...
 
 %% params
 clear
@@ -22,14 +24,15 @@ wet_classes=[1:5 11 13];
 water_classes=[1,3, 11];
 PLOT_xtick_rot=0; % 45 % PLOT xticklabel rotation
 PLOT_view_rot=[90 -90];
-regionPropsStats = false; % save time by not calc regionprops
+regionPropsStats = 1; % save time by not calc regionprops
+TF_msk_littoral_only = 1; % mask out littoral only 'lakes'
 
 %% I/O
 dir_in='F:\PAD2019\classification_training\PixelClassifier\Test35'; % 26 was used for first plots
 % dir_in='F:\PAD2019\classification_training\PixelClassifier\Test31';
 files_in=dir([dir_in, filesep, '*cls.tif']); % list of classified tifs
 nFiles=length(files_in);
-for i=1:nFiles % Loop over files
+for i=1:3 %nFiles % Loop over files
     
     %% Load image
     pth=[dir_in, filesep, files_in(i).name];
@@ -50,15 +53,20 @@ for i=1:nFiles % Loop over files
         if regionPropsStats % if using region props stats
             rpstats(i).props=regionprops(msk_wet, im, 'PixelValues', 'Area', 'Perimeter', 'Centroid');
         end
-        %% Loop over regions
+        %% Loop over regions and littoral only 'lakes'
             % note: area is in px for now
         if regionPropsStats % if using region props stats
             stats(i).PROP_num_water_bodies=length(rpstats(i).props);
+            msk_littoral_only=false(1,stats(i).PROP_num_water_bodies); % init % positive mask
             for j=1:stats(i).PROP_num_water_bodies
                rpstats(i).props(j).px_water=sum(ismember(rpstats(i).props(j).PixelValues, water_classes)); 
                rpstats(i).props(j).px_inun_veg=rpstats(i).props(j).Area-rpstats(i).props(j).px_water;
                rpstats(i).props(j).lake_frac_inun_veg=rpstats(i).props(j).px_inun_veg/rpstats(i).props(j).Area;
-        %        rpstats(i).props(j).frac_inun_veg=rpstats(i).props(j).px_inun_veg/nPx;
+        %        rpstats(i).props(j).frac_inun_veg=rpstats(i).props(j).px_inun_veg/nPx; 
+            end
+            if TF_msk_littoral_only
+                msk_littoral_only=[rpstats(i).props.lake_frac_inun_veg] < 1;
+                rpstats(i).props=rpstats(i).props(msk_littoral_only);
             end
         end
 
@@ -94,30 +102,63 @@ for i=1:nFiles % Loop over files
             stats(i).(['px_',env.class_names{j}])=sum(ismember(im(:), j));
         end
 
+%                 %% Convert to shapefile (from rasters2Shp.m)
+% %         R=gti. ...
+% %         intrinsic=vertcat(rpstats(i).props.Centroid);
+% %         [world(:,1), world(:,2)]=intrinsicToWorld(R,intrinsic(:,1), intrinsic(:,2));
+%         mstruct=geotiff2mstruct(gti); % get map projection structure to convert to lat/long
+%             
+%             % to test
+%             
+%         bound=bwboundaries(msk_wet, 4);   
+% %         bound_noHoles=bwboundaries(msk, 'noholes');  
+%         
+%         convert=@(x) polyshape(x, 'Simplify', false);
+%         shp0=cellfun(convert, bound);
+%         shp0=simplify(shp0); % gives lots of warnings...
+% %         shp1=cellfun(convert, bound_noHoles);
+% %         shp1=simplify(shp1);
+% %         shp_holes=xor(shp0, shp1); % <------------------here
+%         
+%         shp=mapshape(); shp.Geometry='polygon';
     %%     Plot 1
+        if regionPropsStats
+%             subplot(nFiles, 2, 2*i-1)
+%             imagesc(imresize(im, 0.2)); axis off
+%             title(files_in(i).name, 'FontSize', 10, 'Interpreter', 'latex')
 
-    %     subplot(nFiles, 2, 2*i-1)
-    %     imagesc(imresize(im, 0.2)); axis off
-    %     title(files_in(i).name, 'FontSize', 10, 'Interpreter', 'latex')
-    %     
-    %     subplot(nFiles, 2, 2*i)
-    %     histogram([rpstats(i).props.lake_frac_inun_veg])
-    %     if i==nFiles % last time only
-    %         xlabel('Fraction inundated veg.')
-    %         ylabel('Count')
-    %     end
-    %     
-    %     drawnow
+            subplot(ceil(sqrt(nFiles)), ceil(sqrt(nFiles)), i)
+%             histogram([rpstats(i).props.lake_frac_inun_veg])
+            histogram([rpstats(i).props.lake_frac_inun_veg])
+            if i==nFiles % last time only
+                xlabel('Fraction inundated veg.')
+                ylabel('Count')
+            end
+            % plot scrap
+%             scatter([rpstats(i).props([rpstats(i).props.lake_frac_inun_veg]>0).Area], [rpstats(i).props([rpstats(i).props.lake_frac_inun_veg]>0).lake_frac_inun_veg])
+%             set(gca, 'XScale', 'log')
+%             xlabel('Area')
+%             ylabel('littoral fraction')
+%             mean([rpstats(i).props([rpstats(i).props.lake_frac_inun_veg]>0).lake_frac_inun_veg])
+%             median([rpstats(i).props([rpstats(i).props.lake_frac_inun_veg]>0).lake_frac_inun_veg])
+% 
+%             histogram([rpstats(i).props.lake_frac_inun_veg], logspace(-5, 0, 30))
+%             set(gca, 'XScale', 'log')
+%             xlabel('Littoral fraction')
+            ylabel('count')
+
+            drawnow
+        end
     end
 end
 
 %% mask out error rows
-msk=false(1,length(stats));
+msk_empty=false(1,length(stats)); % positive mask
 for i=1:length(stats)
-    msk(i)=~isempty(stats(i).nPx);
+    msk_empty(i)=~isempty(stats(i).nPx);
 end
 disp('Masking out empty rows.')
-stats=stats(msk);
+stats=stats(msk_empty);
 nRows=length(stats);
 
 %% convert to table
