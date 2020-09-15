@@ -12,28 +12,32 @@ global env
 load_env=0; % load env. from previous run?
 
 %% Params for training and classifying
-env.inputType='Freeman-inc'; % tag: common %OPTIONS: 'Freeman', 'LUT-Freeman', 'C3', 'Freeman-T3' or 'gray', 'Freeman-inc', 'C3-inc', 'T3', 'Norm-Fr-C11-inc', 'Sinclair', 'Sinclair-hgt'
+env.inputType='Freeman'; % tag: common %OPTIONS: 'Freeman', 'LUT-Freeman', 'C3', 'Freeman-T3' or 'gray', 'Freeman-inc', 'C3-inc', 'T3', 'Norm-Fr-C11-inc', 'Sinclair', 'Sinclair-hgt'
 env.rangeCorrection=1;
 env.equalizeTrainClassSizes=1; % Delete some training data so that all training classes have aprox. = sizes (not per image, but overall)
-env.run='38'; % tag: common
+env.run='39'; % tag: common
 env.IncMaskMin=0; %0.5; % minimum inc. angle to allow if applying incidence angle mask % only valid for Freeman, C3, T3 with no inc band used as a feature; set to zero to ignore  <------- HERE
 
 %% Params for trainingImageImport.m
 env.trainingClassRasters=0; % tag: common % set to 1 to make training class rasters; 0 for viewing/classification image only in the Test folder
-env.training_run='38'; % tag: common % set different from env.run if using a model from previous run or training to a diff dir.  Only matters on ASC.
-env.training_class_run='38'; % tag: common % for shapefiles
+env.training_run='39'; % tag: common % set different from env.run if using a model from previous run or training to a diff dir.  Only matters on ASC.
+env.training_class_run='39'; % tag: common % for shapefiles
 env.output.cls_dir_local='/att/nobackup/ekyzivat/PixelClassifier';
 env.output.cls_dir_asc='/att/nobackup/ekyzivat/PixelClassifier';
 env.class_dir_local='F:\PAD2019\classification_training\Checkpoint-2020-march-12';
     % Which files to import as training images
 if isunix % on ASC % tag: common
-    env.trainFileNums=[3 4 11 13 14 21 23 24 25 26 30 31 32] % didn't work: 16 17 % [1 2 7 8 9 15 22]; %[3 4 11 13 14 21 22 23 24 25]; %[3 4 11 13 14 16 17 21 22 23 24 25 26]; %[1 2 3 4 7 8 9 11 13 14 15 16 17 21 22 23 24 25 26] %[1, 15]; %[1,2,7,8,9,15]; %[1,2,3,4,7,8,9,13, 14, 15, 16, 17]; %; %[7]; %[1 2 8 9 10 11 12 13]; % [1 2]
+    env.trainFileNums=[27 28]% 33 bonanz: 27,28 % [3 4 11 13 14 21 23 24 25 30 31 32] % didn't work: 16 17 % [1 2 7 8 9 15 22]; %[3 4 11 13 14 21 22 23 24 25]; %[3 4 11 13 14 16 17 21 22 23 24 25 26]; %[1 2 3 4 7 8 9 11 13 14 15 16 17 21 22 23 24 25 26] %[1, 15]; %[1,2,7,8,9,15]; %[1,2,3,4,7,8,9,13, 14, 15, 16, 17]; %; %[7]; %[1 2 8 9 10 11 12 13]; % [1 2]
 else % on local
     env.trainFileNums=[1,2]; %15% [1 2]
 end    
 
 %% Dynamic I/O
 env.class_dir_asc=[env.output.cls_dir_asc, filesep, 'Train', env.training_class_run, filesep, 'shp'];
+if ~contains(env.inputType, 'Freeman')
+    warning('Did you account for no data values without using inc band?')
+end
+    
 if isunix
     env.gdal.CACHEMAX = 8000; %~4GB
     env.output.train_dir=[env.output.cls_dir_asc, filesep, 'Train', env.training_run, '/'];
@@ -222,13 +226,13 @@ else
     % constants
     env.constants.imCenter=43; % 49.3 for YF-21508 (used for simple range correction)
     env.constants.n=0.5; %1.64; % range correction exponent
-    env.constants.noDataValue=0; %-10000;
+    env.constants.noDataValue=-10000; %-10000;
     env.constants.noDataValue_ouput=0;
 %% classes
         % set order of classes (defines numerical index, which will be written
         % to meta file)
-    env.class_names={'W1', 'SW', 'HW', 'TW', 'GW', 'GD',...
-        'SD', 'FD', 'FD2', 'TD', 'W2', 'BG', 'FW', 'WD', 'BA'}; %{'W1', 'GW', 'GD', 'SW', 'SD', 'FD'}; %, 'TD', 'TW'}; % {'W1', 'W2', 'EU', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FW', 'FD'}, no BG; {'W1', 'W2', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FD'}; % < prior to  Dec 2  
+    env.class_names={'W1', 'SW', 'HW', 'BA', 'GW', 'GD',...
+        'SD', 'FD', 'FD2', 'WD', 'W2', 'BG', 'FW'}; %{'W1', 'GW', 'GD', 'SW', 'SD', 'FD'}; %, 'TD', 'TW'}; % {'W1', 'W2', 'EU', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FW', 'FD'}, no BG; {'W1', 'W2', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FD'}; % < prior to  Dec 2  
 %     env.class_names={'W1', 'GW', 'GD', 'SW', 'SD', 'FD'};
     env.class_names_full={'Water', 'Graminoid Wet','Graminoid Dry', 'Shrub Wet', 'Shrub Dry', 'Forest Dry'};
 %% colors

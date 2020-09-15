@@ -14,6 +14,13 @@ trainingClassRasters=env.trainingClassRasters; % set to 1 to make training class
 for n=env.trainFileNums; % file number from input
     %% load / gdal VRT stack / path formatting
         
+        % change input type for inport only - just to make four band import
+        % image so I can run import, train and run all at once
+        if ismember(env.inputType, {'Freeman'})
+            env.inputType='Freeman-inc'
+            env.inc_band=4;
+        end
+    
         % options
         if trainingClassRasters
             stack_path=[env.output.train_dir, env.input(n).name, '_', env.inputType,'.tif'];
