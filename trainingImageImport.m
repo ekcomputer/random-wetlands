@@ -95,6 +95,8 @@ for n=env.trainFileNums; % file number from input
         continue
     end
     f.inc=f(1).inc_dir.name;
+    
+    % this was from before I was writing headers for inc files from bash...
     if exist([env.input(n).im_dir, 'raw', filesep, env.input(n).name, '.inc.hdr']) ~= 2 % if inc.hdr DNE
         copyfile([env.input(n).im_dir,'C3', filesep, 'mask_valid_pixels.bin.hdr'], [env.input(n).im_dir, 'raw', filesep, env.input(n).name, '.inc.hdr']);
         f.w=sprintf('Creating inc.hdr file: %s\n', [env.input(n).im_dir, 'raw', filesep, env.input(n).name, '.inc.hdr']);
@@ -199,10 +201,10 @@ for n=env.trainFileNums; % file number from input
         system(cmd);
             % gdal warp
         if ~useFullExtent % is srcnodata really -10000 or is it zero?
-            cmd=sprintf('gdalwarp "%s" "%s" -srcnodata -10000 -dstnodata -10000 -wo NUM_THREADS=ALL_CPUS --config GDAL_CACHEMAX %d -co COMPRESS=DEFLATE -te %s -t_srs PROJCS["Canada_Albers_Equal_Area_Conic",GEOGCS["GCS_North_American_1983",DATUM["North_American_Datum_1983",SPHEROID["GRS_1980",6378137,298.257222101]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Albers_Conic_Equal_Area"],PARAMETER["False_Easting",0],PARAMETER["False_Northing",0],PARAMETER["longitude_of_center",-96],PARAMETER["Standard_Parallel_1",50],PARAMETER["Standard_Parallel_2",70],PARAMETER["latitude_of_center",40],UNIT["Meter",1],AUTHORITY["EPSG","102001"]]',...
+            cmd=sprintf('gdalwarp "%s" "%s" -srcnodata -10000 -dstnodata -10000 -wo NUM_THREADS=ALL_CPUS --config GDAL_CACHEMAX %d -co COMPRESS=DEFLATE -co BIGTIFF=IF_SAFER -te %s -t_srs PROJCS["Canada_Albers_Equal_Area_Conic",GEOGCS["GCS_North_American_1983",DATUM["North_American_Datum_1983",SPHEROID["GRS_1980",6378137,298.257222101]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Albers_Conic_Equal_Area"],PARAMETER["False_Easting",0],PARAMETER["False_Northing",0],PARAMETER["longitude_of_center",-96],PARAMETER["Standard_Parallel_1",50],PARAMETER["Standard_Parallel_2",70],PARAMETER["latitude_of_center",40],UNIT["Meter",1],AUTHORITY["EPSG","102001"]]',...
                 vrt_pth, stack_path, env.gdal.CACHEMAX, f.bb_fmtd)
         else
-            cmd=sprintf('gdalwarp "%s" "%s" -srcnodata -10000 -dstnodata -10000  -wo NUM_THREADS=ALL_CPUS --config GDAL_CACHEMAX %d -co COMPRESS=DEFLATE -t_srs PROJCS["Canada_Albers_Equal_Area_Conic",GEOGCS["GCS_North_American_1983",DATUM["North_American_Datum_1983",SPHEROID["GRS_1980",6378137,298.257222101]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Albers_Conic_Equal_Area"],PARAMETER["False_Easting",0],PARAMETER["False_Northing",0],PARAMETER["longitude_of_center",-96],PARAMETER["Standard_Parallel_1",50],PARAMETER["Standard_Parallel_2",70],PARAMETER["latitude_of_center",40],UNIT["Meter",1],AUTHORITY["EPSG","102001"]]',...
+            cmd=sprintf('gdalwarp "%s" "%s" -srcnodata -10000 -dstnodata -10000  -wo NUM_THREADS=ALL_CPUS --config GDAL_CACHEMAX %d -co COMPRESS=DEFLATE -co BIGTIFF=IF_SAFER -t_srs PROJCS["Canada_Albers_Equal_Area_Conic",GEOGCS["GCS_North_American_1983",DATUM["North_American_Datum_1983",SPHEROID["GRS_1980",6378137,298.257222101]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Albers_Conic_Equal_Area"],PARAMETER["False_Easting",0],PARAMETER["False_Northing",0],PARAMETER["longitude_of_center",-96],PARAMETER["Standard_Parallel_1",50],PARAMETER["Standard_Parallel_2",70],PARAMETER["latitude_of_center",40],UNIT["Meter",1],AUTHORITY["EPSG","102001"]]',...
                 vrt_pth, stack_path, env.gdal.CACHEMAX)
         end
         system(cmd);
