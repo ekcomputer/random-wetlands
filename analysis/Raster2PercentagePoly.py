@@ -30,32 +30,10 @@ from rasterio.features import shapes
 import shapely
 from shapely.geometry import shape
 
-# Classes:
-#                 1       W1 W
-#                 2       SW WE
-#                 3       HW W
-#                 4       BA W
-#                 5       GW WE
-#                 6       GD
-#                 7       SD
-#                 8       FD
-#                 9       FD2
-#                 10      WD
-#                 11      W2 W
-#                 12      BG
-#                 13      FW WE
+# Import env variables
+from python_env import *
 
-# In[2]:
-classes={'wet': [1,2,3,4,5,11,13], 'wet_emergent':[2,5,13], 'water': [1,3,4,11]} # not used: water
-
-
-# In[3]:
-
-## IO:
-base_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Test39/batch2'
-bridges_pth='/mnt/f/PAD2019/classification_training/PixelClassifier/Test38/bridges/bridges.shp'
-
-## dynamic
+## dynamic I/O
 
 shape_dir=os.path.join(base_dir.split('batch')[0], 'shp') # remove any batches appended to path
 # load using rasterio
@@ -108,7 +86,7 @@ for i in range(len(files_in)):
 
 
     # try 3 https://gis.stackexchange.com/questions/151339/rasterize-a-shapefile-with-geopandas-or-fiona-python
-    bridges['val']=25 # add dummy variable
+    bridges['val']=bridge_val # add dummy variable
     # bridges.head()
     bridges.val
     shapes_gen = ((geom,value) for geom, value in zip(bridges.geometry, bridges.val))
@@ -124,9 +102,9 @@ for i in range(len(files_in)):
 
     # In[9]:
     # add burned bridges to original landcover raster
-    np.sum(lc==25)
-    lc[bridges_burned>0]=25
-    print(f'Number of bridge pixels burned into landcover: {np.sum(lc==25)}')
+    np.sum(lc==bridge_val)
+    lc[bridges_burned>0]=bridge_val
+    print(f'Number of bridge pixels burned into landcover: {np.sum(lc==bridge_val)}')
 
 
     # In[10]:
