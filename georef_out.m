@@ -1,4 +1,4 @@
-function georef_out(name, im)
+function [output_pth, gt] = georef_out(name, im, write)
 % script to write a geotiff from just a filename and image matrix.  It
 % calls global env structure to query input image with same name so it can
 % extact georef info and masked pixels.
@@ -6,7 +6,9 @@ function georef_out(name, im)
 % Inputs:   name    =   file basename as found in training folder (eg
 %                         ('yflatE_21609_17098_008_170916_L090_CX_01_Freeman-inc')
 %           im      =   image matrix (mxnx1)
-% Output:   None, but it writes a file 
+%           write   =   whether or not to actually write file, or just
+%           parse name
+% Output:   Just a pth name and geotiff info, but it writes a file 
 
 % modified from addOutputImages.m
 % Written  by Ethan Kyzivat
@@ -23,22 +25,23 @@ else
     output_pth=[georef_in(1,1:end-5), '_cls.tif'];
     gt=geotiffinfo(georef_in(1,1:end-1));   % hot fix
 end
+if write
+    %% apply mask
 
-%% apply mask
+    % if ~isunix
+    %     test_im=imread([env.output.test_dir, georef_in]);
+    % else
+    %     test_im=imread(strtrim(georef_in));
+    % end
+    % mask=isnan(test_im(:,:,end)); % negative data mask
+    % im(mask)=env.constants.noDataValue_ouput; %%% HERE 2/18/20: mask is different size than out
+    %% write
+    geotiffwrite(output_pth, im, gt.SpatialRef, 'GeoKeyDirectoryTag',gt.GeoTIFFTags.GeoKeyDirectoryTag);
+    % gdal_calc.py -A input1.tif -B input2.tif --outfile=result.tif --calc="A+B"
 
-% if ~isunix
-%     test_im=imread([env.output.test_dir, georef_in]);
-% else
-%     test_im=imread(strtrim(georef_in));
-% end
-% mask=isnan(test_im(:,:,end)); % negative data mask
-% im(mask)=env.constants.noDataValue_ouput; %%% HERE 2/18/20: mask is different size than out
-%% write
-geotiffwrite(output_pth, im, gt.SpatialRef, 'GeoKeyDirectoryTag',gt.GeoTIFFTags.GeoKeyDirectoryTag);
-% gdal_calc.py -A input1.tif -B input2.tif --outfile=result.tif --calc="A+B"
-
-%% Add NoData values to rasters
-if isunix % don't implement until ASC updates python gdal to 2.1.2 +
-    cmd=sprintf('gdal_edit.py -a_nodata %d %s', env.constants.noDataValue_ouput, output_pth);
-    system(cmd);
+    %% Add NoData values to rasters
+    if isunix % don't implement until ASC updates python gdal to 2.1.2 +
+        cmd=sprintf('gdal_edit.py -a_nodata %d %s', env.constants.noDataValue_ouput, output_pth);
+        system(cmd);
+    end
 end
