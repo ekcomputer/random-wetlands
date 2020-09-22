@@ -40,7 +40,7 @@ k=kappa(C, 0, 0.5);
 
 C1=zeros(1+size(C)); C1(1:end-1, 1:end-1)=C;
 C1(end,:)=sum(C1);
-C1(:,end)=sum(C1,2);
+C1(:,end)=sum(C1,2); % C1 is matrix with row/column totals
 O=100*sum(trace(C))/sum(C(:));
 
 
@@ -99,6 +99,12 @@ catch
 end
 % C=C1; % for output
 
+%% Display UA and PA
+% User's accuracy: (1-commission error)
+
+A_tb=array2table(A,'VariableNames',...
+    {'UserAccuracy', 'ProducerAccuracy'}, 'RowNames', varNames(1:end-1));
+disp(A_tb)
 %% alt metrics
 
 % try
