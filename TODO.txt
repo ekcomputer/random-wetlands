@@ -25,13 +25,11 @@ Add tall shrub class!
 Auto/streamlined env.input(xx) ingest
 **Add H/a/alpha or Sinclair matrix or AVIRIS into workflows
 *Illum angle correction for shield
-Multithread gdalwarp, dep on linux or Brown- but careful if running loops in parallel
 RE-write parallel_cat_run.sh as a slurm batch file that uses srun instead of bash to call the processing function 
 Add aliases to view most recent slrum-###.out file.  Create standard output files a la https://gist.github.com/zkamvar/3d1fa899db5eecb1295de4cd84052a7b
 *Parallelize trainingImageimport.m - use parfor to run all the gdal tasks at once - but this will require renaming structures and setting different gdal CACHEMAX
 Follow-up to Zhange et al 2013 IJRS: invesitage effects of relative class size on RF training.  Make same N vs OA plots, but with among-polygon training/val splits.
 alt accuracy metrics - using just 3 classes
-** use gdalwarp -wm 8000 to set memory!  CACHEMAX may not be enough...
 From RTC: Change my ENVI header bash script in polsar_pro_wkflow to use python script instead
 If I add more files, but don't compute Freeman: modify lines 70-90 in trainingImageImport.m to change filename indexing (no Freeman will be presnet)
 
@@ -54,19 +52,14 @@ More radiometric cal: I would plot sigma, gamma and Freeman values based on inc 
     I could also implement the Ulander 1996 illum. area correction
     Run with only raw Freeman image ratios or inter-class variance
 view(treeBag.Trees{1}, 'Mode', 'graph')
-* Rewrite for large datasets or chunk up YF lines (auto change chunk size if isunix) - pre-compute filters, then load in chunks
-* Change to not load all files in dir. into memory!
-** Put slope into classifier?
-* Fix training image bug on ASC (search for %%HERE in combine_imgs; mask is wrong size or output is NaN)
+* Rewrite for large datasets or chunk up YF lines (auto change chunk size if isunix) - pre-compute filters, then load in chunks - Re-write using blockproc with padding to run in chunks and save memory. Or optimize for images with large NoData areas. - Change to not load all files in dir. into memory!
 * Add histogram matching or use diff decomp (Sinclair) so as to accurately compare between seasons/years if bad calibration... yFlats vals were low
 * Radiometric terrain correction / MapReady.... redo entire workflow...
 * Improve hot fix that undid class size normalization using random number  generator
 ** Do range correction before decomp...perhaps using JPL/Marc workflow
 ** Change error assessment to randomly select by polygon, not by pixel, so as to produce more realistic metrics
-Re-write using blockproc with padding to run in chunks and save memory. Or optimize for images with large NoData areas.
-
+TODO: modify original code for parallel to not load entire mat-obj of F into mem (imClassify)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LINUX~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-prep trainingImageImport.m to be like viewingImageImport.m
 add ability to sbatch each test file in parallel!  Need command line input for which files to run on
 X make range correction additions linux-compatible
 set data dir input files to parse out beginning paths and _grd so I can use same for both scripts
@@ -91,7 +84,7 @@ modify to work on n-band images,
 how to do deal w empty files for empty training classes; 
 automate bounding box selection
 *What percentage of  training px are being used? A: <1
-*making confusion matrix; 
+*making confusion matrix; Multithread gdalwarp, dep on linux or Brown- but careful if running loops in parallel
 re-plot histograms to better align by band
 XAdd Lee filter (wiener2.m)
 X Remove some of the filters from sigma: i.e. Hess
@@ -110,6 +103,12 @@ noData mask for training;
 turn off parallel except if on a cluster?
 speckle filtering?
 *Try with C3 or T3 matrix or other decomp to see if yellow overlay is improved or better class distinction.
+Multithread gdalwarp, dep on linux or Brown- but careful if running loops in parallel
+prep trainingImageImport.m to be like viewingImageImport.m
+** Put slope into classifier?
+* Fix training image bug on ASC (search for %%HERE in combine_imgs; mask is wrong size or output is NaN)
+** use gdalwarp -wm 8000 to set memory!  CACHEMAX may not be enough...
+
 
 ~~~~~~~~~~Modify for re-distribution of PixelClassifier Code~~~~~~~~~~~~~~
 rfTrain.m

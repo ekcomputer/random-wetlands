@@ -35,9 +35,9 @@ Run,Raw,sigma,Offsets,speckle,OffsetSigma,LoGSigma,SteerableFilterSigma,nTree,mi
 36,1,na,3,1,2,na,na,40,40,5,3,2,,5,,,[1 15],32,1,0,0,pixel,,90.4,0.892,,14,36,30,1,,,Freeman,30-Jul,"Test to compare to LUT-Freeman (run 31), using built-in range correction. First try: I accidently used four bands (results: 80.7/0.895)"
 36.3,1,na,3,1,2,na,na,40,40,5,3,6,18,5,,,[1 2 7 8 9 15],32,1,0,0,pixel,,86.8,0.856,,14,36,30,1,492,,Freeman,,"Test to compare to LUT-Freeman (run 31), using built-in range correction. this time, I ran it on all six training images."
 37,1,na,3,1,2,na,na,40,40,5,3,7,7,,,,[1 2 7 8 9 15 22],32,1,1,0,pixel,,85.3,0.838,,14,37,37,1,501,,Freeman,8/31/2020,"New (final) training, with padelW input image for opposite look direction."
-38,1,na,3,1,2,na,na,40,40,5,3,7,>10,,,,[1 2 7 8 9 15 22],32,1,1,0,pixel,,93.8,0.9319,,15,38,38,1,,,Freeman-inc,9/10/2020,Updated training to finalv2 by creating BA class from BG. Fixed on nodata holes bug…I think. Final training on mid-near range extraneous wetlands in YF. Ran as Freeman-inc by mistake…that's why OA was so high.
-39,1,na,3,1,2,na,na,40,40,5,3,7,22,,,,[1 2 7 8 9 15 22],32,1,1,0,pixel,,84,0.8242,,14,39,39,1,521/522/523,,Freeman,9/10/2020,"Changed TW/TD -> GW/GD. That's all! And removed T* from classes, so need to re-symbolize rasters."
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+38,1,na,3,1,2,na,na,40,40,5,3,7,>10,,,,[1 2 7 8 9 15 22],64,1,1,0,pixel,,93.8,0.9319,,15,38,38,1,,,Freeman-inc,9/10/2020,Updated training to finalv2 by creating BA class from BG. Fixed on nodata holes bug…I think. Final training on mid-near range extraneous wetlands in YF. Ran as Freeman-inc by mistake…that's why OA was so high.
+39,1,na,3,1,2,na,na,40,40,5,3,7,22,,,,[1 2 7 8 9 15 22],64,1,1,0,pixel,,84,0.8242,0.167,14,39,39,1,521/522/523,,Freeman,9/10/2020,"Changed TW/TD -> GW/GD. That's all! And removed T* from classes, so need to re-symbolize rasters."
+40,1,na,3,1,2,na,na,40,40,5,3,7,,,,,[1 2 7 8 9 15 22],64,1,1,0.5,pixel,10,84.1,0.826,0.165,14,,39,1,546,,Freeman,9/21/2020,First try same accuracy metrics as run 39..need to fix inc mask min…
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,

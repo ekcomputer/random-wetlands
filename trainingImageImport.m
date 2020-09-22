@@ -1,3 +1,4 @@
+
 % inputs: shapefile with class names; path to training scene images
 % outputs: training data as binary rasters snapped to training images;
 % training image merged as a 3 or 6-band raster
@@ -18,7 +19,7 @@ for n=env.trainFileNums; % file number from input
         % image so I can run import, train and run all at once
         if ismember(env.inputType, {'Freeman'})
             env.inputType='Freeman-inc'
-            env.inc_band=4;
+            env.use_inc_band=true;
         end
     
         % options
@@ -223,7 +224,7 @@ for n=env.trainFileNums; % file number from input
             gti=geotiffinfo(stack_path);
             nBands=length(f.band_order);
             stack(repmat(stack(:,:,nBands)==env.constants.noDataValue, [1, 1, nBands]))=NaN;
-            if env.rangeCorrection % fix NoData value issues...
+            if env.rangeCorrection % fix NoData value issues... Don't hard-code that last band is inc band...
                 if env.inc_band > 0 & ~ismember(env.inputType, {'Norm-Fr-C11-inc'}) % if input has incidence angle band
                     disp('Range correction...')
                     stack(:,:,1:end-1)=stack(:,:,1:end-1).*(cosd(env.constants.imCenter)./cos(stack(:,:,end))).^env.constants.n;
