@@ -121,8 +121,7 @@ else
 	bin_files=`find $file_dir -name "*.bin" -o -name "*.inc" -o -name "*.slope" -o -name "*.hgt"`
 	for file in $bin_files; do
 		#echo $file
-		envi_config_file.exe -bin $file -nam $file.hdr -iodf 4 -fnr $inr -fnc $inc
-		editEnviHdr.sh $file_dir_ASC/*.ann $file.hdr
+		python /home/ekyzivat/scripts/UAVSAR-Radiometric-Calibration-fork/python/buildUAVSARhdr.py -i $base/$ID.ann -r $file -p HHHH
 	done
 
 fi

@@ -58,6 +58,7 @@ classdef BP_bigTiffWriterEK < ImageAdapter
             obj.ImageSize  = [imageLength, imageWidth, 1];
             obj.TileLength = tileLength;
             obj.TileWidth  = tileWidth;
+%             obj.TileOffsets = 0; % EK
             
             % Create the Tiff object.
             obj.TiffObject = Tiff(obj.Filename, 'w8');
@@ -72,12 +73,13 @@ classdef BP_bigTiffWriterEK < ImageAdapter
             obj.TiffObject.setTag('TileWidth',     obj.TileWidth);
             obj.TiffObject.setTag('Photometric',   Tiff.Photometric.MinIsBlack);
             obj.TiffObject.setTag('BitsPerSample', 8);
-            obj.TiffObject.setTag('SampleFormat',  Tiff.SampleFormat.Int);
+            obj.TiffObject.setTag('SampleFormat',  Tiff.SampleFormat.UInt); % Int % UInt is default
             obj.TiffObject.setTag('SamplesPerPixel', 1);
             obj.TiffObject.setTag('PlanarConfiguration', Tiff.PlanarConfiguration.Chunky);    
             
             % EK add
             obj.TiffObject.setTag('Compression', Tiff.Compression.LZW);
+%             obj.TiffObject.setTag('TileOffsets', 0); % not rec by matlab
         end
         
         

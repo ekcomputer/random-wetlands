@@ -1,4 +1,22 @@
 function biggeotiffwrite(FILENAME, A, R, varargin)
+% for writing a tiff file that would otherwise be > 4 GB and need to be a
+% geotiff and would return a matlab error
+%
+% Inputs:       FILENAME    Output filename
+%               A           Matrix to write
+%               R           Spatial ref object (or any object with
+%                               RasterSize property)
+%               Optional:   If 'nogeo', don't write a .tfw file
+%
+% Output:       Writes a file, FILENAME
+% 
+%   FILENAME        = 'example.tif';
+% inFileInfo    = imfinfo(inFile);
+% outFile       = 'out.tif';
+% Create an output TIFF file with tile size of 1024x1024
+% varargin = 
+%       1.) path to .proj file, if using
+%       2.) use to set geotiff to false, by setting to 'nogeo'
 % 'w'  will create a classic TIFF file
 % 'w8' will create a BigTIFF file
 % This option is the only differentiator when writing to these two formats.
@@ -8,28 +26,36 @@ bt     = Tiff(FILENAME,'w8');
 
 tags.ImageLength         = size(A,1);
 tags.ImageWidth          = size(A,2);
-tags.Photometric         = Tiff.Photometric.RGB;
+tags.Photometric         = Tiff.Photometric.MinIsBlack % Tiff.Photometric.RGB; % this causes a maybe insignificant error
 if strcmp(class(A), 'single')
     tags.BitsPerSample       = 32;
 else
     error('not a single.')
 end
 tags.SamplesPerPixel     = size(A,3);
-tags.TileWidth           = 128*16;
-tags.TileLength          = 128*16;
+tags.TileWidth           = 128*8;
+tags.TileLength          = 128*8;
 tags.Compression         = Tiff.Compression.LZW;
 tags.PlanarConfiguration = Tiff.PlanarConfiguration.Chunky;
 tags.SampleFormat        = Tiff.SampleFormat.IEEEFP;
 tags.Software            = 'MATLAB';
 tags.ExtraSamples        = Tiff.ExtraSamples.Unspecified;
-tags.RowsPerStrip        = 4.295e6; %128*16;
+tags.RowsPerStrip        = 4.295e6; %128*16; % try setting to 8,000
 
 setTag(bt, tags);
 write(bt,  A);
 close(bt);
-
-gti_out=[FILENAME(1:end-4), '.tfw'];
-worldfilewrite(R, gti_out);
+%% If writing out world file
+if nargin >= 5 % if two vargins
+    if strcmp(varargin{2}, 'nogeo') % if varargin exists in workplace and is file
+    else
+        gti_out=[FILENAME(1:end-4), '.tfw'];
+        worldfilewrite(R, gti_out);
+    end
+else % if anything is else written, such as 'geo'
+    gti_out=[FILENAME(1:end-4), '.tfw'];
+    worldfilewrite(R, gti_out);
+end
 
 %% if writing proj file:
 if exist(varargin{1})==2 % if varargin exists in workplace and is file
