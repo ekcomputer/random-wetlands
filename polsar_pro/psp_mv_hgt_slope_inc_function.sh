@@ -111,8 +111,10 @@ dir_grd_orig=$file_dir/default_grd
 		#echo $file
 #		envi_config_file.exe -bin $file -nam $file.hdr -iodf 4 -fnr $inr -fnc $inc
 #		editEnviHdr.sh $file_dir_ASC/*.ann $file.hdr
-		python /home/ekyzivat/scripts/UAVSAR-Radiometric-Calibration-fork/python/buildUAVSARhdr.py -i $base/$ID.ann -r $file
+		python /home/ekyzivat/scripts/UAVSAR-Radiometric-Calibration-fork/python/buildUAVSARhdr.py -i $base/$ID.ann -r $file -p HHHH
 	done
+
+		# Repeat for non-bin files (exactly the same...)
 	bin_files=`find $file_dir -name "*.inc" -o -name "*.slope" -o -name "*.hgt"`	
 	for file in $bin_files; do # repeat for real files
 		python /home/ekyzivat/scripts/UAVSAR-Radiometric-Calibration-fork/python/buildUAVSARhdr.py -i $base/$ID.ann -r $file -p HHHH
