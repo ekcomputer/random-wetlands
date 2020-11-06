@@ -12,7 +12,7 @@ global env
 load_env=0; % load env. from previous run?
 
 %% Params for training and classifying
-env.inputType='Freeman-inc'; % tag: common %OPTIONS: 'Freeman', 'LUT-Freeman', 'C3', 'Freeman-T3' or 'gray', 'Freeman-inc', 'C3-inc', 'T3', 'Norm-Fr-C11-inc', 'Sinclair', 'Sinclair-hgt'
+env.inputType='Freeman'; % tag: common %OPTIONS: 'Freeman', 'LUT-Freeman', 'C3', 'Freeman-T3' or 'gray', 'Freeman-inc', 'C3-inc', 'T3', 'Norm-Fr-C11-inc', 'Sinclair', 'Sinclair-hgt'
 env.rangeCorrection=1;
 env.equalizeTrainClassSizes=1; % Delete some training data so that all training classes have aprox. = sizes (not per image, but overall)
 env.run='40'; % tag: common
@@ -30,7 +30,7 @@ env.class_dir_local='F:\PAD2019\classification_training\Checkpoint-2020-march-12
 
     % Which files to import as training images
 if isunix % on ASC % tag: common
-    env.trainFileNums=[45 46 47 48 50 51 52]; %28; %[13 43 44]% 33 bonanz: 27,28 % [3 4 11 13 14 21 23 24 25 30 31 32] % didn't work: 16 17 % [1 2 7 8 9 15 22]; %[3 4 11 13 14 21 22 23 24 25]; %[3 4 11 13 14 16 17 21 22 23 24 25 x26]; %[1 2 3 4 7 8 9 11 13 14 15 16 17 21 22 23 24 25 x26] %[1, 15]; %[1,2,7,8,9,15]; %[1,2,3,4,7,8,9,13, 14, 15, 16, 17]; %; %[7]; %[1 2 8 9 10 11 12 13]; % [1 2]
+    env.trainFileNums= [46:52] %[50 48]; % (Atquasuk and Toolik) % from block-proc: [45 46 47 48 50 51 52]; %28; %[13 43 44]% 33 bonanz: 27,28 % [3 4 11 13 14 21 23 24 25 30 31 32] % didn't work: 16 17 % [1 2 7 8 9 15 22]; %[3 4 11 13 14 21 22 23 24 25]; %[3 4 11 13 14 16 17 21 22 23 24 25 x26]; %[1 2 3 4 7 8 9 11 13 14 15 16 17 21 22 23 24 25 x26] %[1, 15]; %[1,2,7,8,9,15]; %[1,2,3,4,7,8,9,13, 14, 15, 16, 17]; %; %[7]; %[1 2 8 9 10 11 12 13]; % [1 2]
 else % on local
     env.trainFileNums=[1,2]; %15% [1 2]
 end    
