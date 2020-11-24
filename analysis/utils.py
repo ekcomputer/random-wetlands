@@ -13,6 +13,7 @@ def reclassify(array, dict):
 
     if np.any(np.isin(in_raster_vals_array, in_raster_vals_dict, invert=True)):
         warn('There are values in your input raster that are not listed in the reclassification dictionary! They will be set to zero.')
+        print('Values: {}'.format(str(in_raster_vals_array[np.isin(in_raster_vals_array, in_raster_vals_dict, invert=True)])))
     
     array_reclass=np.zeros_like(array)
     for k in out_raster_vals_dict:
