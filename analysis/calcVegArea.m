@@ -24,7 +24,7 @@ wet_classes=[1:5 11 13];
 water_classes=[1,3, 11];
 PLOT_xtick_rot=0; % 45 % PLOT xticklabel rotation
 PLOT_view_rot=[90 -90];
-regionPropsStats = 1; % save time by not calc regionprops
+regionPropsStats = 0; % save time by not calc regionprops
 TF_msk_littoral_only = 1; % mask out littoral only 'lakes'
 
 %% I/O
@@ -32,7 +32,7 @@ dir_in='F:\PAD2019\classification_training\PixelClassifier\Test35'; % 26 was use
 % dir_in='F:\PAD2019\classification_training\PixelClassifier\Test31';
 files_in=dir([dir_in, filesep, '*cls.tif']); % list of classified tifs
 nFiles=length(files_in);
-for i=1:3 %nFiles % Loop over files
+for i=1:nFiles %3 % Loop over files
     
     %% Load image
     pth=[dir_in, filesep, files_in(i).name];
@@ -78,6 +78,7 @@ for i=1:3 %nFiles % Loop over files
         stats(i).nValidPx=nPx;
         stats(i).nPx=numel(im);
         stats(i).frac_inun_veg=stats(i).px_inun_veg/nPx;
+        stats(i).frac_wet=stats(i).px_wet/nPx;
         stats(i).mean_lake_frac_inun_veg=stats(i).px_inun_veg/stats(i).px_wet;
         stats(i).LP_ratio_mean=stats(i).px_inun_veg/stats(i).px_water;
         stats(i).name=files_in(i).name;
