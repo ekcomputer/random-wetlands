@@ -1,7 +1,10 @@
 # Instructions for using these scripts
+<p align="center">
+    <img src="readme-render/Limon_pause_reduced.gif" width="300" alt="ASC" text-align="center"/>  
+</p>
 These instructions are designed for the Above Science Cloud (ASC) environment, but you will need to install the required packages and conda env  beforhand, regardless!
 
-[comment]: <> (![ASC](https://above.nasa.gov/images/ASC_logo.jpg =100x)
+[comment]: <> (![ASC](https://above.nasa.gov/images/ASC_logo.jpg 80x)
 
 <p align="center">
     <img src="https://above.nasa.gov/images/ASC_logo.jpg" width="200" alt="ASC" text-align="center"/>  
@@ -10,7 +13,7 @@ These instructions are designed for the Above Science Cloud (ASC) environment, b
 ## Workflow for LUT-based classification
 * This method was used for the Daring Lake scenes.
 
-0. Activate conda environment. On ABoVE Science Cloud (ASC), the command would be:
+0. Activate conda environment. On ASC, the command would be:
 
 >```
 >conda activate base
@@ -24,4 +27,8 @@ These instructions are designed for the Above Science Cloud (ASC) environment, b
 > bash polsar_pro/parallel_cat_run.sh polsar_pro/psp_workflow_function.sh [path/to/textfile/with/input/IDs] [number of cores]
 >```
 > Number of cores: 2 recommended to conserve memory on ASC, since each function call will need ~40 GB of mem max dand cause un-noticed errors if memory limit is exceeded
->
+If using slurm to run a batch job, substitute `slurm` for `bash` in the above command.
+
+4. In matlab: [trainingImageImport.m](trainingImageImport.m)
+
+5. If reclassifying raster, use python: [analysis/reclass_rasters.py](analysis/reclass_rasters.py)
