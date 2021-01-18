@@ -32,9 +32,9 @@ then
 else 
 		# Check if file exists on ASC.  If not, use imported file
 	printf "\tCHECKING IF INPUT FILES EXIST ON ASC\n"
-	if [ -d $file_dir_ASC ]
+	if [ -f $file_dir_ASC/*.grd ]
 	then 
-		:
+		printf "\tFile was found on ASC in $file_dir_ASC.\n"
 	else
 		file_dir_ASC=$file_dir/raw
 		file_inc=$file_dir/raw/$ID.inc
