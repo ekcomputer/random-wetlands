@@ -1,4 +1,6 @@
 ''' Environment variables used for python analysis scripts'''
+import os
+
 # Classes: Run 38,29        orig    reclass_old reclass
 #                 1       W1 W      10          2
 #                 2       SW WE     9           3
@@ -32,12 +34,23 @@ classes_re:
 
 
 '''
-
-classes={'wet': [1,2,3,4,5,11,13], 'wet_emergent':[2,5,13], 'water': [1,3,4,11]} # not used: water
+    # Constants
 bridge_val=25
 urban_val=30
-classes_re={0:0, 1:2, 2:3, 3:2, 4:2, 5:3, 6:1, 7:1, 8:1, 9:1, 10:1, 11:2, 12:1, 13:3, urban_val:1}
-base_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Test39/batch2'
-bridges_pth='/mnt/f/PAD2019/classification_training/PixelClassifier/Test38/bridges/bridges.shp'
-reclass_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Test39/reclass'
 NODATAVALUE=0
+
+    # Classes: run 39
+# classes={'wet': [1,2,3,4,5,11,13], 'wet_emergent':[2,5,13], 'water': [1,3,4,11]} # not used: water
+# classes_re={0:0, 1:2, 2:3, 3:2, 4:2, 5:3, 6:1, 7:1, 8:1, 9:1, 10:1, 11:2, 12:1, 13:3, urban_val:1}
+
+    # Classes: run EngramLakes
+classes={'wet': [1,3,11,2,5,13], 'wet_emergent':[2, 5,13], 'water': [1,3,11]} # not used: water
+classes_re={0:0, 1:2, 2:3,3:2,4:2,5:3,6:1,7:1,8:1,9:1,10:1,11:2,12:1,13:3,14:1, urban_val:1}
+
+    # paths
+# base_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Test39/batch2'
+base_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/TestEngramLakes/Test35-Fr-LUT-LUT/inc-clip'
+bridges_pth='/mnt/f/PAD2019/classification_training/PixelClassifier/Test38/bridges/bridges.shp'
+
+    # Dynamic variables
+reclass_dir=os.path.join(base_dir, 'reclass') #'/mnt/f/PAD2019/classification_training/PixelClassifier/Test39/reclass'
