@@ -45,6 +45,7 @@ classes_re_2:
 bridge_val=25
 urban_val=30
 NODATAVALUE=0
+SELEM_DIAM=3 # for majortiy filter
 
     # Classes: run 39
 classes={'wet': [1,2,3,4,5,11,13], 'wet_emergent':[2,5,13], 'water': [1,3,4,11]} # not used: water

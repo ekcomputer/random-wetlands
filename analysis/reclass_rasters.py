@@ -24,11 +24,17 @@ files_in=glob.glob(base_dir + os.sep + '*cls.tif')
 print('Class dictionary: ', classes_re)
 
 ## loop
-# for i in [0]:                   # toggle to only work on one file
-for i in range(len(files_in)):  # toggle to only work on all files
+
+#################################################
+for i in [0]:                     # toggle to only work on one file
+# for i in range(len(files_in)):      # toggle to only work on all files
+#################################################
 
     landcover_in_path=files_in[i] # '/mnt/f/PAD2019/classification_training/PixelClassifier/Test35/padelE_36000_19059_003_190904_L090_CX_01_LUT-Freeman_cls.tif'
-    landcover_out_path=landcover_in_path.replace('cls.tif', 'rcls.tif').replace(base_dir, reclass_dir)
+    #################################################
+    # landcover_out_path=landcover_in_path.replace('cls.tif', 'rcls.tif').replace(base_dir, reclass_dir)        # toggle for normal   
+    landcover_out_path=landcover_in_path.replace('cls.tif', 'rcls.tif').replace(base_dir, reclass_dir+'_tmp')   # toggle for quick tests
+    #################################################
     print(f'\n\n----------------\nInput:\t{landcover_in_path}')
     print(f'Output:\t{landcover_out_path}\n')
 
@@ -47,7 +53,8 @@ for i in range(len(files_in)):  # toggle to only work on all files
         # lc_out=lc # if no reclassify
 
         ## Classification post-processing (smoothing with majority filter)
-        selem = morphology.disk(3)
+        # selem = morphology.disk(SELEM_DIAM)
+        selem = morphology.square(SELEM_DIAM)
         lc_out= filters.rank.majority(lc_out, selem, mask=lc_out != NODATAVALUE)
 
     # lc_out=lc # temp
