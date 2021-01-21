@@ -219,6 +219,7 @@ for n=env.trainFileNums; % file number from input
                     vrt_pth, stack_path, env.gdal.CACHEMAX)
             end
             system(cmd);
+            disp('Finished gdalwarp.')
 
             %% range correction and/or normalization
 
@@ -253,27 +254,32 @@ for n=env.trainFileNums; % file number from input
                 if f.sumValidpx < 5000
                    warning('Output tif has less than 5,000 valid pixels.')
                 end
+                
                 % write using geotiffwrite and add mask using gdal
                 lastwarn('') % reset
                 [warnMsg, warnId] = lastwarn;
                     % Try
                 gtwrite_failed=0;
-                try
-                    if ~isunix
-                        geotiffwrite([stack_path, '_temp.tif'],stack, R, 'GeoKeyDirectoryTag',gti.GeoTIFFTags.GeoKeyDirectoryTag)              
-                    else
-                        geotiffwrite(stack_path,stack, R, 'GeoKeyDirectoryTag',gti.GeoTIFFTags.GeoKeyDirectoryTag)    %overwrite          
-                    end
-                catch
-                    gtwrite_failed=1;
-                end
-                    if ~isempty(warnMsg) || gtwrite_failed % sometimes it throws an error, sometimes a warning
-                    disp('Writing big geotiff instead.')
-                if ~isunix
-                    biggeotiffwrite([stack_path, '_temp.tif'],stack, R, env.proj_source);
+                if env.useFullExtentImport==1
+                    gtwrite_failed=1; % don't even write a tif bc you need bigtiff
                 else
-                    biggeotiffwrite(stack_path,stack, R, env.proj_source);
+                    try
+                        if ~isunix
+                            geotiffwrite([stack_path, '_temp.tif'],stack, R, 'GeoKeyDirectoryTag',gti.GeoTIFFTags.GeoKeyDirectoryTag)              
+                        else
+                            geotiffwrite(stack_path,stack, R, 'GeoKeyDirectoryTag',gti.GeoTIFFTags.GeoKeyDirectoryTag)    %overwrite          
+                        end
+                    catch
+                        gtwrite_failed=1;
+                    end
                 end
+                if ~isempty(warnMsg) || gtwrite_failed % sometimes it throws an error, sometimes a warning
+                    disp('Writing big geotiff instead.')
+                    if ~isunix
+                        biggeotiffwrite([stack_path, '_temp.tif'],stack, R, env.proj_source, 'geo', 'burn');
+                    else
+                        biggeotiffwrite(stack_path,stack, R, env.proj_source, 'geo', 'burn');
+                    end
                 end
                 if ~isunix
                     clear stack_path % save room in mem for gdalwarp
@@ -332,9 +338,9 @@ for n=env.trainFileNums; % file number from input
         end
     catch e
         warning('Error at some point during processing of %s.\nError ID: %s\nError message: %s\nStack:\n',...
-            imagePaths{imIndex}, e.identifier, e.message)
-        for p = length(e)
-            disp(e(p).stack)
+            env.input(env.trainFileNums(n)).name, e.identifier, e.message)
+        for p = 1:length(e.stack)
+            disp(e.stack(p))
         end        
     end
 end

@@ -1,4 +1,4 @@
-dl -,name,im_dir,cls_pth,bb_xmin,bb_ymin,bb_xmax,bb_ymax,im_dir_local,cls_pth_local,cls_name,Note,bb_if_used
+ID,name,im_dir,cls_pth,bb_xmin,bb_ymin,bb_xmax,bb_ymax,im_dir_local,cls_pth_local,cls_name,Note,bb_if_used
 1,padelE_36000_18047_000_180821_L090_CX_01,/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/padelE_36000_18047_000_180821_L090_CX_01/,,-890884,2135429,-853750,2200085,F:\UAVSAR\padelE_36000_18047_000_180821_L090_CX_01\,F:\PAD2019\classification_training\Checkpoint-2020-march-12\training2018PAD.shp,training2018PAD.shp,,
 2,padelE_36000_19059_003_190904_L090_CX_01,/att/nobackup/ekyzivat/UAVSAR/asf.alaska.edu/padelE_36000_19059_003_190904_L090_CX_01/,,-890884,2135429,-853750,2200085,F:\UAVSAR\padelE_36000_19059_003_190904_L090_CX_01\,F:\PAD2019\classification_training\Checkpoint-2020-march-12\training2019PAD.shp,training2019PAD.shp,,
 3,PADELT_36000_17062_003_170613_L090_CX_01,,,-890884,2135429,-853750,2200085,F:\UAVSAR\PADELT_36000_17062_003_170613_L090_CX_01\,,,,

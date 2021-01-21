@@ -17,6 +17,7 @@ function biggeotiffwrite(FILENAME, A, R, varargin)
 % varargin = 
 %       1.) path to .proj file, if using
 %       2.) use to set geotiff to false, by setting to 'nogeo'
+%       3.) If 'burn', will also burn proj info into tiff file
 % 'w'  will create a classic TIFF file
 % 'w8' will create a BigTIFF file
 % This option is the only differentiator when writing to these two formats.
@@ -52,16 +53,26 @@ if nargin >= 5 % if two vargins
         gti_out=[FILENAME(1:end-4), '.tfw'];
         worldfilewrite(R, gti_out);
     end
-else % if anything is else written, such as 'geo'
+else % if anything is else written, such as 'geo', or if no entry: .tfw will always execute...
     gti_out=[FILENAME(1:end-4), '.tfw'];
     worldfilewrite(R, gti_out);
+    fprintf('Creating world file: %s\n', gti_out)
 end
 
 %% if writing proj file:
-if exist(varargin{1})==2 % if varargin exists in workplace and is file
-    proj_source=varargin{1};
-    [fdir, fname]=fileparts(FILENAME);
-    proj_output=[fdir, filesep, fname, '.prj'];
-    copyfile(proj_source, proj_output) 
-    fprintf('Creating .proj file: %s\n', proj_output)
+if nargin >= 4 % if first vargin
+    if exist(varargin{1})==2 % if varargin exists in workplace and is file
+        proj_source=varargin{1};
+        [fdir, fname]=fileparts(FILENAME);
+        proj_output=[fdir, filesep, fname, '.prj'];
+        copyfile(proj_source, proj_output) 
+        fprintf('Creating .proj file: %s\n', proj_output)
+    end
+end
+
+%% if burning proj info into tiff file:
+if nargin >= 6 % if third vargin exists
+    if strcmp(varargin{3}, 'burn')
+        add_tiff_georef(FILENAME) % user function
+    end
 end
