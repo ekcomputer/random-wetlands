@@ -1,5 +1,5 @@
 #!/bin/bash
-# script to auto create dirs and run PSP processing (only updating hdr, skipping computations)
+# script to auto create dirs and run PSP processing (only updating hdr, skipping computations). Creates hdrs for every binary file, excpet possibly slope. Even correctly writes complex vs real (IDL type 4) ENVI headers.
 # modified for input to parallel function
 # input is directory name (used to be runfile with directories)
 
@@ -44,9 +44,9 @@ file_inc=/att/gpfsfs/atrepo01/data/ORNL/ABoVE_Archive/datapool.asf.alaska.edu/IN
 	printf "Base dir:\t\t $base\n\n"
 
 		# READ HEADER (not essential)
-	printf "\n\tReading header\n"
-	uavsar_header.exe -hf $file_dir_ASC/*.ann -id $file_dir_ASC -od $file_dir -df grd \
-	 -tf /home/ekyzivat/.polsarpro-bio_6.0.1/Tmp/`date +%Y-%m-%d-%H-%M-%S_uavsar_config.txt`
+	# printf "\n\tReading header\n"
+	# uavsar_header.exe -hf $file_dir_ASC/*.ann -id $file_dir_ASC -od $file_dir -df grd \
+	#  -tf /home/ekyzivat/.polsarpro-bio_6.0.1/Tmp/`date +%Y-%m-%d-%H-%M-%S_uavsar_config.txt`
 
 		#PARSE ANN FILE
 	c3=$file_dir/C3
@@ -63,25 +63,32 @@ file_inc=/att/gpfsfs/atrepo01/data/ORNL/ABoVE_Archive/datapool.asf.alaska.edu/IN
 	
 		# COPY INC FILE
 	if [ -f $base/$ID.inc ]; then
-		echo Needed to copy INC: $file_inc  ">>>>>"  $base
+		echo Would have needed to copy INC: $file_inc  ">>>>>"  $base
 	fi
-	cp -u $file_inc $base
+	# cp -u $file_inc $base
 
 		# COPY ANN FILE
 	if [ -f $base/$ID.ann ]; then
-		echo Needed to copy ANN: $file_dir_ASC/*.ann  ">>>>>"  $base
+		echo Would have needed to copy ANN: $file_dir_ASC/*.ann  ">>>>>"  $base
 	fi
-	cp -u $file_dir_ASC/*.ann $base
+	# cp -u $file_dir_ASC/*.ann $base
 	
 		# Copy HGT or SLP files?
 
-		# BUILD envi headers # note: imaginary .bin files will have wrong data type (float instead of complex)
+		# BUILD envi headers # note: imaginary .mlc files will have wrong data type (float instead of complex).
 	printf "\n\tENVI Headers\n"
 	bin_files=`find $file_dir -name "*.bin" -o -name "*.inc" -o -name "*.slope" -o -name "*.hgt"`
 	for file in $bin_files; do
-		#echo $file
-		envi_config_file.exe -bin $file -nam $file.hdr -iodf 4 -fnr $inr -fnc $inc
-		editEnviHdr.sh $file_dir_ASC/*.ann $file.hdr
+		# echo $file
+		# envi_config_file.exe -bin $file -nam $file.hdr -iodf 4 -fnr $inr -fnc $inc
+		# editEnviHdr.sh $file_dir_ASC/*.ann $file.hdr
+		python /home/ekyzivat/scripts/UAVSAR-Radiometric-Calibration-fork/python/buildUAVSARhdr.py -i $base/$ID.ann -r $file -p HHHH
 	done
+
+		# REPEAT FOR IMAG FILES (overwrite .hdr)
+	# imag_files=`find $file_dir -name "*HHHV*.mlc" -o -name "*HVVV*.mlc" -o -name "*HHVV*.mlc"`
+	# for file in $imag_files; do
+	# 	python /home/ekyzivat/scripts/UAVSAR-Radiometric-Calibration-fork/python/buildUAVSARhdr.py -i $base/$ID.ann -r $file -p HHHV
+	# done
 
 
