@@ -228,7 +228,7 @@ for n=env.trainFileNums; % file number from input
                 gti=geotiffinfo(stack_path);
                 nBands=length(f.band_order);
                 stack(repmat(stack(:,:,nBands)==env.constants.noDataValue, [1, 1, nBands]))=NaN;
-                if env.rangeCorrection % fix NoData value issues... Don't hard-code that last band is inc band...
+                if env.rangeCorrection & ~strcmp(env.inputType, 'LUT-Freeman') % fix NoData value issues... Don't hard-code that last band is inc band...
                     if env.inc_band > 0 & ~ismember(env.inputType, {'Norm-Fr-C11-inc'}) % if input has incidence angle band
                         disp('Range correction...')
                         stack(:,:,1:end-1)=stack(:,:,1:end-1).*(cosd(env.constants.imCenter)./cos(stack(:,:,end))).^env.constants.n;
