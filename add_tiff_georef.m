@@ -5,7 +5,7 @@ function add_tiff_georef(path)
 % Uses CRS EPSG;102001 by default.
 % Called by biggeotiffwrite.m
 
-% Inputs:   path    =   filename of tiff. Needs to have corresponding .prof
+% Inputs:   path    =   filename of tiff. Needs to have corresponding .proj
 %                       and .tfw
 %           im      =   image matrix (mxnx1)
 %

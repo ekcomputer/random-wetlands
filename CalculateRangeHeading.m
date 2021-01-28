@@ -8,6 +8,8 @@ function heading = CalculateRangeHeading(name, varargin)
 % Input:    name        =   string of flight ID from filename
 %           Optional: R =   mapcells ref giving boundin box of image
 %           Optional: prj =   mapcells ref projection
+%           OPtional: env = environment variables
+% 
 % Output:   heading     =   row vector with entries downRange and upRange in radians
 %                           downrange is direction that range decreases
 %                           positive heading is clockwise
@@ -26,7 +28,13 @@ if strcmp(name, 'NaN')
 end
 heading=zeros([1 2]);
 %% Part I. Parse name
-global env
+if nargin > 1 % if optional args
+    if length(varargin) > 2 % for backwards compat-check to see if env arg is passed
+        env = varargin{3};
+    else
+        global env
+    end
+end
 numID=find(strcmp({env.input.name},name)); % entry number in env structure
 numID=numID(1); % just in case flight ID appears twice in input structure (as if using different bounding boxes)
 if ~isunix % data is local
@@ -63,7 +71,7 @@ heading(2)=mod(pegHeadingRad+3*pi/2, 2*pi); % uprange: direction that range incr
 
 %% Part III. Calculate range headings (optional)
 
-if exist('varargin') >0
+if exist('varargin') >0 % if optional inputs
    heading=transformHeading(heading, varargin{1}, varargin{2});
 else
     warning('No SRS conversion for heading.')
