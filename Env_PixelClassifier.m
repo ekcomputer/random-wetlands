@@ -8,6 +8,11 @@
 clear env
 global env 
 
+%% source gdal (try to avoid gdal_edit.py errors)
+if isunix
+    unix('source /opt/PGSCplus-2.2.2/init-gdal.sh')
+end
+
 %% options
 load_env=0; % load env. from previous run?
 
