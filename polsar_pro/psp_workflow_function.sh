@@ -37,6 +37,7 @@ else
 		printf "\tFile was found on ASC in $file_dir_ASC.\n"
 	else
 		file_dir_ASC=$file_dir/raw
+        file_dir_ASC_grd=$file_dir/default_grd # created separate variable for backwards compatability. There was bug if file not found on ASC, causing input to be any file in */raw, whicih might have been lUT-corrected.
 		file_inc=$file_dir/raw/$ID.inc
 		printf "\tFile not found on ASC.  Using uploaded files in $file_dir.\n"
 	fi
@@ -56,7 +57,10 @@ else
 	inc=$(grep grd_pwr.set_cols $file_dir_ASC/*.ann | awk '{print $4}')
 	echo in rows: $inr
 	echo in cols: $inc
-	if=( $( find $file_dir_ASC -name *.grd -type f | sort -n) )
+	if=( $( find $file_dir_ASC_grd -name *.grd -type f | sort -n) )
+    echo "Input .grd files: "
+    echo ${if[*]}
+    echo
 
 		# MKDIR
 	printf "\tCreating C3 and raw dirs\n"
