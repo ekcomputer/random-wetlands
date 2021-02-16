@@ -76,11 +76,14 @@ classes_daring_conversion={0:0, 1:1, 2:2, 3:3, 4:5, 5:5, 6:6, 7:7, 8:8, 9:9, 10:
 # classes_re={0:0, 1:2, 2:3,3:2,4:2,5:3,6:1,7:1,8:1,9:1,10:1,11:2,12:1,13:3,14:1, urban_val:1}
 
     # paths
+# base_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Test42/batch1/compressed'                         # dir 1
+# base_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Test42/batch1/mosaics'                          # dir 2
+# base_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Test43'                                         
+base_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Test43/reclass-daring-conversion'                  # dir 3
+
+## old
 # base_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Test35'                                         # Classes: run 35 (Daring)
-# base_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Test42/batch1/compressed'  
-base_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Test42/batch1/mosaics'                                         # Classes: run 40
-# base_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Test43'                                         # Classes: run 40
-# base_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Test39/batch2'                                 # Classes: run 39
+# base_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Test39/batch2'                                  # 
 # base_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/TestEngramLakes/Test35-Fr-LUT-LUT/inc-clip'  # Classes: run EngramLakes
 bridges_pth='/mnt/f/PAD2019/classification_training/PixelClassifier/Test38/bridges/bridges.shp'
 

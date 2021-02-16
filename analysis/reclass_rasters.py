@@ -9,13 +9,13 @@ import rasterio as rio
 from rasterio import features, plot
 from rasterio.features import shapes
 from skimage import filters, morphology
-
+from scipy.ndimage.morphology import binary_fill_holes
 from python_env import *
 from utils import reclassify
 
 ## dynamic IO
 os.makedirs(reclass_dir, exist_ok=True)
-
+water_val = np.unique(list(classes_re[i] for i in classes['water'])) # value for water in reclassification
 
 # load using rasterio
 files_in=glob.glob(base_dir + os.sep + '*cls*.tif')
@@ -32,7 +32,7 @@ for i in range(len(files_in)):      # toggle to only work on all files
 
     landcover_in_path=files_in[i] # '/mnt/f/PAD2019/classification_training/PixelClassifier/Test35/padelE_36000_19059_003_190904_L090_CX_01_LUT-Freeman_cls.tif'
     #################################################
-    landcover_out_path=landcover_in_path.replace('cls.tif', 'rcls.tif').replace(base_dir, reclass_dir)        # toggle for normal   
+    landcover_out_path=landcover_in_path.replace('cls.tif', 'rcls.tif').replace('cls_mosaic.tif','rcls_mosaic.tif').replace(base_dir, reclass_dir)        # toggle for normal   
     # landcover_out_path=landcover_in_path.replace('cls.tif', 'rcls.tif').replace(base_dir, reclass_dir+'_tmp')   # toggle for quick tests
     #################################################
     print(f'\n\n----------------\nInput:\t{landcover_in_path}')
@@ -48,14 +48,13 @@ for i in range(len(files_in)):      # toggle to only work on all files
         with rio.open(landcover_in_path) as src:
             lc = src.read(1)
 
-        ## reclassify
-        if 'daring' in landcover_in_path:
-            print('Using different class dictionary for Daring scenes.')
-            print('Class dictionary: ', classes_re_daring)
-            lc_out=reclassify(lc, classes_re_daring)    # use a different class dictionary
-        else:   
-            lc_out=reclassify(lc, classes_re)           # otherwise, proceed normally
+        ## reclassify 
+        lc_out=reclassify(lc, classes_re)           # otherwise, proceed normally
         # lc_out=lc # if no reclassify
+
+        ## Classification post-processing (fill holes)
+        filled_water=binary_fill_holes(lc_out==water_val)   # pixels that were no data that should be water
+        lc_out[filled_water]=water_val                      # convert these px to water
 
         ## Classification post-processing (smoothing with majority filter)
         # selem = morphology.disk(SELEM_DIAM)
