@@ -54,7 +54,7 @@ for i in range(len(files_in)):      # toggle to only work on all files
 
         ## Classification post-processing (fill holes)
         filled_water=binary_fill_holes(lc_out==water_val)   # pixels that were no data that should be water
-        lc_out[filled_water]=water_val                      # convert these px to water
+        lc_out[(filled_water & np.isin(lc_out, 0))]=water_val                      # convert these px to water and only convert if they were originally nodata (this fixes error of filling in islands or sandbars)
 
         ## Classification post-processing (smoothing with majority filter)
         # selem = morphology.disk(SELEM_DIAM)
