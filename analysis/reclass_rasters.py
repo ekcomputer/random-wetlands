@@ -46,10 +46,10 @@ for i in range(len(files_in)):      # toggle to only work on all files
         profile.update(nodata=NODATAVALUE)
 
         with rio.open(landcover_in_path) as src:
-            lc = src.read(1)
+            lc_out = src.read(1) ## save RAM by overwriting lc_out in each step
 
         ## reclassify 
-        lc_out=reclassify(lc, classes_re)           # otherwise, proceed normally
+        lc_out=reclassify(lc_out, classes_re)           # otherwise, proceed normally
         # lc_out=lc # if no reclassify
 
         ## Classification post-processing (fill holes)
