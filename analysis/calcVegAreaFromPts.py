@@ -2,22 +2,20 @@
 # coding: utf-8
 
 # An automatic way of calculating littoral fraction from a shapefile of water bodies and a list of points
-# 
-# 
-
-# In[1]:
-
+# Run (#2) after raster2percentagepoly.py < PYTHON not IPYNB 
 
 #  Script to calculate total vegetated area for each water body, given pt
 #  inputs of water bodies
-# Inputs:           input dir containing list of classified rasters
+# Inputs:            (from input dir containing list of classified rasters)
 #                   water_classes =         class numbers for water or
 #                                           inundated vegetation
 #                   xls_in =                spreadsheet w lake locs
 #                   Buffer distance
 #
-#
-#  Ethan Kyzivat, April 2020
+# TODO:
+# conda install -c conda-forge tqdm
+# Outputs: tall csv of lakes and EM fractions
+# Ethan Kyzivat, April 2020, updated April 2021
 
 # Run second
 # TODO: 
@@ -33,14 +31,18 @@ import geopandas as gpd
 
 from pandas import DataFrame
 from shapely.geometry import Point
+from python_env import *
 
 # In[2]:
 # I/O to pandas dataframe and convert to numeric
 buffer=15
-shape_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Test39/shp'
+
+# updated to pull from python_env
+# shape_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Test39/shp' # now '/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/shp'# for final deployment
+
 xls_in='/mnt/f/PAD2019/Chemistry/ABoVE_Lakes_all.csv'
-csv_out_all_path='/mnt/f/PAD2019/Chemistry/em_fraction_csv/ABoVE_Lakes_all_em_fraction.csv'
-csv_out_indiv_base='/mnt/f/PAD2019/Chemistry/em_fraction_csv/indiv'
+csv_out_all_path='/mnt/f/PAD2019/Chemistry/em_fraction_csv/ABoVE_Lakes_all_em_fraction_v2.csv'
+csv_out_indiv_base='/mnt/f/PAD2019/Chemistry/em_fraction_csv/indiv_v2' # v1
 
 # dynamic
 shapes_in=glob.glob(shape_dir+'/*.shp')
@@ -49,7 +51,15 @@ os.makedirs(csv_out_indiv_base, exist_ok=True)
 # loop
 for i in range(len(shapes_in)):
     shp_in_pth=shapes_in[i] #'/mnt/f/PAD2019/classification_training/PixelClassifier/Test35/shp/padelE_36000_19059_003_190904_L090_CX_01_LUT-Freeman_cls_poly.tif'
+    # print(shp_in_pth)
+        # Filter only PAD sites
+    if ('PAD' in os.path.basename(shp_in_pth))==False &  ('pad' in os.path.basename(shp_in_pth))==False & ('mosaic' in os.path.basename(shp_in_pth))==False: ## TODO: check this line
+        print('Skipping non-PAD shapefile')
+        continue
+
+        # Continue
     print(f'\n\n----------------\nInput: {shp_in_pth}\n')
+    print(f'\t(File {i} of {len(shapes_in)})')
     csv_out_indiv_path=os.path.join(csv_out_indiv_base, os.path.splitext(os.path.basename(shp_in_pth))[0]+'.csv')
     if os.path.exists(csv_out_indiv_path):
         print('Output csv already exists. Skipping...')

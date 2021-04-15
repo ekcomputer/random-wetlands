@@ -1,4 +1,6 @@
-''' Environment variables used for python analysis scripts'''
+''' Environment variables used for python analysis scripts
+    Notation: v2 refers to final classification in 2021.
+'''
 import os
 
 # Classes: Run 38,39,40     orig    reclass_old reclass 2021_reclass
@@ -71,6 +73,8 @@ classes_re_daring={0:0, 1:2, 2:4, 3:2, 4:3, 5:3, 6:1, 7:1, 8:1, 9:4, 10:1, 11:2,
 # for single use case of harmonizing the 14-class run 35/ Daring classification with the 13-class schema for the rest. See analysis/reclass_rasters_daring_conversion.py for details.
 classes_daring_conversion={0:0, 1:1, 2:2, 3:3, 4:5, 5:5, 6:6, 7:7, 8:8, 9:9, 10:6, 11:11, 12:12, 13:13, 14:10, urban_val:1} # conversion from run-35 Daring to main schema
 
+shape_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/shp'# for final deployment
+
     # Classes: run EngramLakes
 # classes={'wet': [1,3,11,2,5,13], 'wet_emergent':[2, 5,13], 'water': [1,3,11]} # not used: water
 # classes_re={0:0, 1:2, 2:3,3:2,4:2,5:3,6:1,7:1,8:1,9:1,10:1,11:2,12:1,13:3,14:1, urban_val:1}
@@ -79,7 +83,8 @@ classes_daring_conversion={0:0, 1:1, 2:2, 3:3, 4:5, 5:5, 6:6, 7:7, 8:8, 9:9, 10:
 # base_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Test42/batch1/compressed'                         # dir 1
 # base_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Test42/batch1/mosaics'                          # dir 2
 # base_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Test43'                                         
-base_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Test43/reclass-daring-conversion'                  # dir 3
+# base_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Test43/reclass-daring-conversion'                  # dir 3
+base_dir='/mnt/d/GoogleDrive/ABoVE top level folder/Kyzivat_ORNL_DAAC_2021/lake-wetland-maps/13-classes'                  # dir 3
 
 ## old
 # base_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Test35'                                         # Classes: run 35 (Daring)
