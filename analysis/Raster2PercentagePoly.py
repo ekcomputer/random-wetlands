@@ -43,10 +43,10 @@ files_in=glob.glob(base_dir+'/*cls.tif')
 
 for i in range(len(files_in)):
     ## Option for quickly building only PAD mosaics ############
-    if ('PAD' in files_in[i]) & ('mosaic' in files_in[i]):
-        pass
-    else:
-        continue
+    # if ('PAD' in files_in[i]) & ('mosaic' in files_in[i]):
+    #     pass
+    # else:
+    #     continue
     ############################################################
 
     landcover_in_path=files_in[i] # '/mnt/f/PAD2019/classification_training/PixelClassifier/Test35/padelE_36000_19059_003_190904_L090_CX_01_LUT-Freeman_cls.tif'

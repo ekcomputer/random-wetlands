@@ -52,11 +52,11 @@ os.makedirs(csv_out_indiv_base, exist_ok=True)
 for i in range(len(shapes_in)):
     shp_in_pth=shapes_in[i] #'/mnt/f/PAD2019/classification_training/PixelClassifier/Test35/shp/padelE_36000_19059_003_190904_L090_CX_01_LUT-Freeman_cls_poly.tif'
     # print(shp_in_pth)
-        # Filter only PAD sites
-    if ('PAD' in os.path.basename(shp_in_pth))==False &  ('pad' in os.path.basename(shp_in_pth))==False & ('mosaic' in os.path.basename(shp_in_pth))==False: ## TODO: check this line
-        print('Skipping non-PAD shapefile')
-        continue
-
+        # Filter only PAD sites ############################################
+    # if ('PAD' in os.path.basename(shp_in_pth))==False &  ('pad' in os.path.basename(shp_in_pth))==False & ('mosaic' in os.path.basename(shp_in_pth))==False: ## TODO: check this line
+    #     print('Skipping non-PAD shapefile')
+    #     continue
+        ####################################################################
         # Continue
     print(f'\n\n----------------\nInput: {shp_in_pth}\n')
     print(f'\t(File {i} of {len(shapes_in)})')
