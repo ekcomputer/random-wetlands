@@ -21,7 +21,11 @@ TODO:
 * double check number of unique polygons ----> debug
 * ~~export to .shp X
 * save polygonization process as a function - and use parallel for rasterio polygonize/rasterize!!
-* Add FM%, etc.
+* Add FM%, etc. X
+* Manually update bridges
+* Speed up (smaller) bridge buffer?
+* additional noted in comments
+* problem with doubled lake labels...does it matter if output looks good?
 
 '''
 
@@ -97,8 +101,8 @@ for i in range(len(files_in)):
     bridges['val']=bridge_val # add dummy variable
     shapes_gen = ((geom,value) for geom, value in zip(bridges.geometry, bridges.val))
     bridges_burned = features.rasterize(shapes=shapes_gen, fill=0, out_shape=src.shape, transform=src.transform, all_touched=True)
-    strelem = selem.disk(25)
-    bridges_burned = binary_dilation(bridges_burned, selem = strelem)
+    strelem = selem.disk(12) #25
+    # bridges_burned = binary_dilation(bridges_burned, selem = strelem) # TODO: temp
     # plt.imshow(bridges_burned)
     print(f'Number of bridge pixels burned: {(bridges_burned>0).sum()}') # sanity check
 
@@ -106,6 +110,7 @@ for i in range(len(files_in)):
     #%%
     # np.sum(lc==bridge_val)
     lc[bridges_burned>0]=bridge_val
+    del bridges, bridges_burned
     print(f'Number of bridge pixels burned into landcover: {np.sum(lc==bridge_val)}')
 
     ## load ROI 
@@ -116,87 +121,120 @@ for i in range(len(files_in)):
     roi['val']=1 # add dummy variable
     shapes_gen = ((geom,value) for geom, value in zip(roi.geometry, roi.val))
     roi_burned = features.rasterize(shapes=shapes_gen, fill=0, out_shape=src.shape, transform=src.transform, all_touched=True)
+    del shapes_gen
 
-    ## Convert water bodies to label matrix ## TODO: do regionprops first to filter out the spurious lakes before polygonizing! Set ==0
+    ## Convert water bodies to label matrix
+    print('Label...')
     lb=label(np.isin(lc, classes_reclass['wet']), connectivity=2)
+    print(f'Label range, before masking: {lb.min()} : {lb.max()}')
     # plt.imshow(lb)
     
     ## create masks
-    mask_wet_emerg = np.isin(lc, classes['wet_emergent'])
+    # mask_wet_emerg = np.isin(lc, classes_reclass['wet_emergent'])
     mask_wet = np.isin(lc, classes_reclass['wet'])
     print(f'Number of masked pixels: {np.sum(mask_wet)}')
+
+    ## Regionprops
+    print('Regionprops #1...')
+    stats=measure.regionprops_table(lb, np.isin(lc, classes_reclass['wet_emergent']), cache=True, properties=['label','area','perimeter','mean_intensity']) # Users should remember to add "label" to keep track of region # cache is faster, but more mem identities.
+    
+    ## convert to DataFrame and drop entries with no open water
+    stats=pd.DataFrame(stats)
+    # wetland_regions=stats[stats['mean_intensity']==1.].label.to_numpy() # save labels for regions with no open water
+    stats_mask_neg=(stats['mean_intensity']==1.) | (stats['area']<3) # rows not to keep (no water or less than 3 px )
+    lb[np.isin(lb, stats[stats_mask_neg].label.to_numpy())]=0 # remove regions from label matrix with mask criteria 
+    stats=stats[~stats_mask_neg] # update stats dataframe with the same mask
+    stats.rename(columns={'mean_intensity':'em_fraction', 'area':'area_px_m2', 'perimeter':'perimeter_px_m'}, inplace=True)
+    # stats['em_fraction']=stats['mean_intensity']
+    # del stats['mean_intensity']
+
+    ## area math
+    stats['area_px_m2']=stats.area_px_m2*np.prod(src_res)
+    stats['perimeter_px_m']=stats.perimeter_px_m*np.mean(src_res)
+    # del stats['area']
+    # del stats['perimeter']
+
+    ## Regionprops for Fw, SW, GW
+    print('Regionprops #2...') # cache or no cache? 
+    stats_fw=measure.regionprops_table(lb, np.isin(lc, classes_reclass['wet_forest']), cache=True, properties=['label','mean_intensity']) # Users should remember to add "label" to keep track of region # cache is faster, but more mem identities.
+    stats_fw=pd.DataFrame(stats_fw)
+    # stats_fw['fw_fraction']=stats_fw['mean_intensity']
+    stats_fw.rename(columns={'mean_intensity':'fw_fraction'}, inplace=True)
+    # del stats_fw['mean_intensity']
+    stats = stats.merge(stats_fw, on='label', how='left', validate='one_to_one')
+    del stats_fw
+    
+    print('Regionprops #3...')
+    stats_sw=pd.DataFrame(measure.regionprops_table(lb, np.isin(lc, classes_reclass['wet_shrubs']), cache=True, properties=['label','mean_intensity'])) # Users should remember to add "label" to keep track of region # cache is faster, but more mem identities.
+    # stats_sw['fw_fraction']=stats_sw['mean_intensity']
+    # del stats_sw['mean_intensity']
+    stats_sw.rename(columns={'mean_intensity':'sw_fraction'}, inplace=True)
+    stats = stats.merge(stats_sw, on='label', how='left', validate='one_to_one')
+    del stats_sw
+
+    print('Regionprops #4...')
+    stats_gw=pd.DataFrame(measure.regionprops_table(lb, np.isin(lc, classes_reclass['wet_graminoid']), cache=True, properties=['label','mean_intensity'])) # Users should remember to add "label" to keep track of region # cache is faster, but more mem identities.
+    # stats_gw['fw_fraction']=stats_gw['mean_intensity']
+    # del stats_gw['mean_intensity']
+    stats_gw.rename(columns={'mean_intensity':'gw_fraction'}, inplace=True)
+    stats = stats.merge(stats_gw, on='label', how='left', validate='one_to_one')
+    del stats_gw
+    del lc
 
     ## convert to polygon #https://gis.stackexchange.com/questions/187877/how-to-polygonize-raster-to-shapely-polygons
     # from rasterio.features import shapes
     # with rio.drivers():
     print('Polygonizing...')
-    image =  lb.astype('float32') # src.read(1) # first band # np.isin(lc, classes['wet_emergent']).astype('float32')
+    # geoms=polygonize(shapes, mask = (mask_wet) & (roi_burned==1), transform=src.transform, connectivity=8)
+    #
+    lb =  lb.astype('float32')
     results = (
     {'properties': {'raster_val': v}, 'geometry': s}
     for i, (s, v) 
     in enumerate(
-        shapes(image, mask=(mask_wet) & (roi_burned==1), transform=src.transform, connectivity=8))) # transform=src.affine, mask=mask # Here only consider water within ROI
+        shapes(lb, mask=(mask_wet) & (roi_burned==1), transform=src.transform, connectivity=8))) # transform=src.affine, mask=mask # Here only consider water within ROI
+    del lb, roi_burned# save memory
     # print('Example of geometry feature created:')
     # pprint.pprint(next(results))
 
     ## The result is a generator of GeoJSON features
     geoms = list(results)
-    print(f'Number of polygons created: {len(geoms)}')
+    del results
+    #
 
     # That you can transform into shapely geometries
     # Create geopandas Dataframe and enable easy to use functionalities of spatial join, plotting, save as geojson, ESRI shapefile etc.
     # In[33]:
     ## convert to polygon
     poly  = gpd.GeoDataFrame.from_features(geoms,crs=src_crs.wkt)
-    poly.head(20)
     poly['label']=poly['raster_val'].astype(int) # for some reason, I had to create poly using double precesion? other int types?
     del poly['raster_val']
+    print(f'Number of polygon geometries created: {len(geoms)}')
+    print(f'Number of polygons created: {len(poly)}') 
     poly.head()
     # poly.plot()
     # plt.draw()
     # plt.show(block = False)
 
-    ## Regionprops
-    stats=measure.regionprops_table(lb, np.isin(lc, classes['wet_emergent']), cache=True, properties=['label','area','perimeter','mean_intensity']) # Users should remember to add "label" to keep track of region # cache is faster, but more mem identities.
-
-    ## area math
-    stats=pd.DataFrame(stats)
-    stats.mean_intensity.max()
-    stats['em_fraction']=stats['mean_intensity']
-    del stats['mean_intensity']
-
-    stats['area_px_m2']=stats.area*np.prod(src_res)
-    stats['perimeter_px_m']=stats.perimeter*np.mean(src_res)
-    del stats['area']
-    del stats['perimeter']
-
-    print(f'Label range: {lb.min()} : {lb.max()}')
-    print(f'Number of polygon geometries created: {len(geoms)}')
-    print(f'Number of polygons created: {len(poly)}') 
-
     ## test to find unique vals
-    poly.label.max()
-    poly.label.unique().shape
-    d1=np.setdiff1d(poly.label.unique(), stats.label) # > Return the unique values in `ar1` that are not in `ar2`.
-    d2=np.setdiff1d(stats.label,poly.label.unique())
+    print('Max polygon label: ', poly.label.max())
+    # poly.label.unique().shape
+    d1=np.setdiff1d(poly.label, stats.label) # > Return the unique values in `ar1` that are not in `ar2`.
+    d2=np.setdiff1d(stats.label,poly.label)
     print(f'Number of polygons that aren\'t listed in regionprops: {d1.size}')
     print(f'Number of regionprops regions that didn\'t become polygons: {d2.size}')
-    d2
+    # d2
 
 
     ## Attribute join
-    poly=poly.merge(stats, on='label') #country_shapes = country_shapes.merge(country_names, on='iso_a3')
-    poly.head()
+    poly=poly.merge(stats, on='label', validate='one_to_one') #country_shapes = country_shapes.merge(country_names, on='iso_a3') # note poly has some repeating labels...
+    # poly.head()
 
     ## Simplify polygons using shapely, if I wish:
     # object.simplify(tolerance, preserve_topology=True)
 
     # check if anything didn't merge
-    print('Any polygons that didn\'t merge?')
-    print(np.any(poly['em_fraction'].isnull()))
-
-    ## Remote water bodies with no open water (wetlands) # TODO: test/check
-    poly.drop(poly['em_fraction']==1, inplace=True)
+    print(f'Any polygons that didn\'t merge? {np.any(poly.em_fraction.isnull())}')
 
     ## save to .shp
     # poly_simpl.to_file(poly_out_pth)
