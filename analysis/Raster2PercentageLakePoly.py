@@ -48,6 +48,39 @@ from rasterio.features import shapes
 import shapely
 from shapely.geometry import shape
 
+##  functions
+def polygonize(source, mask=None, connectivity=4, src=None): # transform=IDENTITY
+        '''
+        Inputs: 
+            source = label matrix to be polygonized
+            mask = optional mask to consider
+            connectivity = 4 or 8
+            src = from: 'with rio.open(landcover_in_path) as src'
+            
+        Based on  rasterio.features.shapes, but simplifies the strange loop notation needed. 
+        Only real input it needs is 
+        Referenced https://gis.stackexchange.com/questions/187877/how-to-polygonize-raster-to-shapely-polygons
+        TODO: make failsafe by setting conditional clause for if src.transform DNE (previously transfrom was a keyword argument with default 'identify')
+        '''
+
+        source =  source.astype('float32') # needs float for some reason for shape index
+        results = (
+        {'properties': {'raster_val': v}, 'geometry': s}
+        for i, (s, v) 
+        in enumerate(
+            shapes(source, mask=mask, transform = src.transform, connectivity = connectivity))) # transform=src.affine, mask=mask # Here only consider water within ROI
+        # print('Example of geometry feature created:')
+        # pprint.pprint(next(results))
+
+        ## The result is a generator of GeoJSON features
+        # That you can transform into shapely geometries
+        # Create geopandas Dataframe and enable easy to use functionalities of spatial join, plotting, save as geojson, ESRI shapefile etc.
+        geoms = list(results)
+
+        ## convert to polygon
+        poly  = gpd.GeoDataFrame.from_features(geoms,crs=src.crs.wkt)
+        poly['raster_val']=poly['raster_val'].astype(int) # for some reason, I had to create poly using double precesion. Converting to int64 for simplicity.
+        return poly
 # Import env variables
 from python_env import *
 
@@ -71,7 +104,7 @@ for i in range(len(files_in)):
     ## load using rasterio
     landcover_in_path=files_in[i] # '/mnt/f/PAD2019/classification_training/PixelClassifier/Test35/padelE_36000_19059_003_190904_L090_CX_01_LUT-Freeman_cls.tif'
     print(f'\n\n----------------\nInput: {landcover_in_path}')
-    print(f'\t(File {i} of {len(files_in)})\n')
+    print(f'\t(File {i+1} of {len(files_in)})\n')
     poly_out_pth=os.path.join(shape_dir, os.path.splitext(os.path.basename(landcover_in_path))[0] +'_lakes.shp') #'/mnt/f/PAD2019/classification_training/PixelClassifier/Test35/shp/padelE_36000_19059_003_190904_L090_CX_01_LUT-Freeman_cls_poly.shp'
     if os.path.exists(poly_out_pth):
         print('Shapefile already exists. Skipping...')
@@ -181,35 +214,15 @@ for i in range(len(files_in)):
     del stats_gw
     del lc
 
-    ## convert to polygon #https://gis.stackexchange.com/questions/187877/how-to-polygonize-raster-to-shapely-polygons
+    ## convert to polygon 
     # from rasterio.features import shapes
     # with rio.drivers():
     print('Polygonizing...')
-    # geoms=polygonize(shapes, mask = (mask_wet) & (roi_burned==1), transform=src.transform, connectivity=8)
-    #
-    lb =  lb.astype('float32')
-    results = (
-    {'properties': {'raster_val': v}, 'geometry': s}
-    for i, (s, v) 
-    in enumerate(
-        shapes(lb, mask=(mask_wet) & (roi_burned==1), transform=src.transform, connectivity=8))) # transform=src.affine, mask=mask # Here only consider water within ROI
+    poly=polygonize(lb, mask = (mask_wet) & (roi_burned==1), src=src, connectivity=8)
     del lb, roi_burned# save memory
-    # print('Example of geometry feature created:')
-    # pprint.pprint(next(results))
-
-    ## The result is a generator of GeoJSON features
-    geoms = list(results)
-    del results
-    #
-
-    # That you can transform into shapely geometries
-    # Create geopandas Dataframe and enable easy to use functionalities of spatial join, plotting, save as geojson, ESRI shapefile etc.
-    # In[33]:
-    ## convert to polygon
-    poly  = gpd.GeoDataFrame.from_features(geoms,crs=src_crs.wkt)
-    poly['label']=poly['raster_val'].astype(int) # for some reason, I had to create poly using double precesion? other int types?
-    del poly['raster_val']
-    print(f'Number of polygon geometries created: {len(geoms)}')
+    
+    # print(f'Number of polygon geometries created: {len(geoms)}')
+    poly.rename(columns={'raster_val':'label'}, inplace=True)
     print(f'Number of polygons created: {len(poly)}') 
     poly.head()
     # poly.plot()
@@ -227,7 +240,7 @@ for i in range(len(files_in)):
 
 
     ## Attribute join
-    poly=poly.merge(stats, on='label', validate='one_to_one') #country_shapes = country_shapes.merge(country_names, on='iso_a3') # note poly has some repeating labels...
+    poly=poly.merge(stats, on='label') #country_shapes = country_shapes.merge(country_names, on='iso_a3') # note poly has some repeating labels... validate='one_to_one'
     # poly.head()
 
     ## Simplify polygons using shapely, if I wish:
