@@ -18,14 +18,15 @@ TODO:
 * Size filters
 * ~~spatial join X
 * simplify polygons -or smooth
-* double check number of unique polygons ----> debug
+* double check number of unique polygons ----> debug X
 * ~~export to .shp X
-* save polygonization process as a function - and use parallel for rasterio polygonize/rasterize!!
+* save polygonization process as a function X
+* - and use parallel for rasterio polygonize/rasterize!!
 * Add FM%, etc. X
-* Manually update bridges
+* Manually update bridges .
 * Speed up (smaller) bridge buffer?
 * additional noted in comments
-* problem with doubled lake labels...does it matter if output looks good?
+* problem with doubled lake labels...does it matter if output looks good? X
 
 '''
 
@@ -41,7 +42,7 @@ import pandas as pd
 import geopandas as gpd
 from skimage.measure import label, regionprops, regionprops_table
 from skimage import measure 
-from skimage.morphology import binary_dilation, selem
+from skimage.morphology import binary_dilation, selem, remove_small_holes
 import rasterio as rio
 from rasterio import plot, features
 from rasterio.features import shapes
@@ -86,12 +87,22 @@ from python_env import *
 
 ## dynamic I/O
 
+############################################################
 ## Option for loading all files in dir #####################
 # files_in=glob.glob(base_dir+'/*cls.tif')
 ############################################################
+## Option for only loading specific files ##################
 with open(unique_date_files, 'r') as f:
     files_in=f.read().strip().split('\n')
+############################################################
+## Testing: Option forloading specific file directly #######
+files_in=[
+    '/mnt/d/GoogleDrive/ABoVE top level folder/Kyzivat_ORNL_DAAC_2021/lake-wetland-maps/5-classes/PAD_170613_mosaic_rcls.tif',
+    '/mnt/d/GoogleDrive/ABoVE top level folder/Kyzivat_ORNL_DAAC_2021/lake-wetland-maps/5-classes/PAD_170908_mosaic_rcls.tif',
+    '/mnt/d/GoogleDrive/ABoVE top level folder/Kyzivat_ORNL_DAAC_2021/lake-wetland-maps/5-classes/PAD_180821_mosaic_rcls.tif'
+    ] # TODO: comment out for real
 ## Option for only loading specific files ##################
+############################################################
 
 for i in range(len(files_in)):
     ## Option for quickly building only PAD mosaics ############
@@ -106,9 +117,9 @@ for i in range(len(files_in)):
     print(f'\n\n----------------\nInput: {landcover_in_path}')
     print(f'\t(File {i+1} of {len(files_in)})\n')
     poly_out_pth=os.path.join(shape_dir, os.path.splitext(os.path.basename(landcover_in_path))[0] +'_lakes.shp') #'/mnt/f/PAD2019/classification_training/PixelClassifier/Test35/shp/padelE_36000_19059_003_190904_L090_CX_01_LUT-Freeman_cls_poly.shp'
-    if os.path.exists(poly_out_pth):
-        print('Shapefile already exists. Skipping...')
-        continue
+    # if os.path.exists(poly_out_pth): TODO testing
+    #     print('Shapefile already exists. Skipping...')
+    #     continue
     with rio.open(landcover_in_path) as src:
         lc = src.read(1)
     lc.shape
@@ -135,12 +146,11 @@ for i in range(len(files_in)):
     shapes_gen = ((geom,value) for geom, value in zip(bridges.geometry, bridges.val))
     bridges_burned = features.rasterize(shapes=shapes_gen, fill=0, out_shape=src.shape, transform=src.transform, all_touched=True)
     strelem = selem.disk(12) #25
-    # bridges_burned = binary_dilation(bridges_burned, selem = strelem) # TODO: temp
+    bridges_burned = binary_dilation(bridges_burned, selem = strelem) # TODO: temp
     # plt.imshow(bridges_burned)
     print(f'Number of bridge pixels burned: {(bridges_burned>0).sum()}') # sanity check
 
     ## add burned bridges to original landcover raster
-    #%%
     # np.sum(lc==bridge_val)
     lc[bridges_burned>0]=bridge_val
     del bridges, bridges_burned
@@ -154,19 +164,20 @@ for i in range(len(files_in)):
     roi['val']=1 # add dummy variable
     shapes_gen = ((geom,value) for geom, value in zip(roi.geometry, roi.val))
     roi_burned = features.rasterize(shapes=shapes_gen, fill=0, out_shape=src.shape, transform=src.transform, all_touched=True)
-    del shapes_gen
+    lc[roi_burned==0]=non_roi_val
+    del shapes_gen, roi_burned
 
-    ## Convert water bodies to label matrix
-    print('Label...')
-    lb=label(np.isin(lc, classes_reclass['wet']), connectivity=2)
-    print(f'Label range, before masking: {lb.min()} : {lb.max()}')
-    # plt.imshow(lb)
-    
     ## create masks
     # mask_wet_emerg = np.isin(lc, classes_reclass['wet_emergent'])
     mask_wet = np.isin(lc, classes_reclass['wet'])
     print(f'Number of masked pixels: {np.sum(mask_wet)}')
 
+    ## Convert water bodies to label matrix
+    print('Label...')
+    lb=label(mask_wet, connectivity=2)
+    print(f'Label range, before masking: {lb.min()} : {lb.max()}')
+    # plt.imshow(lb)
+    
     ## Regionprops
     print('Regionprops #1...')
     stats=measure.regionprops_table(lb, np.isin(lc, classes_reclass['wet_emergent']), cache=True, properties=['label','area','perimeter','mean_intensity']) # Users should remember to add "label" to keep track of region # cache is faster, but more mem identities.
@@ -212,14 +223,29 @@ for i in range(len(files_in)):
     stats_gw.rename(columns={'mean_intensity':'gw_fraction'}, inplace=True)
     stats = stats.merge(stats_gw, on='label', how='left', validate='one_to_one')
     del stats_gw
-    del lc
 
+    ## convert lancover data coverage to shape
+    print('Polygonize domain...')
+    nodata_mask_neg=np.isin(lc, [0, non_roi_val])
+    domain=polygonize(~nodata_mask_neg, mask=~nodata_mask_neg, src=src, connectivity=8) # this is a little risky if I ever update class values...but not planning on it!
+    domain = domain.dissolve(by='raster_val') # domain is all the positive data mask
+    
+    ## Mark edge lakes before deleting input objects
+    print('Marking edge lakes...')
+    strelem = selem.disk(1)
+    nodata_mask_neg_no_islands = ~(remove_small_holes(~nodata_mask_neg, 30000)) # only consider outer boundary
+    edge_ring = (binary_dilation(nodata_mask_neg_no_islands, selem = strelem)) & ~nodata_mask_neg_no_islands
+    edge_regions = np.unique(lb[edge_ring])
+    df_edge_regions = pd.DataFrame(edge_regions, columns=['label']); df_edge_regions['edge']=True
+    stats = stats.merge(df_edge_regions, on='label', how='left'); stats.loc[:, 'edge'].fillna(False, inplace=True)
+    del lc, nodata_mask_neg, nodata_mask_neg_no_islands
+    
     ## convert to polygon 
     # from rasterio.features import shapes
     # with rio.drivers():
     print('Polygonizing...')
-    poly=polygonize(lb, mask = (mask_wet) & (roi_burned==1), src=src, connectivity=8)
-    del lb, roi_burned# save memory
+    poly=polygonize(lb, mask = mask_wet, src=src, connectivity=8)
+    del lb # save memory
     
     # print(f'Number of polygon geometries created: {len(geoms)}')
     poly.rename(columns={'raster_val':'label'}, inplace=True)
@@ -236,8 +262,6 @@ for i in range(len(files_in)):
     d2=np.setdiff1d(stats.label,poly.label)
     print(f'Number of polygons that aren\'t listed in regionprops: {d1.size}')
     print(f'Number of regionprops regions that didn\'t become polygons: {d2.size}')
-    # d2
-
 
     ## Attribute join
     poly=poly.merge(stats, on='label') #country_shapes = country_shapes.merge(country_names, on='iso_a3') # note poly has some repeating labels... validate='one_to_one'
@@ -246,7 +270,8 @@ for i in range(len(files_in)):
     ## Simplify polygons using shapely, if I wish:
     # object.simplify(tolerance, preserve_topology=True)
 
-    # check if anything didn't merge
+    ## check if anything didn't merge
+    # testing poly2=gpd.read_file('/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/shp_no_rivers/bakerc_16008_18047_005_180821_L090_CX_02_Freeman-inc_rcls_lakes.shp')
     print(f'Any polygons that didn\'t merge? {np.any(poly.em_fraction.isnull())}')
 
     ## save to .shp

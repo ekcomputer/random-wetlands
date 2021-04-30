@@ -73,6 +73,7 @@ classes_re_2:
 '''
     # Constants
 bridge_val=25
+non_roi_val=35
 urban_val=30
 NODATAVALUE=0
 SELEM_DIAM=3 # for majortiy filter
@@ -109,7 +110,7 @@ unique_date_files='/mnt/d/Dropbox/Matlab/ABoVE/UAVSAR/analysis/input_paths/uniqu
 # base_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/TestEngramLakes/Test35-Fr-LUT-LUT/inc-clip'  # Classes: run EngramLakes
 
 # bridges_pth='/mnt/f/PAD2019/classification_training/PixelClassifier/Test38/bridges/bridges.shp'                     # For workflow that includes analysis/calcVegAreaFromPts.py (for individ lakes sampled)
-bridges_pth='/mnt/f/PAD2019/classification_training/ROI-analysis/river_mask_arc.shp'
+bridges_pth='/mnt/f/PAD2019/classification_training/ROI-analysis/river_mask_arc_singlepart.shp'
 
 roi_pth='/mnt/f/PAD2019/classification_training/ROI-analysis/ROI-analysis_albers.shp'
 
