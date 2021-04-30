@@ -77,6 +77,7 @@ non_roi_val=35
 urban_val=30
 NODATAVALUE=0
 SELEM_DIAM=3 # for majortiy filter
+px_area=6.2772213285727885*6.277221328212732 # m2
 
     # Classes: run 39
 classes={'wet': [1,2,3,4,5,11,13], 'wet_emergent':[2,5,13], 'water': [1,3,4,11]} # not used: water
@@ -116,3 +117,5 @@ roi_pth='/mnt/f/PAD2019/classification_training/ROI-analysis/ROI-analysis_albers
 
     # Dynamic variables
 reclass_dir=os.path.join(base_dir, 'reclass') #'/mnt/f/PAD2019/classification_training/PixelClassifier/Test39/reclass'
+
+fig_dir='/mnt/d/pic/UAVSAR_classification'

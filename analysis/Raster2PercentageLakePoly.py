@@ -281,7 +281,7 @@ for i in range(len(files_in)):
 
     # plt.show() # to keep plots?
     # # Compute and plot statistics for EM
-    # plt.hist(poly[poly.area_px_m2>50][poly.em_fraction<1][poly.em_fraction>0].em_fraction)
-    # plt.title('EM fraction for WBs > 50 m2 with littoral zones')
-    # plt.ylabel('count')
-    # plt.xlabel('EM fraction')
+        # plt.hist(poly[poly.area_px_m2>50][poly.em_fraction<1][poly.em_fraction>0].em_fraction)
+        # plt.title('EM fraction for WBs > 50 m2 with littoral zones')
+        # plt.ylabel('count')
+        # plt.xlabel('EM fraction')
