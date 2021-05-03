@@ -112,10 +112,9 @@ unique_date_files='/mnt/d/Dropbox/Matlab/ABoVE/UAVSAR/analysis/input_paths/uniqu
 
 # bridges_pth='/mnt/f/PAD2019/classification_training/PixelClassifier/Test38/bridges/bridges.shp'                     # For workflow that includes analysis/calcVegAreaFromPts.py (for individ lakes sampled)
 bridges_pth='/mnt/f/PAD2019/classification_training/ROI-analysis/river_mask_arc_singlepart.shp'
-
 roi_pth='/mnt/f/PAD2019/classification_training/ROI-analysis/ROI-analysis_albers.shp'
-
+fig_dir='/mnt/d/pic/UAVSAR_classification'
+cir_pth='/mnt/d/ArcGIS/FromMatlab/CIRLocalThreshClas/ORNL_final/WC_fused_hydroLakes/WC_fused_hydroLakes.shp'
     # Dynamic variables
 reclass_dir=os.path.join(base_dir, 'reclass') #'/mnt/f/PAD2019/classification_training/PixelClassifier/Test39/reclass'
 
-fig_dir='/mnt/d/pic/UAVSAR_classification'

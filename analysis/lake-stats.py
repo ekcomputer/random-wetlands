@@ -29,6 +29,11 @@ min_size=2000 # meters squared
 files_in=glob.glob(os.path.join(shape_dir, '*.shp'))
 lakes_list=[]
 
+## Plotting params
+# plt.rcParams
+# plt.style.use('seaborn')
+plt.style.use('/mnt/d/Dropbox/Python/Matplotlib-rcParams/presentation.mplstyle')
+
 ## loop
 for i, filename in enumerate(files_in):
     print(f'\n\n----------------\nInput: {filename}')
@@ -38,14 +43,14 @@ for i, filename in enumerate(files_in):
     lakes = gpd.read_file(filename)
 
     ## filter
-    filter=(lakes.edge==False) & (lakes.area_px_m2>=min_size/px_area)
+    filter=(lakes.edge==False) & (lakes.area_px_m2>=min_size/px_area) & (lakes.cir_observ==True)
 
     ## plot
-    plt.hist(lakes[filter].em_fractio)#, bins=40)
-    plt.title(f'EM fraction for lakes > {min_size} m2 ({min_size/px_area:.0f} px)')
-    plt.ylabel('Lake count')
-    plt.xlabel('Emergent macrophyte fraction')
-    plt.show()
+    # plt.hist(lakes[filter].em_fractio)#, bins=40)
+    # plt.title(f'EM fraction for lakes > {min_size} m2 ({min_size/px_area:.0f} px)')
+    # plt.ylabel('Lake count')
+    # plt.xlabel('Emergent macrophyte fraction')
+    # plt.show()
 
     ## save data to memory
     lakes_list.append(lakes[filter])
@@ -59,6 +64,7 @@ for i, lakes in enumerate(lakes_list):
 # fig.show()
 plt.ylabel('Lake count')
 plt.xlabel('Emergent macrophyte fraction')
+plt.title(f'Lakes > {min_size} m2 ({min_size/px_area:.0f} px)')
 plt.legend()
 
 ## save fig
