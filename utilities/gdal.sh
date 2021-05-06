@@ -45,3 +45,12 @@ gdal_calc.py -A $inc --A_band=1 -B $in --outfile=$out --NoDataValue=0 --overwrit
 gdal_calc.py -A $mask --A_band=1 -B $in --outfile=$out --NoDataValue=0 --overwrite --creation-option="COMPRESS=LZW" --creation-option="BIGTIFF=YES" --calc="numpy.uint((A>0)*B)" # if I only have Freeman bands
 
 ## For compressing
+
+## Redo mosaics in reverse: note first layer goes on BOTTOM in mosaic, last on TOP
+
+    # pairs
+gdal_merge.py -o mosaics-yf-reverse/YFLATS_170916_cls_mosaic.tif -co COMPRESS=LZW -n 0 -a_nodata 0 yflatW_21508_17098_006_170916_L090_CX_01_Freeman-inc_cls.tif yflatE_21609_17098_008_170916_L090_CX_01_Freeman-inc_cls.tif ftyuko_04707_17098_007_170916_L090_CX_01_Freeman-inc_cls.tif  &&
+
+gdal_merge.py -o mosaics-yf-reverse/YFLATS_170621_cls_mosaic.tif -co COMPRESS=LZW -n 0 -a_nodata 0 yflats_21508_17069_009_170621_L090_CX_01_Freeman-inc_cls.tif yflats_04707_17069_010_170621_L090_CX_01_Freeman-inc_cls.tif  &&
+gdal_merge.py -o mosaics-yf-reverse/YFLATS_180827_cls_mosaic.tif -co COMPRESS=LZW -n 0 -a_nodata 0 yflatE_21609_18051_009_180827_L090_CX_01_Freeman-inc_cls.tif ftyuko_04707_18051_008_180827_L090_CX_01_Freeman-inc_cls.tif  &&
+gdal_merge.py -o mosaics-yf-reverse/YFLATS_190914_cls_mosaic.tif -co COMPRESS=LZW -n 0 -a_nodata 0 yflatE_21609_19064_007_190914_L090_CX_01_Freeman-inc_cls.tif ftyuko_04707_19064_006_190914_L090_CX_01_Freeman-inc_cls.tif  &
