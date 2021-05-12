@@ -3,13 +3,17 @@
 
     INSTRUCTIONS:
 
-    Workflow:
+    Workflow for extracting stats for visited lakes:
         0. Run classification in Matlab and analysis/reclass_rasters.py
         1. analysis/Raster2PercentagePoly.py (Convert a land cover raster to a shapefile, with attributes for fractional class coverage)
         2. analysis/calcVegAreaFromPts.py (An automatic way of calculating littoral fraction from a shapefile of water bodies and a list of points)
         3. analysis/Average_em.ipynb (Averages em_fraction for each site along all available dates)
 
-    For sensitivity figure:
+    Workflow for extracting stats for all lakes:
+        0. As above
+        2. analysis/Raster2PercentageLakePoly.py (Polygonizes landcover map to lake polygons, with attributes for EM%, whether or not it is a border lake, and whether it was observed by AirSWOT CIR camera.)
+
+    Workflow for sensitivity figure:
         1. analysis/upscaleFromLandcover.ipynb
 
     Be sure to update file paths in this file before running
@@ -77,7 +81,7 @@ non_roi_val=35
 urban_val=30
 NODATAVALUE=0
 SELEM_DIAM=3 # for majortiy filter
-px_area=6.2772213285727885*6.277221328212732 # m2
+px_area=6.2772213285727885*6.277221328212732 # m2 # varies slightly b/w scenes, but good enough for area stats
 
     # Classes: run 39
 classes={'wet': [1,2,3,4,5,11,13], 'wet_emergent':[2,5,13], 'water': [1,3,4,11]} # not used: water
@@ -102,6 +106,7 @@ shape_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAA
 # base_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Test43'                                         
 # base_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Test43/reclass-daring-conversion'                  # dir 3
 base_dir='/mnt/d/GoogleDrive/ABoVE top level folder/Kyzivat_ORNL_DAAC_2021/lake-wetland-maps/13-classes'                  # dir 3
+# base_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Test42/batch1/mosaics-yf-reverse'                  # for new yf mosaics in reverse order w cropping
 
 unique_date_files='/mnt/d/Dropbox/Matlab/ABoVE/UAVSAR/analysis/input_paths/unique_dates.txt' # text file with paths for unique acquisition date file names
 
@@ -117,4 +122,3 @@ fig_dir='/mnt/d/pic/UAVSAR_classification'
 cir_pth='/mnt/d/ArcGIS/FromMatlab/CIRLocalThreshClas/ORNL_final/WC_fused_hydroLakes/WC_fused_hydroLakes.shp'
     # Dynamic variables
 reclass_dir=os.path.join(base_dir, 'reclass') #'/mnt/f/PAD2019/classification_training/PixelClassifier/Test39/reclass'
-

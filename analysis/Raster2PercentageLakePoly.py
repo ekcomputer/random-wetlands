@@ -1,5 +1,5 @@
 '''
-Script to calculate emergent macrophyte percentage from uavsar lake/wetland map. Run instead of analysis/Raster2PercentagePoly.py. Make sure to use River mask in place of 'bridges' file.
+Script to calculate emergent macrophyte percentage from uavsar lake/wetland map. Polygonizes landcover map to lake polygons, with attributes for EM%, whether or not it is a border lake, and whether it was observed by AirSWOT CIR camera. Run instead of analysis/Raster2PercentagePoly.py. Make sure to use River mask in place of 'bridges' file.
 
 UPDATE: perhaps just use as plotting function and for temporal tacking once shapefiles (without lakes) exist
 
@@ -27,6 +27,7 @@ TODO:
 * Speed up (smaller) bridge buffer?
 * additional noted in comments
 * problem with doubled lake labels...does it matter if output looks good? X
+* Use dask ndimage label instead of imlabel https://dask-image.readthedocs.io/en/latest/dask_image.ndmeasure.html#dask_image.ndmeasure.label
 
 '''
 
@@ -48,6 +49,7 @@ from rasterio import plot, features
 from rasterio.features import shapes
 import shapely
 from shapely.geometry import shape
+import dask.array as da
 
 ##  functions
 def polygonize(source, mask=None, connectivity=4, src=None): # transform=IDENTITY
@@ -101,6 +103,8 @@ with open(unique_date_files, 'r') as f:
 #     '/mnt/d/GoogleDrive/ABoVE top level folder/Kyzivat_ORNL_DAAC_2021/lake-wetland-maps/5-classes/PAD_170908_mosaic_rcls.tif',
 #     '/mnt/d/GoogleDrive/ABoVE top level folder/Kyzivat_ORNL_DAAC_2021/lake-wetland-maps/5-classes/PAD_180821_mosaic_rcls.tif'
 #     ] # TODO: comment out for real
+# files_in=['/mnt/d/GoogleDrive/ABoVE top level folder/Kyzivat_ORNL_DAAC_2021/lake-wetland-maps/5-classes/bakerc_16008_19059_012_190904_L090_CX_01_Freeman-inc_rcls.tif']
+
 ## Option for only loading specific files ##################
 ############################################################
 
@@ -119,6 +123,9 @@ for i in range(len(files_in)):
     poly_out_pth=os.path.join(shape_dir, os.path.splitext(os.path.basename(landcover_in_path))[0] +'_lakes.shp') #'/mnt/f/PAD2019/classification_training/PixelClassifier/Test35/shp/padelE_36000_19059_003_190904_L090_CX_01_LUT-Freeman_cls_poly.shp'
     if os.path.exists(poly_out_pth):
         print('Shapefile already exists. Skipping...')
+        continue
+    if '#' in landcover_in_path: # allows me to "comment out" inputs in unique_dates.txt
+        print('Manual skip.')
         continue
     with rio.open(landcover_in_path) as src:
         lc = src.read(1)
@@ -174,19 +181,30 @@ for i in range(len(files_in)):
 
     ## Convert water bodies to label matrix
     print('Label...')
-    lb=label(mask_wet, connectivity=2)
+    lb=label(mask_wet, connectivity=2).astype('int32') # save memory
     print(f'Label range, before masking: {lb.min()} : {lb.max()}')
     # plt.imshow(lb)
     
     ## Regionprops
     print('Regionprops #1...')
-    stats=measure.regionprops_table(lb, np.isin(lc, classes_reclass['wet_emergent']), cache=True, properties=['label','area','perimeter','mean_intensity']) # Users should remember to add "label" to keep track of region # cache is faster, but more mem identities.
+    stats=measure.regionprops_table(lb, np.isin(lc, classes_reclass['wet_emergent']), cache=False, properties=['label','area','perimeter','mean_intensity']) # Users should remember to add "label" to keep track of region # cache is faster, but more mem identities.
     
     ## convert to DataFrame and drop entries with no open water
     stats=pd.DataFrame(stats)
     # wetland_regions=stats[stats['mean_intensity']==1.].label.to_numpy() # save labels for regions with no open water
     stats_mask_neg=(stats['mean_intensity']==1.) | (stats['area']<3) # rows not to keep (no water or less than 3 px )
-    lb[np.isin(lb, stats[stats_mask_neg].label.to_numpy())]=0 # remove regions from label matrix with mask criteria 
+    
+    ## dask computation
+    print('Converting to dask array and masking out wetlands and smallest ponds...')
+    lbd=da.from_array(lb)
+    labels_to_remove = stats[stats_mask_neg].label.to_numpy(dtype='int32')
+    labels_to_remove_image_mask = da.map_blocks(np.isin, lbd, labels_to_remove, dtype='int32')
+    labels_to_remove_image_mask=np.array(labels_to_remove_image_mask)
+    lb[labels_to_remove_image_mask]=0 
+    del labels_to_remove_image_mask, labels_to_remove
+    # lb[np.isin(lb, stats[stats_mask_neg].label.to_numpy())]=0 # remove regions from label matrix with mask criteria ## fails for large data size
+    ## end rewrite
+
     stats=stats[~stats_mask_neg] # update stats dataframe with the same mask
     stats.rename(columns={'mean_intensity':'em_fraction', 'area':'area_px_m2', 'perimeter':'perimeter_px_m'}, inplace=True)
     # stats['em_fraction']=stats['mean_intensity']
@@ -195,7 +213,7 @@ for i in range(len(files_in)):
     ## area math
     stats['area_px_m2']=stats.area_px_m2*np.prod(src_res)
     stats['perimeter_px_m']=stats.perimeter_px_m*np.mean(src_res)
-    # del stats['area']
+    # del stats['area'] 
     # del stats['perimeter']
 
     ## Regionprops for Fw, SW, GW

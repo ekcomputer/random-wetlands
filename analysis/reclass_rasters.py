@@ -1,4 +1,4 @@
-''' Modified from Raster2PercentagePoly.py. Now includes step for post-classification smoothing! '''
+''' Modified from Raster2PercentagePoly.py. Now includes step for post-classification smoothing!'''
 # from analysis.python_env import NODATAVALUE
 import glob
 import os

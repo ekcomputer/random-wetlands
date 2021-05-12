@@ -9,6 +9,7 @@
 
 TODO: 
     * Dateparser for dates in filename
+    * Why no effect of min size?
 '''
 
 ## imports
