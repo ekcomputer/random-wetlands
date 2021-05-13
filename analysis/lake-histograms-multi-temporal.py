@@ -22,7 +22,7 @@ import geopandas as gpd
 from python_env import *
 
 ## User vars
-min_size=200 # meters squared
+min_size=50000 # meters squared
 regions=['Daring','Baker','PAD','YFLATS']
 
 ## constants
