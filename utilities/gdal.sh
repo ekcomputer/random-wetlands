@@ -62,3 +62,10 @@ gdal_merge.py -o ../mosaics-yf-reverse/YFLATS_170916_cls_mosaic.tif -co COMPRESS
 gdal_merge.py -o ../mosaics-yf-reverse/YFLATS_170621_cls_mosaic.tif -co COMPRESS=LZW -n 0 -a_nodata 0 yflats_21508_17069_009_170621_L090_CX_01_Freeman-inc_cls.tif yflats_04707_17069_010_170621_L090_CX_01_Freeman-inc_cls.tif  &&
 gdal_merge.py -o ../mosaics-yf-reverse/YFLATS_180827_cls_mosaic.tif -co COMPRESS=LZW -n 0 -a_nodata 0 yflatE_21609_18051_009_180827_L090_CX_01_Freeman-inc_cls.tif ftyuko_04707_18051_008_180827_L090_CX_01_Freeman-inc_cls.tif  &&
 gdal_merge.py -o ../mosaics-yf-reverse/YFLATS_190914_cls_mosaic.tif -co COMPRESS=LZW -n 0 -a_nodata 0 yflatE_21609_19064_007_190914_L090_CX_01_Freeman-inc_cls.tif ftyuko_04707_19064_006_190914_L090_CX_01_Freeman-inc_cls.tif  &
+
+    ## Rename mosaic files
+cd /mnt/f/PAD2019/classification_training/PixelClassifier/Test42/batch1/mosaics-yf-reverse
+for f in *.tif; do mv  $f `echo $f | awk '{ gsub(/_cls_mosaic/,"_mosaic_cls"); print '}`; done
+
+dl reclass
+for f in *.tif; do mv  $f `echo $f | awk '{ gsub(/_rcls_mosaic/,"_mosaic_rcls"); print '}`; done
