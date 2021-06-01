@@ -28,6 +28,7 @@ TODO:
 * additional noted in comments
 * problem with doubled lake labels...does it matter if output looks good? X
 * Use dask ndimage label instead of imlabel https://dask-image.readthedocs.io/en/latest/dask_image.ndmeasure.html#dask_image.ndmeasure.label
+* Sensitivity analysis for: min water body size, DCS seed vs no, river mask vs no, edge lakes vs no, 5-class (with maj filter) vs 13 class versions, bridge buffer size
 
 '''
 
@@ -127,12 +128,10 @@ for i in range(len(files_in)):
     if '#' in landcover_in_path: # allows me to "comment out" inputs in unique_dates.txt
         print('Manual skip.')
         continue
-    with rio.open(landcover_in_path) as src:
-        lc = src.read(1)
-    lc.shape
-
+    
     ## load srs for area math, etc
     with rio.open(landcover_in_path) as src:
+        lc = src.read(1)
         src_crs=src.crs
         src_res=src.res
         src_shp=src.shape

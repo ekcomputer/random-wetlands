@@ -10,7 +10,8 @@ Makes a 4-panel plot from my chosen best dates for histogram, or hist by area.
 
 TODO: 
     * Dateparser for dates in filename
-    * Why no effect of min size?
+    * Re-compute perim?
+    * Spatial bootstrapping
 '''
 
 ## imports
