@@ -45,3 +45,27 @@ gdal_calc.py -A $inc --A_band=1 -B $in --outfile=$out --NoDataValue=0 --overwrit
 gdal_calc.py -A $mask --A_band=1 -B $in --outfile=$out --NoDataValue=0 --overwrite --creation-option="COMPRESS=LZW" --creation-option="BIGTIFF=YES" --calc="numpy.uint((A>0)*B)" # if I only have Freeman bands
 
 ## For compressing
+
+## cropping to new boundaries in QGIS/gdal # not -tap
+# gdalwarp -of GTiff -cutline /mnt/f/PAD2019/classification_training/ROI-analysis/yf-edge-masks/yf-21508-btm-mask.shp -cl yf-21508-btm-mask -crop_to_cutline -multi -co COMPRESS=LZW -co PREDICTOR=2 -co ZLEVEL=9 -srcnodata 0 -dstnodata 0 "/mnt/d/GoogleDrive/ABoVE top level folder/Kyzivat_ORNL_DAAC_2021/lake-wetland-maps/13-classes/yflats_21508_17069_009_170621_L090_CX_01_Freeman-inc_cls.tif" /mnt/f/PAD2019/classification_training/PixelClassifier/Test42/batch1/yf-cropped-for-new-mosaic/yflats_21508_17069_009_170621_L090_CX_01_Freeman-inc_cls.tif
+# gdalwarp -of GTiff -cutline /mnt/f/PAD2019/classification_training/ROI-analysis/yf-edge-masks/yf-21508-btm-mask.shp -cl yf-21508-btm-mask -crop_to_cutline -multi -co COMPRESS=LZW -co PREDICTOR=2 -co ZLEVEL=9 -srcnodata 0 -dstnodata 0 "/mnt/d/GoogleDrive/ABoVE top level folder/Kyzivat_ORNL_DAAC_2021/lake-wetland-maps/13-classes/yflats_21508_17069_009_170621_L090_CX_01_Freeman-inc_cls.tif" /mnt/f/PAD2019/classification_training/PixelClassifier/Test42/batch1/yf-cropped-for-new-mosaic/yflats_21508_17069_009_170621_L090_CX_01_Freeman-inc_cls.tif
+
+for file in *21508*.tif; do echo GDALWARP: $file; gdalwarp -of GTiff -cutline /mnt/f/PAD2019/classification_training/ROI-analysis/yf-edge-masks/yf-21508-btm-mask.shp -cl yf-21508-btm-mask -crop_to_cutline -multi -co COMPRESS=LZW -co PREDICTOR=2 -co ZLEVEL=9 -srcnodata 0 -dstnodata 0 "/mnt/d/GoogleDrive/ABoVE top level folder/Kyzivat_ORNL_DAAC_2021/lake-wetland-maps/13-classes/$file" /mnt/f/PAD2019/classification_training/PixelClassifier/Test42/batch1/yf-cropped-for-new-mosaic/$file; done
+for file in *04707*.tif; do echo GDALWARP: $file; gdalwarp -of GTiff -cutline /mnt/f/PAD2019/classification_training/ROI-analysis/yf-edge-masks/yf-04707-top-mask.shp -cl yf-04707-top-mask -crop_to_cutline -multi -co COMPRESS=LZW -co PREDICTOR=2 -co ZLEVEL=9 -srcnodata 0 -dstnodata 0 "/mnt/d/GoogleDrive/ABoVE top level folder/Kyzivat_ORNL_DAAC_2021/lake-wetland-maps/13-classes/$file" /mnt/f/PAD2019/classification_training/PixelClassifier/Test42/batch1/yf-cropped-for-new-mosaic/$file; done
+
+## Redo mosaics in reverse: note first layer goes on BOTTOM in mosaic, last on TOP
+
+    # pairs
+cd /mnt/f/PAD2019/classification_training/PixelClassifier/Test42/batch1/yf-cropped-for-new-mosaic
+gdal_merge.py -o ../mosaics-yf-reverse/YFLATS_170916_cls_mosaic.tif -co COMPRESS=LZW -n 0 -a_nodata 0 yflatW_21508_17098_006_170916_L090_CX_01_Freeman-inc_cls.tif yflatE_21609_17098_008_170916_L090_CX_01_Freeman-inc_cls.tif ftyuko_04707_17098_007_170916_L090_CX_01_Freeman-inc_cls.tif  &&
+
+gdal_merge.py -o ../mosaics-yf-reverse/YFLATS_170621_cls_mosaic.tif -co COMPRESS=LZW -n 0 -a_nodata 0 yflats_21508_17069_009_170621_L090_CX_01_Freeman-inc_cls.tif yflats_04707_17069_010_170621_L090_CX_01_Freeman-inc_cls.tif  &&
+gdal_merge.py -o ../mosaics-yf-reverse/YFLATS_180827_cls_mosaic.tif -co COMPRESS=LZW -n 0 -a_nodata 0 yflatE_21609_18051_009_180827_L090_CX_01_Freeman-inc_cls.tif ftyuko_04707_18051_008_180827_L090_CX_01_Freeman-inc_cls.tif  &&
+gdal_merge.py -o ../mosaics-yf-reverse/YFLATS_190914_cls_mosaic.tif -co COMPRESS=LZW -n 0 -a_nodata 0 yflatE_21609_19064_007_190914_L090_CX_01_Freeman-inc_cls.tif ftyuko_04707_19064_006_190914_L090_CX_01_Freeman-inc_cls.tif  &
+
+    ## Rename mosaic files
+cd /mnt/f/PAD2019/classification_training/PixelClassifier/Test42/batch1/mosaics-yf-reverse
+for f in *.tif; do mv  $f `echo $f | awk '{ gsub(/_cls_mosaic/,"_mosaic_cls"); print '}`; done
+
+dl reclass
+for f in *.tif; do mv  $f `echo $f | awk '{ gsub(/_rcls_mosaic/,"_mosaic_rcls"); print '}`; done

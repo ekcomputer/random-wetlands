@@ -20,15 +20,15 @@
 clear
 
 Env_PixelClassifier
-wet_classes=[1:5 11 13];
-water_classes=[1,3, 11];
+wet_classes=[2,3,4,5];
+water_classes=[2];
 PLOT_xtick_rot=0; % 45 % PLOT xticklabel rotation
 PLOT_view_rot=[90 -90];
 regionPropsStats = 0; % save time by not calc regionprops
 TF_msk_littoral_only = 1; % mask out littoral only 'lakes'
 
 %% I/O
-dir_in='F:\PAD2019\classification_training\PixelClassifier\Test35'; % 26 was used for first plots
+dir_in='D:\GoogleDrive\ABoVE top level folder\Kyzivat_ORNL_DAAC_2021\lake-wetland-maps\5-classes'; % 26 was used for first plots
 % dir_in='F:\PAD2019\classification_training\PixelClassifier\Test31';
 files_in=dir([dir_in, filesep, '*cls.tif']); % list of classified tifs
 nFiles=length(files_in);

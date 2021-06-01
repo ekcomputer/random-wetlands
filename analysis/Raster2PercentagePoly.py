@@ -3,14 +3,15 @@
 
 # Convert a land cover raster to a shapefile, with attributes for fractional class coverage
 # 
-# Run first
+# Run first (#1) in workflow to get em % for PAD lakes -> CalcVegAreaFromPts.py -> AVerage_em.ipynb
+
 # TODO: 
 # * Add buffers to filter out disconnected littoral zones w no water nearby,
 # * Size filters
-# * ~~spatial join
+# * ~~spatial join X
 # * simplify polygons -or smooth
 # * double check number of unique polygons ----> debug
-# * ~~export to .shp
+# * ~~export to .shp X
 # * save polygonization process as a function - and use parallel for rasterio polygonize/rasterize!!
 
 # In[1]:
@@ -35,13 +36,30 @@ from python_env import *
 
 ## dynamic I/O
 
-shape_dir=os.path.join(base_dir.split('batch')[0], 'shp') # remove any batches appended to path
+# shape_dir=os.path.join(base_dir.split('batch')[0], 'shp') # remove any batches appended to path # for developpment
+# shape_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/shp'# for final deployment # from python_env.py
 # load using rasterio
-files_in=glob.glob(base_dir+'/*cls.tif')
+
+## Option for loading all files in dir #####################
+# files_in=glob.glob(base_dir+'/*cls.tif')
+############################################################
+with open(unique_date_files, 'r') as f:
+    files_in=f.read().strip().split('\n')
+## Option for only loading specific files ##################
+
+
 
 for i in range(len(files_in)):
+    ## Option for quickly building only PAD mosaics ############
+    # if ('PAD' in files_in[i]) & ('mosaic' in files_in[i]):
+    #     pass
+    # else:
+    #     continue
+    ############################################################
+
     landcover_in_path=files_in[i] # '/mnt/f/PAD2019/classification_training/PixelClassifier/Test35/padelE_36000_19059_003_190904_L090_CX_01_LUT-Freeman_cls.tif'
-    print(f'\n\n----------------\nInput: {landcover_in_path}\n')
+    print(f'\n\n----------------\nInput: {landcover_in_path}')
+    print(f'\t(File {i} of {len(files_in)})\n')
     poly_out_pth=os.path.join(shape_dir, os.path.splitext(os.path.basename(landcover_in_path))[0] +'_wc.shp') #'/mnt/f/PAD2019/classification_training/PixelClassifier/Test35/shp/padelE_36000_19059_003_190904_L090_CX_01_LUT-Freeman_cls_poly.shp'
     if os.path.exists(poly_out_pth):
         print('Shapefile already exists. Skipping...')
@@ -215,6 +233,8 @@ for i in range(len(files_in)):
     poly.head()
 
     # In[46]:
+    ## Simplify polygons using shapely, if I wish:
+    # object.simplify(tolerance, preserve_topology=True)
 
     # check if anything didn't merge
     print('Any polygons that didn\'t merge?')
