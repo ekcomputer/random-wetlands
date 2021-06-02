@@ -37,8 +37,8 @@ Run,Raw,sigma,Offsets,speckle,OffsetSigma,LoGSigma,SteerableFilterSigma,nTree,mi
 37,1,na,3,1,2,na,na,40,40,5,3,7,7,,,,[1 2 7 8 9 15 22],32,1,1,0,,pixel,,,85.3,0.838,,14,37,37,1,501,,Freeman,8/31/2020,"New (final) training, with padelW input image for opposite look direction."
 38,1,na,3,1,2,na,na,40,40,5,3,7,>10,,,,[1 2 7 8 9 15 22],64,1,1,0,,pixel,,,93.8,0.9319,,15,38,38,1,,,Freeman-inc,9/10/2020,Updated training to finalv2 by creating BA class from BG. Fixed on nodata holes bug�I think. Final training on mid-near range extraneous wetlands in YF. Ran as Freeman-inc by mistake�that's why OA was so high.
 39,1,na,3,1,2,na,na,40,40,5,3,7,22,,,,[1 2 7 8 9 15 22],64,1,1,0,,pixel,,,84,0.8242,0.167,14,39,39,1,521/522/523,,Freeman,9/10/2020,"Changed TW/TD -> GW/GD. That's all! And removed T* from classes, so need to re-symbolize rasters."
-40,1,na,3,1,2,na,na,40,40,5,3,7,,,,,[1 2 7 8 9 15 22],64,1,1,0.5,,pixel,,10,84.1,0.826,0.165,14,40,39,1,546,,Freeman,9/21/2020,"Same training as 39, but masking out low inc angles. (First try same accuracy metrics as run 39..need to fix inc mask min�)"
+40,1,na,3,1,2,na,na,40,40,5,3,7,,,,,[1 2 7 8 9 15 22],64,1,1,0.5,,pixel,,10,84.1,0.826,0.165,14,40,39,1,"546, output.txt",,Freeman,9/21/2020,"Same training as 39, but masking out low inc angles. (First try same accuracy metrics as run 39..need to fix inc mask min�)"
 40.3,1,na,3,1,2,na,na,40,40,5,3,7,2 to 6,,,,,64,1,1,0.5,1.07,pixel,,,,,,14,40,39,1,,,Freeman,11/4/2020,running on no-block-proc branch. Batch 3. Making Atqasuk and toolik classifications for Michela.
 41,1,na,3,1,2,na,na,40,40,5,3,7,,,,,,64,1,1,0.5,Inf,pixel,,,,,,14,40,39,1,,,Freeman,1/18/2021,"Scratch run. Potential for testing train-bal-split, if using."
-42,1,na,3,1,2,na,na,40,40,5,3,7,20,,,,,64,1,1,0.5,Inf,pixel,1,,,,,14,40,39,1,,,Freeman,1/21/2021,Import full scenes- no BB.
-43,1,na,3,1,2,na,na,40,40,5,3,7,2,,,,,64,1,0,0,Inf,pixel,1,,,,,14,40,39,1,,,Freeman,2/3/2021,"Same as Run-42, but for Daring LUT-Fr"
+42,1,na,3,1,2,na,na,40,40,5,3,7,20,,,,,64,1,1,0.5,Inf,pixel,1,,,,,14,40,39,1,3404-3409,,Freeman,1/21/2021,Import full scenes- no BB.
+43,1,na,3,1,2,na,na,40,40,5,3,7,2,,,,,64,1,0,0,Inf,pixel,1,,,,,14,40,39,1,3412,,Freeman,2/3/2021,"Same as Run-42, but for Daring LUT-Fr"
