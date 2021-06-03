@@ -121,7 +121,8 @@ for i in range(len(files_in)):
     landcover_in_path=files_in[i] # '/mnt/f/PAD2019/classification_training/PixelClassifier/Test35/padelE_36000_19059_003_190904_L090_CX_01_LUT-Freeman_cls.tif'
     print(f'\n\n----------------\nInput: {landcover_in_path}')
     print(f'\t(File {i+1} of {len(files_in)})\n')
-    poly_out_pth=os.path.join(shape_dir, os.path.splitext(os.path.basename(landcover_in_path))[0] +'_lakes.shp') #'/mnt/f/PAD2019/classification_training/PixelClassifier/Test35/shp/padelE_36000_19059_003_190904_L090_CX_01_LUT-Freeman_cls_poly.shp'
+    file_basename = os.path.splitext(os.path.basename(landcover_in_path))[0]
+    poly_out_pth=os.path.join(shape_dir,  file_basename+'_lakes.shp') #'/mnt/f/PAD2019/classification_training/PixelClassifier/Test35/shp/padelE_36000_19059_003_190904_L090_CX_01_LUT-Freeman_cls_poly.shp'
     if os.path.exists(poly_out_pth):
         print('Shapefile already exists. Skipping...')
         continue
@@ -137,6 +138,7 @@ for i in range(len(files_in)):
         src_shp=src.shape
         src=src
         print(src.profile)
+        profile = src.profile.copy() # save for output raster
         # rio.plot.show(src)
         # plt.draw()
         # plt.show(block = False)
@@ -250,7 +252,14 @@ for i in range(len(files_in)):
     edge_regions = np.unique(lb[edge_ring])
     df_edge_regions = pd.DataFrame(edge_regions, columns=['label']); df_edge_regions['edge']=True
     stats = stats.merge(df_edge_regions, on='label', how='left'); stats.loc[:, 'edge'].fillna(False, inplace=True)
-    del lc, nodata_mask_neg, nodata_mask_neg_no_islands
+    del nodata_mask_neg, nodata_mask_neg_no_islands
+
+    ## Save landcover raster after modification
+    ouput_raster_pth = os.path.join(output_raster_dir, file_basename + '_brn.tif') # brn=burned
+    with rio.open(ouput_raster_pth, 'w', **profile) as dst:
+        dst.write(lc, 1)
+    print(f'Wrote output raster: {ouput_raster_pth}')
+    del lc
 
     ## convert lancover data coverage to shape
     # print('Polygonize domain...')
