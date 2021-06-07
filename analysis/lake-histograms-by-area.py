@@ -142,7 +142,7 @@ for i, basename in enumerate(best_dates):
 figname=os.path.join(fig_dir, 'Hists-subplots')
 fig.savefig(figname + '.jpg', dpi=300)
 fig.savefig(figname + '.pdf', dpi=300)
-fig.show(block=False)
+# fig.show() #block=False
 
 ## save fig 2: by area
 figname=os.path.join(fig_dir, 'Hists-by-area-subplots')
