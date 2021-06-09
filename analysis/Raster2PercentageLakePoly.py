@@ -164,8 +164,11 @@ for i in range(len(files_in)):
     del bridges, bridges_burned
     print(f'Number of bridge pixels burned into landcover: {np.sum(lc==bridge_val)}')
 
-    ## load ROI 
+    ## load ROI, and filter to correct feature in shapefile Corresponding to current region
     roi=gpd.read_file(roi_pth)
+    roi = roi[roi.Region == region_lookup[file_basename]]
+    if len(roi) == 0:
+        raise ValueError('EK: Region name note found in lookup table.')
 
     ## Rasterize, like bridges, to use as mask
     print('Rasterize ROI...')

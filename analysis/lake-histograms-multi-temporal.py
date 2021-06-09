@@ -1,5 +1,6 @@
 # plotting
 '''
+--DEPRECATED FOR JUPYTER NOTEBOOK WITH SAME NAME--
 0. For PAD and YF: choose inner ROI
 1. Seed with CIR maks lakes (to help YF)
 1.5. Filter out edge lakes and small lakes
