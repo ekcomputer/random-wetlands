@@ -88,7 +88,7 @@ px_area=6.2772213285727885*6.277221328212732 # m2 # varies slightly b/w scenes, 
 
     # Classes: run 39
 classes={'wet': [1,2,3,4,5,11,13], 'wet_emergent':[2,5,13], 'water': [1,3,4,11]} # not used: water
-classes_reclass={'wet': [2,3,4,5], 'wet_emergent':[3,4,5], 'water': [2], 'wet_graminoid': [3], 'wet_shrubs': [4], 'wet_forest': [5]} # not used: water
+classes_reclass={'wet': [2,3,4,5], 'wet_emergent':[3,4,5], 'water': [2], 'wet_graminoid': [3], 'wet_shrubs': [4], 'wet_forest': [5]}
 # classes_re={0:0, 1:2, 2:3, 3:2, 4:2, 5:3, 6:1, 7:1, 8:1, 9:1, 10:1, 11:2, 12:1, 13:3, urban_val:1} # classes_re: for three classes: dry, wet emergent, open water
 classes_re={0:0, 1:2, 2:4, 3:2, 4:2, 5:3, 6:1, 7:1, 8:1, 9:1, 10:1, 11:2, 12:1, 13:5, urban_val:1} # 2021 classes_re_2: for five classes: dry, wet graminoid, wet shrubs, wet forest, open water
 classes_re_daring={0:0, 1:2, 2:4, 3:2, 4:3, 5:3, 6:1, 7:1, 8:1, 9:4, 10:1, 11:2, 12:1, 13:3, 14:1, urban_val:1} # 2021 classes_re_2 from daring: for five classes: dry, wet graminoid, wet shrubs, wet forest, open water
@@ -114,6 +114,7 @@ classes_daring_conversion={0:0, 1:1, 2:2, 3:3, 4:5, 5:5, 6:6, 7:7, 8:8, 9:9, 10:
 
 ## Regions lookup table for 'ROI-analysis_albers-sub': cropped to common ROI intersection
 # NOTE: Can also use 'YF-common-late-summer' feature for YF, but need to find/replace below.
+regions=['YFLATS', 'PAD','Daring','Baker']
 region_lookup = {
 'bakerc_16008_18047_005_180821_L090_CX_02_Freeman-inc_rcls': 'Baker',
 'bakerc_16008_19059_012_190904_L090_CX_01_Freeman-inc_rcls': 'Baker',
