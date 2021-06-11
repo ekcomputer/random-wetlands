@@ -123,7 +123,8 @@ for i in range(len(files_in)):
     print(f'\t(File {i+1} of {len(files_in)})\n')
     file_basename = os.path.splitext(os.path.basename(landcover_in_path))[0]
     poly_out_pth=os.path.join(shape_dir,  file_basename+'_lakes.shp') #'/mnt/f/PAD2019/classification_training/PixelClassifier/Test35/shp/padelE_36000_19059_003_190904_L090_CX_01_LUT-Freeman_cls_poly.shp'
-    if os.path.exists(poly_out_pth):
+    ouput_raster_pth = os.path.join(output_raster_dir, file_basename + '_brn.tif') # brn=burned
+    if os.path.exists(ouput_raster_pth): # poly_out_pth
         print('Shapefile already exists. Skipping...')
         continue
     if '#' in landcover_in_path: # allows me to "comment out" inputs in unique_dates.txt
@@ -175,7 +176,7 @@ for i in range(len(files_in)):
     roi['val']=1 # add dummy variable
     shapes_gen = ((geom,value) for geom, value in zip(roi.geometry, roi.val))
     roi_burned = features.rasterize(shapes=shapes_gen, fill=0, out_shape=src.shape, transform=src.transform, all_touched=True).astype('bool')
-    lc[roi_burned==0]=non_roi_val
+    lc[(roi_burned==0) & (lc != 0)]=non_roi_val # mark values that are within footprint, but not ROI as 'non_roi_val'
     del shapes_gen, roi_burned
 
     ## create masks
@@ -205,9 +206,21 @@ for i in range(len(files_in)):
     labels_to_remove_image_mask = da.map_blocks(np.isin, lbd, labels_to_remove, dtype='int32')
     labels_to_remove_image_mask=np.array(labels_to_remove_image_mask)
     lb[labels_to_remove_image_mask]=0 
+
+    ## save values of em types that aren't lake littoral zones in modified landcover (lc) raster
+    # from utils import reclassify
+    lc[np.isin(lc, classes_reclass['wet_graminoid']) & labels_to_remove_image_mask] = classes_reclass['wet_graminoid_no_lake']
+    lc[np.isin(lc, classes_reclass['wet_shrubs']) & labels_to_remove_image_mask] = classes_reclass['wet_shrubs_no_lake']
+    lc[np.isin(lc, classes_reclass['wet_forest']) & labels_to_remove_image_mask] = classes_reclass['wet_forest_no_lake']
     del labels_to_remove_image_mask, labels_to_remove
     # lb[np.isin(lb, stats[stats_mask_neg].label.to_numpy())]=0 # remove regions from label matrix with mask criteria ## fails for large data size
     ## end rewrite
+
+    ## Save landcover raster after modification
+    with rio.open(ouput_raster_pth, 'w', **profile) as dst:
+        dst.write(lc, 1)
+    print(f'Wrote output raster: {ouput_raster_pth}')
+    # continue # if no need to make shapefiles
 
     stats=stats[~stats_mask_neg] # update stats dataframe with the same mask
     stats.rename(columns={'mean_intensity':'em_fraction', 'area':'area_px_m2', 'perimeter':'perimeter_px_m'}, inplace=True)
@@ -255,14 +268,7 @@ for i in range(len(files_in)):
     edge_regions = np.unique(lb[edge_ring])
     df_edge_regions = pd.DataFrame(edge_regions, columns=['label']); df_edge_regions['edge']=True
     stats = stats.merge(df_edge_regions, on='label', how='left'); stats.loc[:, 'edge'].fillna(False, inplace=True)
-    del nodata_mask_neg, nodata_mask_neg_no_islands
-
-    ## Save landcover raster after modification
-    ouput_raster_pth = os.path.join(output_raster_dir, file_basename + '_brn.tif') # brn=burned
-    with rio.open(ouput_raster_pth, 'w', **profile) as dst:
-        dst.write(lc, 1)
-    print(f'Wrote output raster: {ouput_raster_pth}')
-    del lc
+    del nodata_mask_neg, nodata_mask_neg_no_islands, lc
 
     ## convert lancover data coverage to shape
     # print('Polygonize domain...')
