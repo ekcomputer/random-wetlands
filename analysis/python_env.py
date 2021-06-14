@@ -79,7 +79,7 @@ classes_re_2:
 
 '''
     # Constants
-bridge_val=25
+bridge_val=25 # rivers too
 non_roi_val=35
 urban_val=30
 NODATAVALUE=0
@@ -88,7 +88,9 @@ px_area=6.2772213285727885*6.277221328212732 # m2 # varies slightly b/w scenes, 
 
     # Classes: run 39
 classes={'wet': [1,2,3,4,5,11,13], 'wet_emergent':[2,5,13], 'water': [1,3,4,11]} # not used: water
-classes_reclass={'wet': [2,3,4,5], 'wet_emergent':[3,4,5], 'water': [2], 'wet_graminoid': [3], 'wet_shrubs': [4], 'wet_forest': [5], 'wet_graminoid_no_lake': [43], 'wet_shrubs_no_lake': [44], 'wet_forest_no_lake': [45], 'wet_emergent_no_lake':[43,44,45]}
+
+    # Main list of ultimate water classes. Water_no_lake means water body was below probably 3 px, so likely a small pond, or a false positive. [water_not_valid is either edge or not-cir...TBD]
+classes_reclass={'wet': [2,3,4,5], 'wet_emergent':[3,4,5], 'water': [2], 'wet_graminoid': [3], 'wet_shrubs': [4], 'wet_forest': [5], 'water_no_lake': [42], 'wet_graminoid_no_lake': [43], 'wet_shrubs_no_lake': [44], 'wet_forest_no_lake': [45], 'wet_emergent_no_lake':[43,44,45], 'wet_non_lake': [42, 43, 44, 45], 'water_not_valid': [52]}
 # classes_re={0:0, 1:2, 2:3, 3:2, 4:2, 5:3, 6:1, 7:1, 8:1, 9:1, 10:1, 11:2, 12:1, 13:3, urban_val:1} # classes_re: for three classes: dry, wet emergent, open water
 classes_re={0:0, 1:2, 2:4, 3:2, 4:2, 5:3, 6:1, 7:1, 8:1, 9:1, 10:1, 11:2, 12:1, 13:5, urban_val:1} # 2021 classes_re_2: for five classes: dry, wet graminoid, wet shrubs, wet forest, open water
 classes_re_daring={0:0, 1:2, 2:4, 3:2, 4:3, 5:3, 6:1, 7:1, 8:1, 9:4, 10:1, 11:2, 12:1, 13:3, 14:1, urban_val:1} # 2021 classes_re_2 from daring: for five classes: dry, wet graminoid, wet shrubs, wet forest, open water
@@ -164,3 +166,12 @@ fig_dir='/mnt/d/pic/UAVSAR_classification'
 cir_pth='/mnt/d/ArcGIS/FromMatlab/CIRLocalThreshClas/ORNL_final/WC_fused_hydroLakes/WC_fused_hydroLakes.shp'
     # Dynamic variables
 reclass_dir=os.path.join(base_dir, 'reclass') #'/mnt/f/PAD2019/classification_training/PixelClassifier/Test39/reclass'
+
+## print unique raster vals:
+# val=[]; 
+# for v in classes_reclass.values(): 
+#     for j in v: 
+#         val.append(j)
+# print('Unique vals: ')
+# import numpy as np
+# print(np.unique(val))

@@ -206,13 +206,15 @@ for i in range(len(files_in)):
     labels_to_remove_image_mask = da.map_blocks(np.isin, lbd, labels_to_remove, dtype='int32')
     labels_to_remove_image_mask=np.array(labels_to_remove_image_mask)
     lb[labels_to_remove_image_mask]=0 
+    del labels_to_remove
 
     ## save values of em types that aren't lake littoral zones in modified landcover (lc) raster
     # from utils import reclassify
     lc[np.isin(lc, classes_reclass['wet_graminoid']) & labels_to_remove_image_mask] = classes_reclass['wet_graminoid_no_lake']
     lc[np.isin(lc, classes_reclass['wet_shrubs']) & labels_to_remove_image_mask] = classes_reclass['wet_shrubs_no_lake']
     lc[np.isin(lc, classes_reclass['wet_forest']) & labels_to_remove_image_mask] = classes_reclass['wet_forest_no_lake']
-    del labels_to_remove_image_mask, labels_to_remove
+    lc[np.isin(lc, classes_reclass['water']) & labels_to_remove_image_mask] = classes_reclass['water_no_lake']
+    del labels_to_remove_image_mask
     # lb[np.isin(lb, stats[stats_mask_neg].label.to_numpy())]=0 # remove regions from label matrix with mask criteria ## fails for large data size
     ## end rewrite
 
