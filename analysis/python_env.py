@@ -12,7 +12,7 @@
     Workflow for extracting stats for all lakes:
         0. As above
         2. analysis/Raster2PercentageLakePoly.py (Polygonizes landcover map to lake polygons, with attributes for EM%, whether or not it is a border lake, and whether it was observed by AirSWOT CIR camera.)
-        Note: If running over maximum ROI, use the ROI file: 'ROI-analysis_albers.shp'. If running me under ROI common to all acquisition dates, use ROI file: 'ROI-analysis_albers-sub.shp'. Need to update vars 'file_basenames' and 3 others with tag #sub-roi
+        Note: If running over maximum ROI, use the ROI file: 'ROI-analysis_albers.shp'. If running me under ROI common to all acquisition dates, use ROI file: 'ROI-analysis_albers-sub.shp'. X Need to update vars 'file_basenames' and 3 others with tag #sub-roi
     Workflow for sensitivity figure:
         1. analysis/upscaleFromLandcover.ipynb
 
@@ -133,11 +133,11 @@ region_lookup = {
 } #sub-roi
 
 # shape_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/shp'# for final deployment: study lakes
-# shape_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/shp_no_rivers'# for final deployment: study lakes
-shape_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/shp_no_rivers_subroi'# for final deployment: study lakes: cropped to common ROI intersection #sub-roi
+shape_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/shp_no_rivers'# for final deployment: study lakes
+shape_dir_common_roi='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/shp_no_rivers_subroi'# for final deployment: study lakes: cropped to common ROI intersection #sub-roi
 
-# output_raster_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/landcover_raster_burned' # for rasters with burned in bridges, decision between EM in lakes and standalone, and boundary mask pixels
-output_raster_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/landcover_raster_burned_subroi' # for rasters with burned in bridges, decision between EM in lakes and standalone, and boundary mask pixels: using ROI common to all acquisition dates. Not first output of reclassify. #sub-roi
+output_raster_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/landcover_raster_burned' # for rasters with burned in bridges, decision between EM in lakes and standalone, and boundary mask pixels
+output_raster_dir_common_roi='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/landcover_raster_burned_subroi' # for rasters with burned in bridges, decision between EM in lakes and standalone, and boundary mask pixels: using ROI common to all acquisition dates. Not first output of reclassify. #sub-roi
 
     # Classes: run EngramLakes
 # classes={'wet': [1,3,11,2,5,13], 'wet_emergent':[2, 5,13], 'water': [1,3,11]} # not used: water
