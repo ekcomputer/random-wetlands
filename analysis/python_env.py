@@ -117,7 +117,7 @@ classes_daring_conversion={0:0, 1:1, 2:2, 3:3, 4:5, 5:5, 6:6, 7:7, 8:8, 9:9, 10:
 ## Regions lookup table for 'ROI-analysis_albers-sub': cropped to common ROI intersection
 # NOTE: Can also use 'YF-common-late-summer' feature for YF, but need to find/replace below.
 regions=['YFLATS', 'PAD','Daring','Baker']
-region_lookup = {
+region_lookup_sub_roi = {
 'bakerc_16008_18047_005_180821_L090_CX_02_Freeman-inc_rcls': 'Baker',
 'bakerc_16008_19059_012_190904_L090_CX_01_Freeman-inc_rcls': 'Baker',
 'daring_21405_17063_010_170614_L090_CX_01_LUT-Freeman_rcls': 'Daring',
@@ -130,6 +130,20 @@ region_lookup = {
 'YFLATS_170916_mosaic_rcls': 'YF-common',
 'YFLATS_180827_mosaic_rcls': 'YF-common',
 'YFLATS_190914_mosaic_rcls': 'YF-common',
+} 
+region_lookup = {
+'bakerc_16008_18047_005_180821_L090_CX_02_Freeman-inc_rcls': 'Baker',
+'bakerc_16008_19059_012_190904_L090_CX_01_Freeman-inc_rcls': 'Baker',
+'daring_21405_17063_010_170614_L090_CX_01_LUT-Freeman_rcls': 'Daring',
+'daring_21405_17094_010_170909_L090_CX_01_LUT-Freeman_rcls': 'Daring',
+'PAD_170613_mosaic_rcls': 'PAD',
+'PAD_170908_mosaic_rcls': 'PAD',
+'PAD_180821_mosaic_rcls': 'PAD',
+'padelE_36000_19059_003_190904_L090_CX_01_Freeman-inc_rcls': 'PAD',
+'YFLATS_170621_mosaic_rcls': 'YF',
+'YFLATS_170916_mosaic_rcls': 'YF',
+'YFLATS_180827_mosaic_rcls': 'YF',
+'YFLATS_190914_mosaic_rcls': 'YF',
 } #sub-roi
 
 # shape_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/shp'# for final deployment: study lakes
@@ -160,8 +174,8 @@ unique_date_files='/mnt/d/Dropbox/Matlab/ABoVE/UAVSAR/analysis/input_paths/uniqu
 
 # bridges_pth='/mnt/f/PAD2019/classification_training/PixelClassifier/Test38/bridges/bridges.shp'                     # For workflow that includes analysis/calcVegAreaFromPts.py (for individ lakes sampled)
 bridges_pth='/mnt/f/PAD2019/classification_training/ROI-analysis/river_mask_arc_singlepart.shp'
-# roi_pth='/mnt/f/PAD2019/classification_training/ROI-analysis/ROI-analysis_albers.shp'
-roi_pth='/mnt/f/PAD2019/classification_training/ROI-analysis/ROI-analysis-albers-sub.shp' # roi subregions common to all acquistion dates #sub-roi
+roi_sub_pth='/mnt/f/PAD2019/classification_training/ROI-analysis/ROI-analysis-albers-sub.shp' # roi subregions common to all acquistion dates #sub-roi
+roi_pth='/mnt/f/PAD2019/classification_training/ROI-analysis/ROI-analysis_albers.shp' # 
 fig_dir='/mnt/d/pic/UAVSAR_classification'
 cir_pth='/mnt/d/ArcGIS/FromMatlab/CIRLocalThreshClas/ORNL_final/WC_fused_hydroLakes/WC_fused_hydroLakes.shp'
     # Dynamic variables
