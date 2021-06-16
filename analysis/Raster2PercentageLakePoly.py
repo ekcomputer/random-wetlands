@@ -124,8 +124,8 @@ for i in range(len(files_in)):
     print(f'\n\n----------------\nInput: {landcover_in_path}')
     print(f'\t(File {i+1} of {len(files_in)})\n')
     file_basename = os.path.splitext(os.path.basename(landcover_in_path))[0]
-    poly_out_pth=os.path.join(shape_dir_common_roi,  file_basename+'_lakes.shp') # Modify here if making lake polys for full or #sub-roi'/mnt/f/PAD2019/classification_training/PixelClassifier/Test35/shp/padelE_36000_19059_003_190904_L090_CX_01_LUT-Freeman_cls_poly.shp'
-    ouput_raster_pth = os.path.join(output_raster_dir_common_roi, file_basename + '_brn.tif') # brn=burned #sub-roi
+    poly_out_pth=os.path.join(shape_dir,  file_basename+'_lakes.shp') # shape_dir_common_roi #Modify here if making lake polys for full or #sub-roi'/mnt/f/PAD2019/classification_training/PixelClassifier/Test35/shp/padelE_36000_19059_003_190904_L090_CX_01_LUT-Freeman_cls_poly.shp'
+    ouput_raster_pth = os.path.join(output_raster_dir, file_basename + '_brn.tif') # brn=burned #sub-roi #output_raster_dir_common_roi
     if os.path.exists(ouput_raster_pth): # poly_out_pth
         print('Modified output tif already exists. Skipping...')
         continue
@@ -168,8 +168,8 @@ for i in range(len(files_in)):
     print(f'Number of bridge pixels burned into landcover: {np.sum(lc==bridge_val)}')
 
     ## load ROI, and filter to correct feature in shapefile Corresponding to current region
-    roi=gpd.read_file(roi_pth)
-    roi = roi[roi.Region == region_lookup[file_basename]]
+    roi=gpd.read_file(roi_pth) #sub-roi
+    roi = roi[roi.Region == region_lookup[file_basename]] #sub-roi
     if len(roi) == 0:
         raise ValueError('EK: Region name note found in lookup table.')
 
