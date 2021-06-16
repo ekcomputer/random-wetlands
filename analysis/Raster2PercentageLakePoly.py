@@ -12,6 +12,8 @@ Inputs:
 Outputs:
     _   An ESRI shapefile with rows for each lake and attributes of Area, Perimeter, EM percentage, FW%, GW%  SW%, date/filename
 
+Note:
+    - search for the #sub-roi tag to toggle between full roi and sub-rois (changes input and output paths)
 
 TODO: 
 * Add buffers to filter out disconnected littoral zones w no water nearby,
@@ -125,7 +127,7 @@ for i in range(len(files_in)):
     poly_out_pth=os.path.join(shape_dir_common_roi,  file_basename+'_lakes.shp') # Modify here if making lake polys for full or #sub-roi'/mnt/f/PAD2019/classification_training/PixelClassifier/Test35/shp/padelE_36000_19059_003_190904_L090_CX_01_LUT-Freeman_cls_poly.shp'
     ouput_raster_pth = os.path.join(output_raster_dir_common_roi, file_basename + '_brn.tif') # brn=burned #sub-roi
     if os.path.exists(ouput_raster_pth): # poly_out_pth
-        print('Shapefile already exists. Skipping...')
+        print('Modified output tif already exists. Skipping...')
         continue
     if '#' in landcover_in_path: # allows me to "comment out" inputs in unique_dates.txt
         print('Manual skip.')
@@ -222,7 +224,7 @@ for i in range(len(files_in)):
     with rio.open(ouput_raster_pth, 'w', **profile) as dst:
         dst.write(lc, 1)
     print(f'Wrote output raster: {ouput_raster_pth}')
-    # continue # if no need to make shapefiles
+    # continue # if no need to make shapefiles, quit loop here
 
     stats=stats[~stats_mask_neg] # update stats dataframe with the same mask
     stats.rename(columns={'mean_intensity':'em_fraction', 'area':'area_px_m2', 'perimeter':'perimeter_px_m'}, inplace=True)
