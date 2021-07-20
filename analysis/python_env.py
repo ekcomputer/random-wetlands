@@ -117,6 +117,7 @@ classes_daring_conversion={0:0, 1:1, 2:2, 3:3, 4:5, 5:5, 6:6, 7:7, 8:8, 9:9, 10:
 ## Regions lookup table for 'ROI-analysis_albers-sub': cropped to common ROI intersection
 # NOTE: Can also use 'YF-common-late-summer' feature for YF, but need to find/replace below.
 regions=['YF', 'PAD','CSD','CSB']
+regions_old_names=['YFLATS', 'PAD','Daring','Baker']
 region_lookup_sub_roi = {
 'bakerc_16008_18047_005_180821_L090_CX_02_Freeman-inc_rcls': 'Baker',
 'bakerc_16008_19059_012_190904_L090_CX_01_Freeman-inc_rcls': 'Baker',
