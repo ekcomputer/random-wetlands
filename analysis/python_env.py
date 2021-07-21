@@ -11,13 +11,17 @@
 
     Workflow for extracting stats for all lakes:
         0. As above
-        2. analysis/Raster2PercentageLakePoly.py (Polygonizes landcover map to lake polygons, with attributes for EM%, whether or not it is a border lake, and whether it was observed by AirSWOT CIR camera.)
-        Note: If running over maximum ROI, use the ROI file: 'ROI-analysis_albers.shp'. If running me under ROI common to all acquisition dates, use ROI file: 'ROI-analysis_albers-sub.shp'. X Need to update vars 'file_basenames' and 3 others with tag #sub-roi
-    Workflow for sensitivity figure:
         1. analysis/upscaleFromLandcover.ipynb
+        2. analysis/Raster2PercentageLakePoly.py (Polygonizes landcover map to lake polygons, with attributes for EM%, whether or not it is a border lake, and whether it was observed by AirSWOT CIR camera.)
+        Note: If running over maximum ROI, use the ROI file: 'ROI-analysis_albers.shp'. If running me under ROI common to all acquisition dates, use ROI file: 'ROI-analysis_albers-sub.shp'. X Need to update vars 'file_basenames' and 3 others with tag #sub-roi X
+    Workflow for sensitivity figure:
 
-    Be sure to update file paths in this file before running
+    Be sure to update file paths in this file and filepath vars in Raster2PercentageLakePoly.py before running
 
+    Workflow for further analysis and plots:
+        1. lake-histograms-multi-temporal.ipynb
+        2. lake-bar-chart-time-series.ipynb
+        3. lake-histogram-by-area-etc.ipynb
     TODO:
     * add switch for full vs sub- rois
 '''
@@ -160,15 +164,19 @@ base_dir='/mnt/d/GoogleDrive/ABoVE top level folder/Kyzivat_ORNL_DAAC_2021/lake-
 # base_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Test42/batch1/mosaics-yf-reverse'                  # for new yf mosaics in reverse order w cropping
 
 # shape_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/shp'# for final deployment: study lakes
-shape_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/shp_no_rivers'# for final deployment: study lakes
-# shape_dir_common_roi='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/shp_no_rivers_subroi'# for final deployment: study lakes: cropped to common ROI intersection #sub-roi
+# shape_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/shp_no_rivers'# for final deployment: study lakes (uses post-class smoothing)
+shape_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/shp_no_rivers_no_smoothing'# for final deployment: study lakes #no-smoothing [tag]
+
+# shape_dir_common_roi='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/shp_no_rivers_subroi'# for final deployment: study lakes: cropped to common ROI intersection #sub-roi (uses post-class smoothing)
 shape_dir_common_roi='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/shp_no_rivers_subroi_no_smoothing' # Test for removing majority filter/smoothing #no-smoothing [tag]
 
-output_raster_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/landcover_raster_burned' # for rasters with burned in bridges, decision between EM in lakes and standalone, and boundary mask pixels
-# output_raster_dir_common_roi='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/landcover_raster_burned_subroi' # for rasters with burned in bridges, decision between EM in lakes and standalone, and boundary mask pixels: using ROI common to all acquisition dates. Not first output of reclassify. #sub-roi
+# output_raster_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/landcover_raster_burned' # for rasters with burned in bridges, decision between EM in lakes and standalone, and boundary mask pixels (uses post-class smoothing)
+output_raster_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/landcover_raster_burned_no_smoothing' # for rasters with burned in bridges, decision between EM in lakes and standalone, and boundary mask pixels #no-smoothing [tag] 
+
+# output_raster_dir_common_roi='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/landcover_raster_burned_subroi' # for rasters with burned in bridges, decision between EM in lakes and standalone, and boundary mask pixels: using ROI common to all acquisition dates. Not first output of reclassify. #sub-roi (uses post-class smoothing)
 output_raster_dir_common_roi='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/landcover_raster_burned_subroi_no_smoothing' #no-smoothing [tag]
 
-unique_date_files='/mnt/d/Dropbox/Matlab/ABoVE/UAVSAR/analysis/input_paths/unique_dates.txt' # text file with paths for unique acquisition date file names
+unique_date_files='/mnt/d/Dropbox/Matlab/ABoVE/UAVSAR/analysis/input_paths/unique_dates.txt' # text file with paths for unique acquisition date file names (uses post-class smoothing)
 unique_date_files='/mnt/d/Dropbox/Matlab/ABoVE/UAVSAR/analysis/input_paths/unique_dates_no_smoothing.txt' #no-smoothing [tag]
 
 ## old
