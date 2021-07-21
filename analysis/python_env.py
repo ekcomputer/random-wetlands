@@ -147,13 +147,6 @@ region_lookup = {
 'YFLATS_190914_mosaic_rcls': 'YF',
 } #sub-roi
 
-# shape_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/shp'# for final deployment: study lakes
-shape_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/shp_no_rivers'# for final deployment: study lakes
-shape_dir_common_roi='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/shp_no_rivers_subroi'# for final deployment: study lakes: cropped to common ROI intersection #sub-roi
-
-output_raster_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/landcover_raster_burned' # for rasters with burned in bridges, decision between EM in lakes and standalone, and boundary mask pixels
-output_raster_dir_common_roi='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/landcover_raster_burned_subroi' # for rasters with burned in bridges, decision between EM in lakes and standalone, and boundary mask pixels: using ROI common to all acquisition dates. Not first output of reclassify. #sub-roi
-
     # Classes: run EngramLakes
 # classes={'wet': [1,3,11,2,5,13], 'wet_emergent':[2, 5,13], 'water': [1,3,11]} # not used: water
 # classes_re={0:0, 1:2, 2:3,3:2,4:2,5:3,6:1,7:1,8:1,9:1,10:1,11:2,12:1,13:3,14:1, urban_val:1}
@@ -166,7 +159,17 @@ output_raster_dir_common_roi='/mnt/f/PAD2019/classification_training/PixelClassi
 base_dir='/mnt/d/GoogleDrive/ABoVE top level folder/Kyzivat_ORNL_DAAC_2021/lake-wetland-maps/13-classes'                  # dir 3
 # base_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Test42/batch1/mosaics-yf-reverse'                  # for new yf mosaics in reverse order w cropping
 
+# shape_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/shp'# for final deployment: study lakes
+shape_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/shp_no_rivers'# for final deployment: study lakes
+# shape_dir_common_roi='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/shp_no_rivers_subroi'# for final deployment: study lakes: cropped to common ROI intersection #sub-roi
+shape_dir_common_roi='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/shp_no_rivers_subroi_no_smoothing' # Test for removing majority filter/smoothing #no-smoothing [tag]
+
+output_raster_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/landcover_raster_burned' # for rasters with burned in bridges, decision between EM in lakes and standalone, and boundary mask pixels
+# output_raster_dir_common_roi='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/landcover_raster_burned_subroi' # for rasters with burned in bridges, decision between EM in lakes and standalone, and boundary mask pixels: using ROI common to all acquisition dates. Not first output of reclassify. #sub-roi
+output_raster_dir_common_roi='/mnt/f/PAD2019/classification_training/PixelClassifier/Final-ORNL-DAAC/landcover_raster_burned_subroi_no_smoothing' #no-smoothing [tag]
+
 unique_date_files='/mnt/d/Dropbox/Matlab/ABoVE/UAVSAR/analysis/input_paths/unique_dates.txt' # text file with paths for unique acquisition date file names
+unique_date_files='/mnt/d/Dropbox/Matlab/ABoVE/UAVSAR/analysis/input_paths/unique_dates_no_smoothing.txt' #no-smoothing [tag]
 
 ## old
 # base_dir='/mnt/f/PAD2019/classification_training/PixelClassifier/Test35'                                         # Classes: run 35 (Daring)
@@ -180,7 +183,8 @@ roi_pth='/mnt/f/PAD2019/classification_training/ROI-analysis/ROI-analysis_albers
 fig_dir='/mnt/d/pic/UAVSAR_classification'
 cir_pth='/mnt/d/ArcGIS/FromMatlab/CIRLocalThreshClas/ORNL_final/WC_fused_hydroLakes/WC_fused_hydroLakes.shp'
     # Dynamic variables
-reclass_dir=os.path.join(base_dir, 'reclass') #'/mnt/f/PAD2019/classification_training/PixelClassifier/Test39/reclass'
+# reclass_dir=os.path.join(base_dir, 'reclass') #'/mnt/f/PAD2019/classification_training/PixelClassifier/Test39/reclass' 
+reclass_dir = '/mnt/d/GoogleDrive/ABoVE top level folder/Kyzivat_ORNL_DAAC_2021/lake-wetland-maps/5-classes-no-smoothing' #no-smoothing [tag]
 
 ## print unique raster vals:
 # val=[]; 

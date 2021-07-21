@@ -1,4 +1,4 @@
-''' Modified from Raster2PercentagePoly.py. Now includes step for post-classification smoothing!'''
+''' Modified from Raster2PercentagePoly.py. Now includes step for post-classification smoothing- but uncomment  if not using.'''
 # from analysis.python_env import NODATAVALUE
 import glob
 import os
@@ -58,8 +58,8 @@ for i in range(len(files_in)):      # toggle to only work on all files
 
         ## Classification post-processing (smoothing with majority filter)
         # selem = morphology.disk(SELEM_DIAM)
-        selem = morphology.square(SELEM_DIAM)
-        lc_out= filters.rank.majority(lc_out, selem, mask=lc_out != NODATAVALUE)
+        # selem = morphology.square(SELEM_DIAM)
+        # lc_out= filters.rank.majority(lc_out, selem, mask=lc_out != NODATAVALUE) #no-smoothing
 
     # lc_out=lc # temp
 
