@@ -5,4 +5,4 @@
 *.m~
 *.sh~
 *-checkpoint.ipynb
-
+analysis/.ipynb_checkpoints/*
