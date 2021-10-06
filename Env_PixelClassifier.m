@@ -20,7 +20,7 @@ load_env=0; % load env. from previous run?
 env.inputType='Freeman'; % tag: common %OPTIONS: 'Freeman', 'LUT-Freeman', 'C3', 'Freeman-T3' or 'gray', 'Freeman-inc', 'C3-inc', 'T3', 'Norm-Fr-C11-inc', 'Sinclair', 'Sinclair-hgt'
 env.rangeCorrection=1;
 env.equalizeTrainClassSizes=1; % Delete some training data so that all training classes have aprox. = sizes (not per image, but overall)
-env.run='42'; % tag: common
+env.run='39'; % tag: common
 env.IncMaskMin=0.5; %0.5; % minimum inc. angle to allow if applying incidence angle mask % only valid for Freeman, C3, T3 with no inc band used as a feature; set to zero to ignore  <------- HERE
 env.IncMaskMax=Inf % 1.07; %1.0; % max inc. angle to allow if applying incidence angle mask % only valid for Freeman, C3, T3 with no inc band used as a feature; set to Inf to ignore
 env.useFullExtentClassifier=false; % depricated!
@@ -248,8 +248,10 @@ else
 %% classes
         % set order of classes (defines numerical index, which will be written
         % to meta file)
-    env.class_names={'W1', 'SW', 'HW', 'BA', 'GW', 'GD',...
-        'SD', 'FD', 'FD2', 'WD', 'W2', 'BG', 'FW'}; %{'W1', 'GW', 'GD', 'SW', 'SD', 'FD'}; %, 'TD', 'TW'}; % {'W1', 'W2', 'EU', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FW', 'FD'}, no BG; {'W1', 'W2', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FD'}; % < prior to  Dec 2  
+    env.class_names={'OW', 'WS', 'WH', 'SB', 'WG', 'DG',...
+        'DS', 'DF', 'BS', 'DW', 'RW', 'BG', 'WF'}; %{'W1', 'GW', 'GD', 'SW', 'SD', 'FD'}; %, 'TD', 'TW'}; % {'W1', 'W2', 'EU', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FW', 'FD'}, no BG; {'W1', 'W2', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FD'}; % < prior to  Dec 2  
+%     env.class_names={'W1', 'SW', 'HW', 'BA', 'GW', 'GD',...
+%         'SD', 'FD', 'FD2', 'WD', 'W2', 'BG', 'FW'}; %{'W1', 'GW', 'GD', 'SW', 'SD', 'FD'}; %, 'TD', 'TW'}; % {'W1', 'W2', 'EU', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FW', 'FD'}, no BG; {'W1', 'W2', 'BG', 'HW', 'GW', 'GD', 'SW', 'SD', 'FD'}; % < prior to  Dec 2  
 %     env.class_names={'W1', 'GW', 'GD', 'SW', 'SD', 'FD'};
     env.class_names_full={'Water', 'Graminoid Wet','Graminoid Dry', 'Shrub Wet', 'Shrub Dry', 'Forest Dry'};
 %% colors
