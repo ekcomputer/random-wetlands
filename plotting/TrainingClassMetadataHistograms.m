@@ -8,7 +8,7 @@ C = unique(U,'rows');
 h=histogram(C(:,1), 'binmethod', 'integers');
 h.Values'
 set(gca, 'XTick', [1:13])
-set(gca, 'XTickLabel', model.env.class_names)
+set(gca, 'XTickLabel', env.class_names)
 xlabel('Class')
 ylabel('Feature count')
 set(gca, 'FontName', 'ariel', 'FontSize', 34, 'LineWidth', 1.5)
