@@ -1,3 +1,4 @@
+[![DOI](https://zenodo.org/badge/224481422.svg)](https://zenodo.org/badge/latestdoi/224481422)
 # Instructions for using these scripts
 <p align="center">
     <img src="readme-render/Limon_pause_reduced.gif" width="300" alt="ASC" text-align="center"/>  
