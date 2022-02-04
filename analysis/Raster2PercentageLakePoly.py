@@ -1,8 +1,6 @@
 '''
 Script to calculate emergent macrophyte percentage from uavsar lake/wetland map. Polygonizes landcover map to lake polygons, with attributes for EM%, whether or not it is a border lake, and whether it was observed by AirSWOT CIR camera. Run instead of analysis/Raster2PercentagePoly.py. Make sure to use River mask in place of 'bridges' file.
 
-UPDATE: perhaps just use as plotting function and for temporal tacking once shapefiles (without lakes) exist
-
 Inputs:
     _   UAVSAR classification as shapefiles, with class codes from python_env.py
     _   ROI file of polygon areas to include in analysis. Used to extract ROI from larger flight swath
@@ -16,22 +14,13 @@ Note:
     - search for the #sub-roi tag to toggle between full roi and sub-rois (changes input and output paths)
 
 TODO: 
-* Add buffers to filter out disconnected littoral zones w no water nearby,
-* Size filters
-* ~~spatial join X
 * simplify polygons -or smooth
-* double check number of unique polygons ----> debug X
-* ~~export to .shp X
-* save polygonization process as a function X
 * - and use parallel for rasterio polygonize/rasterize!!
-* Add FM%, etc. X
 * Manually update bridges .
 * Speed up (smaller) bridge buffer?
 * additional noted in comments
-* problem with doubled lake labels...does it matter if output looks good? X
 * Use dask ndimage label instead of imlabel https://dask-image.readthedocs.io/en/latest/dask_image.ndmeasure.html#dask_image.ndmeasure.label
 * Sensitivity analysis for: min water body size, DCS seed vs no, river mask vs no, edge lakes vs no, 5-class (with maj filter) vs 13 class versions, bridge buffer size
-* Save output raster value for non-littoral EM**
 '''
 
 

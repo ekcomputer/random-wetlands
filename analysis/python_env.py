@@ -1,87 +1,36 @@
 ''' Environment variables used for python analysis scripts
     Notation: v2 refers to final classification in 2021.
 
-    INSTRUCTIONS:
-
-    Workflow for extracting stats for visited lakes:
-        0. Run classification in Matlab and analysis/reclass_rasters.py
-        1. analysis/Raster2PercentagePoly.py (Convert a land cover raster to a shapefile, with attributes for fractional class coverage)
-        2. analysis/calcVegAreaFromPts.py (An automatic way of calculating littoral fraction from a shapefile of water bodies and a list of points)
-        3. analysis/Average_em.ipynb (Averages em_fraction for each site along all available dates)
-
-    Workflow for extracting stats for all lakes:
-        0. As above
-        1. analysis/upscaleFromLandcover.ipynb
-        2. analysis/Raster2PercentageLakePoly.py (Polygonizes landcover map to lake polygons, with attributes for EM%, whether or not it is a border lake, and whether it was observed by AirSWOT CIR camera.)
-        Note: If running over maximum ROI, use the ROI file: 'ROI-analysis_albers.shp'. If running me under ROI common to all acquisition dates, use ROI file: 'ROI-analysis_albers-sub.shp'. X Need to update vars 'file_basenames' and 3 others with tag #sub-roi X
-    Workflow for sensitivity figure:
-
-    Be sure to update file paths in this file and filepath vars in Raster2PercentageLakePoly.py before running
-
-    Workflow for further analysis and plots:
-        1. lake-histograms-multi-temporal.ipynb
-        2. lake-bar-chart-time-series.ipynb
-        3. lake-histogram-by-area-etc.ipynb
     TODO:
     * add switch for full vs sub- rois
-'''
-import os
-
-# Classes: Run 38,39,40     orig    reclass_old reclass 2021_reclass
-#                 1       W1 W      10          2       2
-#                 2       SW WE     9           3       4
-#                 3       HW W      10          2       2
-#                 4       BA W      10          2       2
-#                 5       GW WE     9           3       3
-#                 6       GD        4           1       1
-#                 7       SD        3           1       1
-#                 8       FD        1           1       1
-#                 9       FD2       1           1       1
-#                 10      WD        3           1       1
-#                 11      W2 W      10          2       2
-#                 12      BG        5           1       1
-#                 13      FW WE     9           3       5
-
-# Classes: Run 35 (Freeman-LUT, Daring)         reclass 2021_reclass (Note that Daring class schema has no BA, but TW and TD )
-#                 1       W1 W                  2       2
-#                 2       SW WE                 3       4
-#                 3       HW W                  2       2
-#                 4       TW                            3
-#                 5       GW WE                 3       3
-#                 6       GD                    1       1
-#                 7       SD                    1       1
-#                 8       FD                    1       1
-#                 9       FD2                   1       1
-#                 10      TD                            1
-#                 11      W2 W                  2       2
-#                 12      BG                    1       1
-#                 13      FW WE                 3       5
-#                 14      WD                            1
-
-
-''' 
-classes_re_old: (from Wang 2019)
-    1   Forest
-    3   Shrub
-    4   Graminoid
-    5   Sparsely vegetated
-    9   Littoral
-    10  Open water
-    11  Urban
-
+    
+    Classes: Run 35 (Freeman-LUT, Daring)         reclass 2021_reclass (Note that Daring class schema has no BA, but TW and TD )
+                1       W1 W                  2       2
+                2       SW WE                 3       4
+                3       HW W                  2       2
+                4       TW                            3
+                5       GW WE                 3       3
+                6       GD                    1       1
+                7       SD                    1       1
+                8       FD                    1       1
+                9       FD2                   1       1
+                10      TD                            1
+                11      W2 W                  2       2
+                12      BG                    1       1
+                13      FW WE                 3       5
+                14      WD                            1
+                
 classes_re: 
-    1   Dry land
-    2   Open water
-    3   Littoral
-
-classes_re_2: 
     1   Dry land
     2   Open water
     3   Wet graminoid
     4   Wet shrubs
     5   Wet forest
-
 '''
+
+    # Imports
+import os
+
     # Constants
 bridge_val=25 # rivers too
 non_roi_val=35

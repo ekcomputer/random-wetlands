@@ -9,11 +9,12 @@
 
 %% I/O
 clear; close all
-% Env_PixelClassifier
-base='F:\PAD2019\classification_training\PixelClassifier\Test35'; %32, 35 for Daring, 39
+Env_PixelClassifier
+base='F:\PAD2019\classification_training\PixelClassifier\Test43'; %32, 35 for Daring, 39
 model_pth = [base, '\model.mat'];
 training_pth = [base, '\training.mat'];
 load(model_pth); load(training_pth);
+class_names = env.class_names % sloppy fix to use updated class names (same data and order)
 env=model.env;
 
 %% Plot OOB and feature importance diagrams...
@@ -70,7 +71,7 @@ legend(legend_txt, 'Location', 'best', 'FontSize', 12);
 subplot(1,2,2), plot(oobPredError), title('OOB classification error')
 
 %% confusion matrix
-[v.C, v.cm, v.order, v.k, v.OA]=confusionmatStats(lb_subset_validation,lb_val_test_cell, env.class_names);
+[v.C, v.cm, v.order, v.k, v.OA]=confusionmatStats(lb_subset_validation,lb_val_test_cell, class_names);
 
 %% alt CM stats
 fprintf('\n~~~~~~~~~~~~~~~~~~~~~~~~~~\nFinal OOB error: %0.3f\n', oobPredError(end))

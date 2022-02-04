@@ -20,7 +20,7 @@ load_env=0; % load env. from previous run?
 env.inputType='Freeman'; % tag: common %OPTIONS: 'Freeman', 'LUT-Freeman', 'C3', 'Freeman-T3' or 'gray', 'Freeman-inc', 'C3-inc', 'T3', 'Norm-Fr-C11-inc', 'Sinclair', 'Sinclair-hgt'
 env.rangeCorrection=1;
 env.equalizeTrainClassSizes=1; % Delete some training data so that all training classes have aprox. = sizes (not per image, but overall)
-env.run='39'; % tag: common
+env.run='43'; % tag: common
 env.IncMaskMin=0.5; %0.5; % minimum inc. angle to allow if applying incidence angle mask % only valid for Freeman, C3, T3 with no inc band used as a feature; set to zero to ignore  <------- HERE
 env.IncMaskMax=Inf % 1.07; %1.0; % max inc. angle to allow if applying incidence angle mask % only valid for Freeman, C3, T3 with no inc band used as a feature; set to Inf to ignore
 env.useFullExtentClassifier=false; % depricated!
@@ -28,8 +28,8 @@ env.blockProcessing=true; % whether or not to use
 
 %% Params for trainingImageImport.m
 env.trainingClassRasters=0; % tag: common % set to 1 to make training class rasters; 0 for viewing/classification image only in the Test folder
-env.training_run='42'; % tag: common % set different from env.run if using a model from previous run or training to a diff dir.  Only matters on ASC.
-env.training_class_run='39'; % tag: common % for shapefiles
+env.training_run='43'; % tag: common % set different from env.run if using a model from previous run or training to a diff dir.  Only matters on ASC.
+env.training_class_run='43'; % tag: common % for shapefiles
 env.useFullExtentImport=1; % switch to use full scene extent and ignore bounding box from input runfile
 env.output.cls_dir_local='/att/nobackup/ekyzivat/PixelClassifier';
 env.output.cls_dir_asc='/att/nobackup/ekyzivat/PixelClassifier';
