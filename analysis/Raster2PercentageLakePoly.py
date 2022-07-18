@@ -58,7 +58,18 @@ def polygonize(source, mask=None, connectivity=4, src=None): # transform=IDENTIT
         TODO: make failsafe by setting conditional clause for if src.transform DNE (previously transfrom was a keyword argument with default 'identify')
         '''
 
-        source =  source.astype('float32') # needs float for some reason for shape index
+        ## Change data type to least-expensive type that is valid for rasterio.features.shapes
+        if not((source.max() > 255) or (source.min() < 0)):
+            source =  source.astype('uint8') # can't be boolean for shape index
+        elif not((source.max() > 65535) or (source.min() < 0)):
+            source =  source.astype('uint16')
+        elif not((source.max() > 32767) or (source.min() < -32767)):
+            source =  source.astype('int16')
+        else:
+            source = source.astype('float32')
+            print('Converting source to type float because it has extreme values (may consume large memory)')
+        
+        ## Polygonize
         results = (
         {'properties': {'raster_val': v}, 'geometry': s}
         for i, (s, v) 
